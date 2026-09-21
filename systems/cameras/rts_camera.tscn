@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/cameras/rts_camera.gd" id="1_rts"]
+
+[node name="RTSCamera" type="Node3D"]
+script = ExtResource("1_rts")
+
+[node name="GimbalElevation" type="Node3D" parent="."]
+
+[node name="Camera" type="Camera3D" parent="GimbalElevation"]
+far = 100000.0
