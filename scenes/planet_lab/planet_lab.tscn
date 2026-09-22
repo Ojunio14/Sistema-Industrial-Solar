@@ -1,13 +1,17 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://systems/cameras/free_fly_camera.tscn" id="1_free_fly"]
 [ext_resource type="PackedScene" path="res://systems/cameras/rts_camera.tscn" id="2_rts"]
 [ext_resource type="PackedScene" path="res://systems/cameras/orbital_camera.tscn" id="3_orbital"]
 [ext_resource type="Script" path="res://scenes/planet_lab/camera_debug_overlay.gd" id="4_debug"]
+[ext_resource type="Script" path="res://systems/planet/planet_root.gd" id="5_planet_root"]
+[ext_resource type="Resource" path="res://systems/planet/default_planet_definition.tres" id="6_definition"]
 
 [node name="PlanetLab" type="Node3D"]
 
 [node name="Planet" type="Node3D" parent="."]
+script = ExtResource("5_planet_root")
+definition = ExtResource("6_definition")
 
 [node name="Cameras" type="Node3D" parent="."]
 
