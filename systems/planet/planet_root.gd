@@ -4,6 +4,7 @@ extends Node3D
 @export var definition: PlanetDefinition
 @export var lod_config: PlanetLodConfig
 var quadtree_view: PlanetQuadtreeView
+var terrain: PlanetTerrain
 
 
 func _ready() -> void:
@@ -12,9 +13,16 @@ func _ready() -> void:
 		return
 	if lod_config == null:
 		lod_config = PlanetLodConfig.new()
+	if definition.terrain_enabled:
+		terrain = PlanetTerrain.new(definition.terrain_seed)
 	quadtree_view = PlanetQuadtreeView.new()
 	add_child(quadtree_view)
-	quadtree_view.initialize(get_base_radius_units(), lod_config)
+	quadtree_view.initialize(get_base_radius_units(), lod_config, terrain, definition.meters_per_unit)
+
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F4 and quadtree_view != null:
+		quadtree_view.set_debug_mode((quadtree_view.debug_mode + 1) % 7)
 
 
 func _process(delta: float) -> void:

@@ -1,0 +1,22 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+Vulkan 1.3.212 - Forward+ - Using Device #0: AMD - AMD Radeon(TM) Vega 3 Graphics
+
+TERRAIN_VISUAL_CAPTURE globe_0 leaves=117 state=idle
+TERRAIN_VISUAL_CAPTURE globe_1 leaves=135 state=idle
+TERRAIN_VISUAL_CAPTURE globe_2 leaves=162 state=idle
+TERRAIN_VISUAL_CAPTURE globe_3 leaves=177 state=idle
+TERRAIN_VISUAL_CAPTURE globe_4 leaves=186 state=idle
+TERRAIN_VISUAL_CAPTURE globe_5 leaves=189 state=idle
+TERRAIN_VISUAL_CAPTURE hills leaves=393 state=idle
+TERRAIN_VISUAL_CAPTURE plateau leaves=441 state=idle
+TERRAIN_VISUAL_CAPTURE chain leaves=465 state=idle
+TERRAIN_VISUAL_CAPTURE range leaves=492 state=idle
+TERRAIN_VISUAL_CAPTURE valley leaves=495 state=idle
+TERRAIN_VISUAL_CAPTURE basin leaves=492 state=idle
+TERRAIN_VISUAL_CAPTURE exceptional leaves=495 state=idle
+TERRAIN_VISUAL_CAPTURE archipelago leaves=513 state=idle
+TERRAIN_VISUAL_CAPTURE inland_sea leaves=474 state=idle
+TERRAIN_VISUAL_CAPTURE ocean leaves=552 state=idle
+TERRAIN_VISUAL_CAPTURE cube_edge leaves=543 state=idle
+TERRAIN_VISUAL_CAPTURE retreat leaves=348 state=idle
+TERRAIN_VISUAL_OK C:\Users\aldea\AppData\Local\Temp\planet-terrain-visual-6ac5be08de9f4abfaf453155a1a00e8f

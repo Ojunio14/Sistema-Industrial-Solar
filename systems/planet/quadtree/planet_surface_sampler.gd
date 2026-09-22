@@ -6,11 +6,15 @@ var radius: float
 var cache: Dictionary = {}
 var geometry: Dictionary = {}
 var generated_count := 0
+var terrain: PlanetTerrain
+var meters_per_unit := 1.0
 
-func _init(p_tree: PlanetQuadtree, p_radius: float, p_geometry: Dictionary = {}) -> void:
+func _init(p_tree: PlanetQuadtree, p_radius: float, p_geometry: Dictionary = {}, p_terrain: PlanetTerrain = null, p_meters_per_unit: float = 1.0) -> void:
 	tree = p_tree
 	radius = p_radius
 	geometry = p_geometry
+	terrain = p_terrain
+	meters_per_unit = p_meters_per_unit
 
 func source(patch: PlanetPatch) -> Dictionary:
 	var key := patch.id.stable_key()
@@ -18,7 +22,7 @@ func source(patch: PlanetPatch) -> Dictionary:
 		var mask := tree.stitch_mask(patch.id)
 		if not geometry.has(key):
 			generated_count += 1
-		cache[key] = PlanetPatchMesh.with_mask(geometry[key], mask) if geometry.has(key) else PlanetPatchMesh.generate(patch.id, radius, mask)
+		cache[key] = PlanetPatchMesh.with_mask(geometry[key], mask) if geometry.has(key) else PlanetPatchMesh.generate(patch.id, radius, mask, terrain, meters_per_unit)
 	return cache[key]
 
 func sample(face: int, uv: Vector2) -> Vector3:

@@ -1,0 +1,74 @@
+extends SceneTree
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+func _run() -> void:
+	var args := OS.get_cmdline_user_args()
+	if args.is_empty():
+		push_error("Provide output directory")
+		quit(1)
+		return
+	var output: String = args[0]
+	DirAccess.make_dir_recursive_absolute(output)
+	var lab := (load("res://scenes/planet_lab/planet_lab.tscn") as PackedScene).instantiate()
+	root.add_child(lab)
+	current_scene = lab
+	var planet: PlanetRoot = lab.get_node("Planet")
+	planet.set_process(false)
+	var view := planet.quadtree_view
+	var camera: Camera3D = lab.get_node("Cameras/FreeFlyCamera")
+	camera.set_process(false)
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	var scenarios: Array[Dictionary] = []
+	for i in range(6):
+		scenarios.append({"name": "globe_%d" % i, "direction": PlanetMath.get_face_normal(i), "orbital": true})
+	for landmark in planet.terrain.debug_landmarks():
+		scenarios.append(landmark)
+	scenarios.append({"name": "cube_edge", "direction": Vector3(1, 0.3, 1).normalized()})
+	scenarios.append({"name": "retreat", "direction": Vector3(0, 0, 1), "orbital": true})
+	for scenario in scenarios:
+		if args.has("--debug-only") and scenario.name != "cube_edge":
+			continue
+		var direction: Vector3 = scenario.direction
+		var target := direction * (50000.0 + planet.terrain.sample(direction))
+		var up := Vector3.UP if absf(direction.y) < 0.95 else Vector3.FORWARD
+		if scenario.get("orbital", false):
+			camera.position = direction * 140000.0
+			camera.look_at(Vector3.ZERO, up)
+		else:
+			var tangent := direction.cross(up).normalized()
+			camera.position = target + direction * 6500.0 + tangent * 9500.0
+			camera.look_at(target, direction)
+		view.set_debug_mode(2)
+		var stable := 0
+		for frame in range(12000):
+			view.update_camera(camera, 0.05)
+			stable = stable + 1 if view.state == "idle" else 0
+			if stable >= 3:
+				break
+			if frame % 20 == 0:
+				await process_frame
+		if stable < 3 or not view.tree.is_balanced():
+			push_error("TERRAIN_VISUAL_FAILED: convergence/balance " + scenario.name)
+			quit(1)
+			return
+		# Main captures omit border ink; an explicit topology capture preserves it.
+		for entry: Dictionary in view._active.values():
+			entry.node.material_override.set_shader_parameter("show_borders", false)
+		lab.get_node("Debug")._process(0.2)
+		await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png(output.path_join(scenario.name + ".png"))
+		print("TERRAIN_VISUAL_CAPTURE %s leaves=%d state=%s" % [scenario.name, view.tree.leaves.size(), view.state])
+		if scenario.name == "cube_edge":
+			for mode in [0, 1, 3, 4, 5, 6]:
+				view.set_debug_mode(mode)
+				for entry: Dictionary in view._active.values():
+					entry.node.material_override.set_shader_parameter("show_borders", mode == 0)
+				lab.get_node("Debug")._process(0.2)
+				await process_frame
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png(output.path_join("debug_%d.png" % mode))
+	print("TERRAIN_VISUAL_OK " + output)
+	quit(0)

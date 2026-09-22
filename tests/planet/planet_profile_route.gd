@@ -14,9 +14,13 @@ func _run() -> void:
 		quit(1)
 		return
 	var lab := (load("res://scenes/planet_lab/planet_lab.tscn") as PackedScene).instantiate()
-	root.add_child(lab)
-	current_scene = lab
 	var planet: PlanetRoot = lab.get_node("Planet")
+	planet.definition = planet.definition.duplicate()
+	planet.definition.terrain_enabled = not args.has("--sphere")
+	var construction_start := Time.get_ticks_usec()
+	root.add_child(lab)
+	var construction_us := Time.get_ticks_usec() - construction_start
+	current_scene = lab
 	planet.set_process(false)
 	var view := planet.quadtree_view
 	view.profile.enabled = true
@@ -27,19 +31,40 @@ func _run() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	var phases := {"distant": 60, "approach": 180, "near": 180,
 		"lateral": 240, "retreat": 180, "settle": 360}
+	var near_radius := 53000.0 if args.has("--macro-route") else 50500.0
+	var warmup_updates := 0
+	var warmup_peak_us := 0
+	if args.has("--settled-route"):
+		# Compare populated trees, not only the first frames of initial refinement.
+		camera.position = Vector3(0, 0, 140000)
+		camera.look_at(Vector3.ZERO, Vector3.UP)
+		var stable := 0
+		for frame in range(12000):
+			view.update_camera(camera, 0.05)
+			warmup_updates += 1
+			warmup_peak_us = maxi(warmup_peak_us, view.profile.times.get("update_us", 0))
+			stable = stable + 1 if view.state == "idle" else 0
+			if stable == 3:
+				break
+			await process_frame
+		if stable != 3:
+			push_error("PROFILE_ROUTE_FAILED: orbital warmup did not converge")
+			quit(1)
+			return
+		phases = {"distant": 60, "approach": 180, "near": 720, "lateral": 720, "retreat": 180, "settle": 720}
 	for phase: String in phases:
 		for frame in range(phases[phase]):
 			var t := float(frame) / maxf(1.0, phases[phase] - 1)
 			var distance := 140000.0
 			var angle := 0.0
 			match phase:
-				"approach": distance = lerpf(140000.0, 50500.0, t)
-				"near": distance = 50500.0
+				"approach": distance = lerpf(140000.0, near_radius, t)
+				"near": distance = near_radius
 				"lateral":
-					distance = 50500.0
+					distance = near_radius
 					angle = t * PI / 3.0
 				"retreat":
-					distance = lerpf(50500.0, 180000.0, t)
+					distance = lerpf(near_radius, 180000.0, t)
 					angle = PI / 3.0
 				"settle":
 					distance = 180000.0
@@ -62,6 +87,8 @@ func _run() -> void:
 		print("PROFILE_PHASE %s leaves=%d state=%s" % [phase, view.tree.leaves.size(), view.state])
 	var summary := summarize(rows)
 	var report := {"debug": not args.has("--debug-off"), "renderer": RenderingServer.get_current_rendering_method(),
+		"terrain": planet.terrain != null, "near_radius": near_radius, "construction_us": construction_us,
+		"warmup_updates": warmup_updates, "warmup_peak_us": warmup_peak_us,
 		"summary": summary, "rows": rows}
 	var output := FileAccess.open(args[0], FileAccess.WRITE)
 	if output == null:

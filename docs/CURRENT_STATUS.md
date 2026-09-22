@@ -2,10 +2,9 @@
 
 ## Etapa atual
 
-Etapa 2 — concluída após correção de stutter, profiling comparativo e regressão.
-O usuário confirmou não perceber mais pausas relevantes no voo manual.
-
-Próxima: Etapa 3, ainda não iniciada.
+Etapa 3 — relevo macro concluído tecnicamente, com regressão e profiling.
+O usuário confirmou não perceber pausas relevantes no voo manual com relevo.
+Aspectos estéticos/limites: `docs/stages/03_relevo_macro.md`.
 
 ## Concluído
 
@@ -29,21 +28,27 @@ Próxima: Etapa 3, ainda não iniciada.
 - vizinhança de patches no mesmo nível, inclusive entre faces;
 - testes permanentes da fundação planetária;
 - seis quadtrees lógicos baseados em `PatchId`, com split/merge e vizinhança;
-- esfera-base visível de 50 km, sem relevo, com 33×33 vértices por patch;
+- planeta de raio base 50 km com relevo radial, 33×33 vértices por patch;
 - SSE com histerese e nível máximo renderizável padrão 6;
 - balanceamento 2:1, stitching com 16 máscaras e geomorphing no shader;
 - budgets padrão de 8 splits, 2 merges e 4 commits de mesh por update;
 - orçamento adicional de CPU de 4 ms, com preparação incremental e caches limitados;
 - debug de faces, bordas, LOD, IDs, contadores e transições;
 - testes estruturais do quadtree e roteiro gráfico reproduzível.
+- sampler global determinístico por seed (padrão 73129), continentes, ilhas,
+  arquipélagos, mares internos, batimetria e macroformas regionais;
+- 44,44% terra / 55,56% oceano medidos independentemente de câmera/LOD;
+- bounds/SSE/morph com terreno; índices espaciais imutáveis;
+- debug F4: faces/LOD, terra/oceano, altitude, continentalidade, macroformas,
+  nível do mar e costas; material técnico unshaded, sem materiais finais.
 
 ## Em andamento
 
-Nenhuma implementação. Etapa 3 não iniciada.
+Nenhuma implementação pendente. Avaliação estética permanece aberta.
 
 ## Próximo marco
 
-Especificar a Etapa 3 de relevo/macroforma antes de implementar novos sistemas.
+Etapa 4 — geologia, ainda não iniciada. Aguardar especificação/instrução.
 
 ## Problemas conhecidos
 
@@ -54,12 +59,18 @@ Especificar a Etapa 3 de relevo/macroforma antes de implementar novos sistemas.
   ausência de artefatos em todo percurso; endpoints e continuidade têm testes numéricos;
 - picos residuais de inicialização e de frame completo persistem nas medições;
   o orçamento de CPU é flexível e não interrompe chamadas da engine;
-- geração/amostragem/commits continuam na main thread, sem evidência de que geração
-  de arrays seja o gargalo dominante restante; bounds ainda são conservadores;
+- geração/amostragem/commits continuam na main thread; relevo aumenta o trabalho;
+  seleção/balanceamento chegou a ~31 ms em árvore maior, sem pausa relevante
+  relatada pelo usuário; bounds continuam conservadores;
+- algumas massas, ilhas e mares internos têm formas arredondadas; colinas
+  regulares e facetamento técnico permanecem como aspectos estéticos conhecidos;
+- estimativa SSE validada por amostragem, não prova universal; repetir testes
+  ao alterar parâmetros do relevo;
 - FreeFly pode atravessar a superfície; colisão planetária não pertence à etapa atual.
 
 Nenhum bloqueador confirmado de topologia, 2:1 ou stitching permanece nos casos
-testados. Limites e evidências: `docs/stages/02_quadtree.md`.
+testados. Limites/evidências: `docs/stages/02_quadtree.md` e
+`docs/stages/03_relevo_macro.md`.
 
 ## Última validação
 
@@ -70,9 +81,12 @@ Projeto validado com Godot 4.6.1 por meio de:
 - teste permanente das câmeras;
 - teste permanente da fundação planetária;
 - suíte completa do quadtree: 630.955 verificações, saída 0;
-- percurso gráfico Vulkan: aproximação, borda entre faces, afastamento e Orbital,
-  com `VISUAL_TEST_OK` e saída 0.
-- profiling gráfico comparativo, com/sem debug, e confirmação manual positiva do usuário.
+- suíte de relevo: 694.703 verificações, saída 0;
+- fingerprint idêntico de terreno em dois processos independentes;
+- percurso gráfico Vulkan: hemisférios, macroformas, borda entre faces,
+  afastamento e modos de debug, com `TERRAIN_VISUAL_OK`;
+- profiling gráfico esfera/relevo e confirmação manual positiva do usuário;
+- evidências persistentes em `docs/evidence/03_relevo_macro/`.
 
 Todos os testes headless passaram fora do sandbox; somente warnings esperados dos
 casos negativos de CameraManager. Instruções em `tests/planet/README.md`.

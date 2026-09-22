@@ -1,0 +1,7 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+QUADTREE_PROGRESS: update=0 leaves=6 state=initial
+QUADTREE_STATS: peak_leaves=36 final_leaves=6 transitions=20 peak_ops=1/1
+QUADTREE_PROGRESS: update=0 leaves=6 state=initial
+QUADTREE_STATS: peak_leaves=36 final_leaves=6 transitions=7 peak_ops=6/2
+QUADTREE_TEST_OK: 630955 assertions; structure/2:1/SSE/16 masks/cross-face/morph/budgets

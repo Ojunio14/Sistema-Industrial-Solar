@@ -69,17 +69,19 @@ static func _add_triangle(result: PackedInt32Array, a: int, b: int, c: int) -> v
 	if area < 0.0:
 		result.append_array(PackedInt32Array([a, b, c]))
 
-static func generate(id: PatchId, radius: float, mask: int) -> Dictionary:
-	var data := begin_generate(id, radius, mask)
+static func generate(id: PatchId, radius: float, mask: int, terrain: PlanetTerrain = null, meters_per_unit: float = 1.0) -> Dictionary:
+	var data := begin_generate(id, radius, mask, terrain, meters_per_unit)
 	advance_generate(data, WIDTH * WIDTH)
 	return data
 
-static func begin_generate(id: PatchId, radius: float, mask: int) -> Dictionary:
+static func begin_generate(id: PatchId, radius: float, mask: int, terrain: PlanetTerrain = null, meters_per_unit: float = 1.0) -> Dictionary:
 	assert(id.is_valid() and radius > 0.0)
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	vertices.resize(WIDTH * WIDTH)
 	normals.resize(WIDTH * WIDTH)
+	var colors := PackedColorArray()
+	colors.resize(WIDTH * WIDTH)
 	var bounds := id.get_uv_bounds()
 	# Cube-face mapping is affine. Obtain the patch frame from the Stage 1 API
 	# once; interpolate that frame, then normalize per vertex. No face bases or
@@ -89,10 +91,11 @@ static func begin_generate(id: PatchId, radius: float, mask: int) -> Dictionary:
 	var axis_v := PlanetMath.face_uv_to_cube(id.face, bounds.position + Vector2(0, bounds.size.y)) - origin
 	return {"id": id, "mask": mask, "vertices": vertices, "normals": normals, "uv": grid(),
 		"indices": indices(mask), "radius": radius, "next_vertex": 0,
-		"cube_origin": origin, "cube_u": axis_u, "cube_v": axis_v}
+		"cube_origin": origin, "cube_u": axis_u, "cube_v": axis_v,
+		"terrain": terrain, "meters_per_unit": meters_per_unit, "colors": colors}
 
 # Bounded CPU slice. The synchronous API above uses exactly the same generator.
-static func advance_generate(data: Dictionary, count: int) -> bool:
+static func advance_generate(data: Dictionary, count: int, profiler: RefCounted = null) -> bool:
 	var vertices: PackedVector3Array = data.vertices
 	var normals: PackedVector3Array = data.normals
 	var uv: PackedVector2Array = data.uv
@@ -100,12 +103,22 @@ static func advance_generate(data: Dictionary, count: int) -> bool:
 	var axis_u: Vector3 = data.cube_u
 	var axis_v: Vector3 = data.cube_v
 	var radius: float = data.radius
+	var terrain: PlanetTerrain = data.terrain
+	var colors: PackedColorArray = data.colors
+	var meters_per_unit: float = data.meters_per_unit
 	var end := mini(WIDTH * WIDTH, int(data.next_vertex) + count)
 	for i in range(data.next_vertex, end):
 		normals[i] = (origin + axis_u * uv[i].x + axis_v * uv[i].y).normalized()
-		vertices[i] = normals[i] * radius
+	var started: int = profiler.stamp() if profiler != null else 0
+	for i in range(data.next_vertex, end):
+		var fields := terrain.sample_fields(normals[i]) if terrain != null else Vector4.ZERO
+		vertices[i] = normals[i] * (radius + fields.x / meters_per_unit)
+		colors[i] = Color(clampf(fields.y + 0.5, 0.0, 1.0), fields.z / 8.0, fields.w, 1.0)
+	if profiler != null:
+		profiler.finish(&"terrain_displace_us", started)
 	data.vertices = vertices
 	data.normals = normals
+	data.colors = colors
 	data.next_vertex = end
 	if end == WIDTH * WIDTH:
 		data.from = vertices
@@ -174,6 +187,7 @@ static func as_array_mesh(data: Dictionary) -> ArrayMesh:
 	arrays[Mesh.ARRAY_NORMAL] = data.normals
 	arrays[Mesh.ARRAY_TEX_UV] = data.uv
 	arrays[Mesh.ARRAY_INDEX] = data.indices
+	arrays[Mesh.ARRAY_COLOR] = data.colors
 	var delta := PackedFloat32Array()
 	delta.resize(vertices.size() * 3)
 	for i in range(vertices.size()):

@@ -38,11 +38,18 @@ var _validation: Array[PlanetPatch] = []
 var _planning: Array[PlanetPatch] = []
 var _planning_index := 0
 var _last_selection: Array = []
+var terrain: PlanetTerrain
+var meters_per_unit := 1.0
+var debug_mode := 0
+const DEBUG_MODES := ["Faces/LOD", "Terra/oceano", "Altitude", "Continentalidade", "Macroformas", "Nivel do mar", "Costas"]
 
-func initialize(p_radius: float, p_config: PlanetLodConfig) -> void:
+func initialize(p_radius: float, p_config: PlanetLodConfig, p_terrain: PlanetTerrain = null, p_meters_per_unit: float = 1.0) -> void:
 	assert(p_radius > 0.0 and p_config.is_valid())
 	radius = p_radius
 	config = p_config
+	terrain = p_terrain
+	meters_per_unit = p_meters_per_unit
+	debug_mode = 2 if terrain != null else 0
 	_target = tree
 	_fine = tree
 	for patch in tree.active_leaves():
@@ -108,7 +115,9 @@ func _step(camera: Vector3, height: float, fov: float, delta: float, ortho: floa
 func _bounds(id: PatchId) -> Dictionary:
 	var key := id.stable_key()
 	if not _spatial.has(key):
-		_spatial[key] = {"center": PlanetSSE.center(id, radius), "extent": PlanetSSE.extent(id, radius), "error": PlanetSSE.geometric_error(id, radius)}
+		var displacement := maxf(-PlanetTerrain.MIN_HEIGHT, PlanetTerrain.MAX_HEIGHT) / meters_per_unit if terrain != null else 0.0
+		var error := terrain.patch_error(id) / meters_per_unit if terrain != null else 0.0
+		_spatial[key] = {"center": PlanetSSE.center(id, radius), "extent": PlanetSSE.extent(id, radius) + displacement, "error": PlanetSSE.geometric_error(id, radius, error)}
 	return _spatial[key]
 
 func _score(id: PatchId) -> float:
@@ -201,7 +210,7 @@ func _begin(merging: bool) -> void:
 	_merging = merging
 	_building_final = false
 	_fine = tree if merging else _target
-	_sampler = PlanetSurfaceSampler.new(_target if merging else tree, radius, _geometry)
+	_sampler = PlanetSurfaceSampler.new(_target if merging else tree, radius, _geometry, terrain, meters_per_unit)
 	_staged = {}
 	_merge_final = {}
 	_pending.clear()
@@ -293,7 +302,7 @@ func _build_slice() -> void:
 		profile.finish(&"stitch_us", started)
 		started = profile.stamp()
 		var cached := _geometry.has(key)
-		var data := PlanetPatchMesh.with_mask(_geometry[key], mask) if cached else PlanetPatchMesh.begin_generate(id, radius, mask)
+		var data := PlanetPatchMesh.with_mask(_geometry[key], mask) if cached else PlanetPatchMesh.begin_generate(id, radius, mask, terrain, meters_per_unit)
 		profile.finish(&"generate_us", started)
 		profile.count(&"geometry_reused" if cached else &"generated")
 		_job = {"id": id, "data": data, "phase": "sample_init" if cached else "generate"}
@@ -303,7 +312,7 @@ func _build_slice() -> void:
 	match _job.phase:
 		"generate":
 			var first_vertex: int = data.next_vertex
-			var done := PlanetPatchMesh.advance_generate(data, 64)
+			var done := PlanetPatchMesh.advance_generate(data, 64, profile)
 			profile.count(&"generated_vertices", int(data.next_vertex) - first_vertex)
 			profile.finish(&"generate_us", started)
 			if done:
@@ -340,6 +349,9 @@ func _commit(data: Dictionary) -> void:
 	material.set_shader_parameter("face_color", COLORS[id.face])
 	material.set_shader_parameter("level", float(id.level))
 	material.set_shader_parameter("show_borders", config.show_borders)
+	material.set_shader_parameter("debug_mode", debug_mode)
+	material.set_shader_parameter("base_radius", radius)
+	material.set_shader_parameter("meters_per_unit", meters_per_unit)
 	visual.material_override = material
 	visual.visible = false
 	add_child(visual)
@@ -385,10 +397,23 @@ func debug_text() -> String:
 	var face_uv := PlanetMath.direction_to_face_uv(_camera_position)
 	var sample := tree.find_leaf(face_uv.face, face_uv.uv) if face_uv != null else tree.roots[0]
 	var mask := tree.stitch_mask(sample.id)
-	return "Leaves %d | total %d | visible~ %d | LOD %d..%d\nSplits %d / merges %d / commits %d | 2:1 %s\nStitched %d | %s | morph %.2f | pending %d\n%s leaf | stitch %s" % [
+	var terrain_info := ""
+	if terrain != null and not _camera_position.is_zero_approx():
+		var fields := terrain.sample_fields(_camera_position.normalized())
+		terrain_info = "Amostra radial: %.1f m | %s | mar 0 m\n" % [fields.x, PlanetTerrain.Form.keys()[int(fields.z)]]
+	if debug_mode == 4:
+		terrain_info += "0 oceano / 1 planicie / 2 colinas / 3 planalto / 4 serra / 5 cadeia / 6 vale / 7 bacia / 8 excepcional\n"
+	return ("F4: %s | seed %s\n" % [DEBUG_MODES[debug_mode], str(terrain.get_seed()) if terrain != null else "sphere"]) + terrain_info + "Leaves %d | total %d | visible~ %d | LOD %d..%d\nSplits %d / merges %d / commits %d | 2:1 %s\nStitched %d | %s | morph %.2f | pending %d\n%s leaf | stitch %s" % [
 		tree.leaves.size(), tree.nodes.size(), visible_count, mini(low, high), high,
 		splits_last_update, merges_last_update, commits_last_update, "OK" if balance_ok else "FAILED",
 		stitched, state, morph, _pending.size() + int(not _job.is_empty()), sample.id, _edge_names(mask)]
+
+func set_debug_mode(mode: int) -> void:
+	assert(mode >= 0 and mode < DEBUG_MODES.size())
+	debug_mode = mode
+	for entries: Dictionary in [_active, _staged, _merge_final]:
+		for entry: Dictionary in entries.values():
+			entry.node.material_override.set_shader_parameter("debug_mode", mode)
 
 func _edge_names(mask: int) -> String:
 	var names: PackedStringArray = []

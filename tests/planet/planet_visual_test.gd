@@ -14,6 +14,11 @@ func _run() -> void:
 	var output: String = arguments[0]
 	DirAccess.make_dir_recursive_absolute(output)
 	var lab := (load("res://scenes/planet_lab/planet_lab.tscn") as PackedScene).instantiate()
+	# Keep the Stage 2 visual regression a smooth-sphere reference. Stage 3 has
+	# its own terrain-safe route, without mutating the shared project resource.
+	var definition: PlanetDefinition = lab.get_node("Planet").definition.duplicate()
+	definition.terrain_enabled = false
+	lab.get_node("Planet").definition = definition
 	root.add_child(lab)
 	current_scene = lab
 	await process_frame
