@@ -8,8 +8,9 @@ enum Quadrant {
 	BOTTOM_RIGHT,
 }
 
-# Keeps integer subdivision and float UV calculations in a safe practical range.
-const MAX_LEVEL := 30
+# Level 24 is the highest level whose adjacent UV bounds remain uniquely
+# representable by the project's current float32 Vector2/Rect2 contract.
+const MAX_LEVEL := 24
 
 var face: int
 var level: int

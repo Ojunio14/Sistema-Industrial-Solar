@@ -72,7 +72,9 @@ Operações disponíveis:
 - chave estável `face:level:x:y`;
 - representação de debug.
 
-O limite defensivo atual é `MAX_LEVEL = 30`, mantendo subdivisões inteiras e cálculos UV em uma faixa prática segura. Isso não define o nível operacional do futuro quadtree.
+O limite arquitetural atual é `MAX_LEVEL = 24`. Nesse nível, bounds de patches adjacentes ainda permanecem distinguíveis pela representação UV em `Vector2`/`Rect2` float32 usada pelo projeto. A partir do nível 25, coordenadas inteiras distintas podem colidir quando convertidas para UV.
+
+Níveis `0..24` são válidos; nível 25 e superiores são inválidos. Patches no nível máximo não produzem children. Permitir níveis maiores exigirá revisar primeiro o contrato numérico ou a representação UV; eles não podem ser habilitados apenas aumentando a constante.
 
 ### Topologia
 
@@ -117,17 +119,23 @@ Executados com Godot 4.6.1:
 A suíte planetária valida:
 
 - seis bases ortonormais, não degeneradas e determinísticas;
+- comparação das seis bases contra uma tabela-oráculo explícita e independente no teste;
 - centros, cantos e amostras internas das faces;
 - comprimento unitário das direções;
 - continuidade com múltiplas amostras nas 12 arestas físicas;
 - round-trip Face+UV → direção → Face+UV canônico → direção;
 - desempate canônico em arestas e cantos;
+- as oito combinações de sinais dos cantos sob a prioridade X → Y → Z;
 - raio de 50.000 unidades;
 - roots, parent, children, quadrantes, bounds e UV local de `PatchId`;
 - IDs inválidos e limites de coordenadas;
+- precisão UV no nível 24, incluindo bounds adjacentes próximos de `u=1` e `v=1`, tamanho positivo, extremos em `1.0` e conversão UV local;
+- rejeição explícita do nível 25;
 - cobertura exata do parent pelos quatro children;
 - vizinhos internos e entre faces em diversos níveis;
+- vizinhança representativa nos níveis 0, 1, 2, 4, 5, 17 e 24;
 - reciprocidade e reversão de bordas;
+- comparação das 24 transições direcionadas contra uma tabela-oráculo explícita e independente no teste;
 - determinismo por consultas repetidas.
 
 Todos os processos concluíram com código de saída `0`. As suítes informaram `PLANET_FOUNDATION_TEST_OK` e `CAMERA_MANAGER_TEST_OK`.

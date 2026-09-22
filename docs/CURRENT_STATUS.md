@@ -24,7 +24,7 @@ Próxima: Etapa 2 — Quadtree global.
 - bases centralizadas das seis faces da cube-sphere;
 - conversões Face+UV ↔ direção e posição radial base;
 - regra canônica de desempate X → Y → Z;
-- identidade matemática `PatchId` com parent, children, quadrante e bounds;
+- identidade matemática `PatchId` com parent, children, quadrante e bounds, limitada ao nível 24 pela precisão UV float32;
 - topologia central de faces e bordas;
 - vizinhança de patches no mesmo nível, inclusive entre faces;
 - testes permanentes da fundação planetária.

@@ -2,6 +2,40 @@ extends SceneTree
 
 const EPSILON := 0.00001
 const EDGE_SAMPLES := [0.0, 0.125, 0.333333, 0.5, 0.777777, 0.9375, 1.0]
+const FACE_BASIS_ORACLE := [
+	{"face": PlanetMath.Face.POSITIVE_X, "normal": Vector3(1.0, 0.0, 0.0), "u": Vector3(0.0, 0.0, -1.0), "v": Vector3(0.0, 1.0, 0.0)},
+	{"face": PlanetMath.Face.NEGATIVE_X, "normal": Vector3(-1.0, 0.0, 0.0), "u": Vector3(0.0, 0.0, 1.0), "v": Vector3(0.0, 1.0, 0.0)},
+	{"face": PlanetMath.Face.POSITIVE_Y, "normal": Vector3(0.0, 1.0, 0.0), "u": Vector3(1.0, 0.0, 0.0), "v": Vector3(0.0, 0.0, -1.0)},
+	{"face": PlanetMath.Face.NEGATIVE_Y, "normal": Vector3(0.0, -1.0, 0.0), "u": Vector3(1.0, 0.0, 0.0), "v": Vector3(0.0, 0.0, 1.0)},
+	{"face": PlanetMath.Face.POSITIVE_Z, "normal": Vector3(0.0, 0.0, 1.0), "u": Vector3(1.0, 0.0, 0.0), "v": Vector3(0.0, 1.0, 0.0)},
+	{"face": PlanetMath.Face.NEGATIVE_Z, "normal": Vector3(0.0, 0.0, -1.0), "u": Vector3(-1.0, 0.0, 0.0), "v": Vector3(0.0, 1.0, 0.0)},
+]
+const TOPOLOGY_ORACLE := [
+	{"face": PlanetMath.Face.POSITIVE_X, "edge": PlanetMath.Edge.LEFT, "neighbor_face": PlanetMath.Face.POSITIVE_Z, "neighbor_edge": PlanetMath.Edge.RIGHT, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_X, "edge": PlanetMath.Edge.RIGHT, "neighbor_face": PlanetMath.Face.NEGATIVE_Z, "neighbor_edge": PlanetMath.Edge.LEFT, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_X, "edge": PlanetMath.Edge.TOP, "neighbor_face": PlanetMath.Face.NEGATIVE_Y, "neighbor_edge": PlanetMath.Edge.RIGHT, "reversed": true},
+	{"face": PlanetMath.Face.POSITIVE_X, "edge": PlanetMath.Edge.BOTTOM, "neighbor_face": PlanetMath.Face.POSITIVE_Y, "neighbor_edge": PlanetMath.Edge.RIGHT, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_X, "edge": PlanetMath.Edge.LEFT, "neighbor_face": PlanetMath.Face.NEGATIVE_Z, "neighbor_edge": PlanetMath.Edge.RIGHT, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_X, "edge": PlanetMath.Edge.RIGHT, "neighbor_face": PlanetMath.Face.POSITIVE_Z, "neighbor_edge": PlanetMath.Edge.LEFT, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_X, "edge": PlanetMath.Edge.TOP, "neighbor_face": PlanetMath.Face.NEGATIVE_Y, "neighbor_edge": PlanetMath.Edge.LEFT, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_X, "edge": PlanetMath.Edge.BOTTOM, "neighbor_face": PlanetMath.Face.POSITIVE_Y, "neighbor_edge": PlanetMath.Edge.LEFT, "reversed": true},
+	{"face": PlanetMath.Face.POSITIVE_Y, "edge": PlanetMath.Edge.LEFT, "neighbor_face": PlanetMath.Face.NEGATIVE_X, "neighbor_edge": PlanetMath.Edge.BOTTOM, "reversed": true},
+	{"face": PlanetMath.Face.POSITIVE_Y, "edge": PlanetMath.Edge.RIGHT, "neighbor_face": PlanetMath.Face.POSITIVE_X, "neighbor_edge": PlanetMath.Edge.BOTTOM, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_Y, "edge": PlanetMath.Edge.TOP, "neighbor_face": PlanetMath.Face.POSITIVE_Z, "neighbor_edge": PlanetMath.Edge.BOTTOM, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_Y, "edge": PlanetMath.Edge.BOTTOM, "neighbor_face": PlanetMath.Face.NEGATIVE_Z, "neighbor_edge": PlanetMath.Edge.BOTTOM, "reversed": true},
+	{"face": PlanetMath.Face.NEGATIVE_Y, "edge": PlanetMath.Edge.LEFT, "neighbor_face": PlanetMath.Face.NEGATIVE_X, "neighbor_edge": PlanetMath.Edge.TOP, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_Y, "edge": PlanetMath.Edge.RIGHT, "neighbor_face": PlanetMath.Face.POSITIVE_X, "neighbor_edge": PlanetMath.Edge.TOP, "reversed": true},
+	{"face": PlanetMath.Face.NEGATIVE_Y, "edge": PlanetMath.Edge.TOP, "neighbor_face": PlanetMath.Face.NEGATIVE_Z, "neighbor_edge": PlanetMath.Edge.TOP, "reversed": true},
+	{"face": PlanetMath.Face.NEGATIVE_Y, "edge": PlanetMath.Edge.BOTTOM, "neighbor_face": PlanetMath.Face.POSITIVE_Z, "neighbor_edge": PlanetMath.Edge.TOP, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_Z, "edge": PlanetMath.Edge.LEFT, "neighbor_face": PlanetMath.Face.NEGATIVE_X, "neighbor_edge": PlanetMath.Edge.RIGHT, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_Z, "edge": PlanetMath.Edge.RIGHT, "neighbor_face": PlanetMath.Face.POSITIVE_X, "neighbor_edge": PlanetMath.Edge.LEFT, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_Z, "edge": PlanetMath.Edge.TOP, "neighbor_face": PlanetMath.Face.NEGATIVE_Y, "neighbor_edge": PlanetMath.Edge.BOTTOM, "reversed": false},
+	{"face": PlanetMath.Face.POSITIVE_Z, "edge": PlanetMath.Edge.BOTTOM, "neighbor_face": PlanetMath.Face.POSITIVE_Y, "neighbor_edge": PlanetMath.Edge.TOP, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_Z, "edge": PlanetMath.Edge.LEFT, "neighbor_face": PlanetMath.Face.POSITIVE_X, "neighbor_edge": PlanetMath.Edge.RIGHT, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_Z, "edge": PlanetMath.Edge.RIGHT, "neighbor_face": PlanetMath.Face.NEGATIVE_X, "neighbor_edge": PlanetMath.Edge.LEFT, "reversed": false},
+	{"face": PlanetMath.Face.NEGATIVE_Z, "edge": PlanetMath.Edge.TOP, "neighbor_face": PlanetMath.Face.NEGATIVE_Y, "neighbor_edge": PlanetMath.Edge.TOP, "reversed": true},
+	{"face": PlanetMath.Face.NEGATIVE_Z, "edge": PlanetMath.Edge.BOTTOM, "neighbor_face": PlanetMath.Face.POSITIVE_Y, "neighbor_edge": PlanetMath.Edge.BOTTOM, "reversed": true},
+]
 
 var _failure_count := 0
 
@@ -13,10 +47,12 @@ func _initialize() -> void:
 func _run_tests() -> void:
 	_test_definition_and_planet_lab()
 	_test_face_bases()
+	_test_topology_oracle()
 	_test_face_uv_to_direction()
 	_test_edge_continuity()
 	_test_inverse_conversion()
 	_test_patch_id()
+	_test_patch_uv_precision_limit()
 	_test_topology_and_patch_neighbors()
 	_test_determinism()
 
@@ -72,16 +108,22 @@ func _test_definition_and_planet_lab() -> void:
 
 func _test_face_bases() -> void:
 	_check(PlanetMath.FACE_COUNT == 6, "Exactly six cube faces are required.")
+	_check(FACE_BASIS_ORACLE.size() == 6, "Face-basis oracle must contain exactly six entries.")
 	_check(not PlanetMath.is_valid_face(-1), "Negative face index must be invalid.")
 	_check(not PlanetMath.is_valid_face(PlanetMath.FACE_COUNT), "Face index 6 must be invalid.")
 	var unique_normals := {}
+	var oracle_faces := {}
 
-	for face in range(PlanetMath.FACE_COUNT):
+	for expected in FACE_BASIS_ORACLE:
+		var face: int = int(expected["face"])
 		_check(PlanetMath.is_valid_face(face), "Face %d must be valid." % face)
 		var normal := PlanetMath.get_face_normal(face)
 		var axis_u := PlanetMath.get_face_u_axis(face)
 		var axis_v := PlanetMath.get_face_v_axis(face)
 		var context := "face=%s" % PlanetMath.get_face_name(face)
+		_check_vector3(normal, expected["normal"] as Vector3, 0.0, "%s normal differs from the independent oracle." % context)
+		_check_vector3(axis_u, expected["u"] as Vector3, 0.0, "%s U differs from the independent oracle." % context)
+		_check_vector3(axis_v, expected["v"] as Vector3, 0.0, "%s V differs from the independent oracle." % context)
 		_check_close(normal.length(), 1.0, EPSILON, "%s normal is not unit length." % context)
 		_check_close(axis_u.length(), 1.0, EPSILON, "%s U axis is not unit length." % context)
 		_check_close(axis_v.length(), 1.0, EPSILON, "%s V axis is not unit length." % context)
@@ -91,8 +133,37 @@ func _test_face_bases() -> void:
 		_check_vector3(axis_u.cross(axis_v), normal, EPSILON, "%s basis is not right-handed." % context)
 		_check_vector3(PlanetMath.get_face_normal(face), normal, 0.0, "%s basis is not deterministic." % context)
 		unique_normals[normal] = true
+		oracle_faces[face] = true
 
 	_check(unique_normals.size() == 6, "Face normals must be unique.")
+	_check(oracle_faces.size() == 6, "Face-basis oracle must cover six distinct faces.")
+
+
+func _test_topology_oracle() -> void:
+	_check(TOPOLOGY_ORACLE.size() == 24, "Topology oracle must contain 24 directed transitions.")
+	var source_pairs := {}
+	for expected in TOPOLOGY_ORACLE:
+		var face: int = int(expected["face"])
+		var edge: int = int(expected["edge"])
+		var transition := PlanetTopology.get_edge_transition(face, edge)
+		var context := "face=%s edge=%s" % [
+			PlanetMath.get_face_name(face),
+			PlanetMath.get_edge_name(edge),
+		]
+		_check(
+			transition.neighbor_face == int(expected["neighbor_face"]),
+			"Topology neighbor face differs from independent oracle: %s got=%s" % [context, transition]
+		)
+		_check(
+			transition.neighbor_edge == int(expected["neighbor_edge"]),
+			"Topology neighbor edge differs from independent oracle: %s got=%s" % [context, transition]
+		)
+		_check(
+			transition.is_reversed == bool(expected["reversed"]),
+			"Topology orientation differs from independent oracle: %s got=%s" % [context, transition]
+		)
+		source_pairs["%d:%d" % [face, edge]] = true
+	_check(source_pairs.size() == 24, "Topology oracle must cover every face/edge pair exactly once.")
 
 
 func _test_face_uv_to_direction() -> void:
@@ -216,20 +287,38 @@ func _test_inverse_conversion() -> void:
 				_check(canonical.face == face, "Interior point changed canonical face: %s" % context)
 				_check_vector2(canonical.uv, uv, EPSILON, "Interior point changed UV: %s" % context)
 
-	var tie_cases := [
+	var edge_tie_cases := [
 		{"direction": Vector3(1.0, 1.0, 0.0), "face": PlanetMath.Face.POSITIVE_X},
 		{"direction": Vector3(-1.0, 1.0, 0.0), "face": PlanetMath.Face.NEGATIVE_X},
 		{"direction": Vector3(0.0, 1.0, 1.0), "face": PlanetMath.Face.POSITIVE_Y},
 		{"direction": Vector3(0.0, -1.0, -1.0), "face": PlanetMath.Face.NEGATIVE_Y},
-		{"direction": Vector3(1.0, 1.0, 1.0), "face": PlanetMath.Face.POSITIVE_X},
-		{"direction": Vector3(-1.0, -1.0, -1.0), "face": PlanetMath.Face.NEGATIVE_X},
 	]
-	for tie_case in tie_cases:
+	for tie_case in edge_tie_cases:
 		var result := PlanetMath.direction_to_face_uv(tie_case["direction"] as Vector3)
 		_check(
 			result != null and result.face == tie_case["face"],
 			"Canonical X>Y>Z tie-break failed for direction=%s; got=%s" % [
 				tie_case["direction"],
+				result,
+			]
+		)
+
+	var corner_tie_cases := [
+		{"direction": Vector3(1.0, 1.0, 1.0), "face": PlanetMath.Face.POSITIVE_X},
+		{"direction": Vector3(1.0, 1.0, -1.0), "face": PlanetMath.Face.POSITIVE_X},
+		{"direction": Vector3(1.0, -1.0, 1.0), "face": PlanetMath.Face.POSITIVE_X},
+		{"direction": Vector3(1.0, -1.0, -1.0), "face": PlanetMath.Face.POSITIVE_X},
+		{"direction": Vector3(-1.0, 1.0, 1.0), "face": PlanetMath.Face.NEGATIVE_X},
+		{"direction": Vector3(-1.0, 1.0, -1.0), "face": PlanetMath.Face.NEGATIVE_X},
+		{"direction": Vector3(-1.0, -1.0, 1.0), "face": PlanetMath.Face.NEGATIVE_X},
+		{"direction": Vector3(-1.0, -1.0, -1.0), "face": PlanetMath.Face.NEGATIVE_X},
+	]
+	for corner_case in corner_tie_cases:
+		var result := PlanetMath.direction_to_face_uv(corner_case["direction"] as Vector3)
+		_check(
+			result != null and result.face == corner_case["face"],
+			"Canonical X>Y>Z corner tie-break failed for direction=%s; got=%s" % [
+				corner_case["direction"],
 				result,
 			]
 		)
@@ -275,8 +364,64 @@ func _test_patch_id() -> void:
 	_check(not PatchId.new(0, -1, 0, 0).is_valid(), "Negative level must invalidate PatchId.")
 	_check(not PatchId.new(0, 1, -1, 0).is_valid(), "Negative x must invalidate PatchId.")
 	_check(not PatchId.new(0, 1, 0, -1).is_valid(), "Negative y must invalidate PatchId.")
+	_check(PatchId.MAX_LEVEL == 24, "PatchId.MAX_LEVEL must protect float32 UV uniqueness at level 24.")
 	_check(not PatchId.new(0, PatchId.MAX_LEVEL + 1, 0, 0).is_valid(), "Level above MAX_LEVEL must be invalid.")
 	_check(PatchId.new(0, PatchId.MAX_LEVEL, 0, 0).get_children_ids().is_empty(), "MAX_LEVEL patch must not create children.")
+
+
+func _test_patch_uv_precision_limit() -> void:
+	var level := PatchId.MAX_LEVEL
+	var divisions := 1 << level
+	var max_index := divisions - 1
+	var invalid_level_25 := PatchId.new(PlanetMath.Face.POSITIVE_X, 25, 0, 0)
+	_check(not invalid_level_25.is_valid(), "PatchId level 25 must be rejected.")
+	_check(invalid_level_25.get_divisions() == 0, "Invalid level 25 must not expose subdivisions.")
+	_check(invalid_level_25.get_uv_bounds() == Rect2(), "Invalid level 25 must not expose UV bounds.")
+
+	var before_u := PatchId.new(PlanetMath.Face.POSITIVE_X, level, max_index - 1, max_index)
+	var last_u := PatchId.new(PlanetMath.Face.POSITIVE_X, level, max_index, max_index)
+	var before_v := PatchId.new(PlanetMath.Face.POSITIVE_X, level, max_index, max_index - 1)
+	var last_v := PatchId.new(PlanetMath.Face.POSITIVE_X, level, max_index, max_index)
+	var samples := [before_u, last_u, before_v, last_v]
+	for sample in samples:
+		var patch: PatchId = sample
+		_check(patch.is_valid(), "Level-24 precision sample must be valid: %s" % patch)
+		var bounds: Rect2 = patch.get_uv_bounds()
+		_check(bounds.size.x > 0.0 and bounds.size.y > 0.0, "Level-24 UV size must remain positive: %s bounds=%s" % [patch, bounds])
+		_check_vector2(patch.local_uv_to_face_uv(Vector2.ZERO), bounds.position, 0.0, "Local UV origin is incoherent at level 24: %s" % patch)
+		_check_vector2(patch.local_uv_to_face_uv(Vector2.ONE), bounds.end, 0.0, "Local UV end is incoherent at level 24: %s" % patch)
+		var mapped_center: Vector2 = patch.local_uv_to_face_uv(Vector2(0.5, 0.5))
+		_check(
+			mapped_center.x >= bounds.position.x and mapped_center.x <= bounds.end.x \
+				and mapped_center.y >= bounds.position.y and mapped_center.y <= bounds.end.y,
+			"Local UV center escaped level-24 bounds: %s mapped=%s bounds=%s" % [patch, mapped_center, bounds]
+		)
+
+	var before_u_bounds := before_u.get_uv_bounds()
+	var last_u_bounds := last_u.get_uv_bounds()
+	var before_v_bounds := before_v.get_uv_bounds()
+	var last_v_bounds := last_v.get_uv_bounds()
+	_check(before_u_bounds != last_u_bounds, "Adjacent level-24 bounds near u=1 must remain distinct.")
+	_check(before_v_bounds != last_v_bounds, "Adjacent level-24 bounds near v=1 must remain distinct.")
+	_check(before_u_bounds.position.x < last_u_bounds.position.x, "Adjacent level-24 U origins must be ordered.")
+	_check(before_v_bounds.position.y < last_v_bounds.position.y, "Adjacent level-24 V origins must be ordered.")
+	_check_close(before_u_bounds.end.x, last_u_bounds.position.x, 0.0, "Adjacent level-24 U bounds must share one edge.")
+	_check_close(before_v_bounds.end.y, last_v_bounds.position.y, 0.0, "Adjacent level-24 V bounds must share one edge.")
+	_check_close(last_u_bounds.end.x, 1.0, 0.0, "Extreme level-24 patch must end at u=1.")
+	_check_close(last_v_bounds.end.y, 1.0, 0.0, "Extreme level-24 patch must end at v=1.")
+	_check_vector2(last_u.local_uv_to_face_uv(Vector2.ONE), Vector2.ONE, 0.0, "Extreme level-24 local UV must end at (1,1).")
+	_check_vector2(
+		before_u.local_uv_to_face_uv(Vector2(1.0, 0.0)),
+		last_u.local_uv_to_face_uv(Vector2(0.0, 0.0)),
+		0.0,
+		"Adjacent level-24 patches must agree on their shared U edge."
+	)
+	_check_vector2(
+		before_v.local_uv_to_face_uv(Vector2(0.0, 1.0)),
+		last_v.local_uv_to_face_uv(Vector2(0.0, 0.0)),
+		0.0,
+		"Adjacent level-24 patches must agree on their shared V edge."
+	)
 
 
 func _test_topology_and_patch_neighbors() -> void:
@@ -295,12 +440,14 @@ func _test_topology_and_patch_neighbors() -> void:
 			neighbor,
 		])
 
-	for level in [0, 1, 2, 4]:
-		var divisions: int = 1 << int(level)
+	for level_value in [0, 1, 2, 4, 5, 17, 24]:
+		var level: int = int(level_value)
+		var divisions: int = 1 << level
+		var representative_indices := _representative_indices(divisions - 1)
 		for face in range(PlanetMath.FACE_COUNT):
 			for edge in range(PlanetMath.EDGE_COUNT):
 				var transition := PlanetTopology.get_edge_transition(face, edge)
-				for source_parameter in range(divisions):
+				for source_parameter in representative_indices:
 					var patch := _make_boundary_patch(face, level, edge, source_parameter)
 					var neighbor := PlanetTopology.get_neighbor_patch(patch, edge)
 					var context := "patch=%s edge=%s transition=%s" % [
@@ -321,6 +468,7 @@ func _test_topology_and_patch_neighbors() -> void:
 						neighbor,
 						round_trip,
 					])
+			_test_representative_same_face_neighbors(face, level, divisions)
 
 	_check(PlanetTopology.get_neighbor_patch(null, PlanetMath.Edge.LEFT) == null, "Null patch must not produce a neighbor.")
 	_check(PlanetTopology.get_neighbor_patch(PatchId.new(), PlanetMath.Edge.LEFT) == null, "Invalid patch must not produce a neighbor.")
@@ -377,6 +525,75 @@ func _validate_children_cover_parent(parent: PatchId) -> void:
 			)
 	_check(keys.size() == 4, "Child stable keys are not unique: %s" % parent)
 	_check_close(total_area, parent.get_uv_bounds().get_area(), EPSILON, "Children do not cover parent area: %s" % parent)
+
+
+func _representative_indices(max_index: int) -> Array[int]:
+	var result: Array[int] = []
+	var candidates: Array[int] = [0, max_index, 1, max_index - 1, max_index >> 1]
+	for candidate in candidates:
+		if candidate >= 0 and candidate <= max_index and not result.has(candidate):
+			result.append(candidate)
+	return result
+
+
+func _test_representative_same_face_neighbors(face: int, level: int, divisions: int) -> void:
+	if divisions < 4:
+		return
+	var max_index := divisions - 1
+	var middle := divisions >> 1
+	var near_edge_cases := [
+		{"patch": PatchId.new(face, level, 1, middle), "edge": PlanetMath.Edge.LEFT, "expected": PatchId.new(face, level, 0, middle)},
+		{"patch": PatchId.new(face, level, max_index - 1, middle), "edge": PlanetMath.Edge.RIGHT, "expected": PatchId.new(face, level, max_index, middle)},
+		{"patch": PatchId.new(face, level, middle, 1), "edge": PlanetMath.Edge.TOP, "expected": PatchId.new(face, level, middle, 0)},
+		{"patch": PatchId.new(face, level, middle, max_index - 1), "edge": PlanetMath.Edge.BOTTOM, "expected": PatchId.new(face, level, middle, max_index)},
+	]
+	for test_case in near_edge_cases:
+		var patch: PatchId = test_case["patch"]
+		var edge: int = int(test_case["edge"])
+		var expected: PatchId = test_case["expected"]
+		var neighbor := PlanetTopology.get_neighbor_patch(patch, edge)
+		_check(neighbor != null and neighbor.is_equal(expected), "Near-edge same-face neighbor is wrong: patch=%s edge=%s got=%s expected=%s" % [
+			patch,
+			PlanetMath.get_edge_name(edge),
+			neighbor,
+			expected,
+		])
+		if neighbor != null:
+			var round_trip := PlanetTopology.get_neighbor_patch(neighbor, _opposite_edge(edge))
+			_check(round_trip != null and round_trip.is_equal(patch), "Near-edge same-face reciprocity failed: patch=%s edge=%s neighbor=%s" % [
+				patch,
+				PlanetMath.get_edge_name(edge),
+				neighbor,
+			])
+
+	var internal := PatchId.new(face, level, middle, middle)
+	for edge in range(PlanetMath.EDGE_COUNT):
+		var neighbor := PlanetTopology.get_neighbor_patch(internal, edge)
+		_check(neighbor != null and neighbor.is_valid() and neighbor.face == face, "Representative internal neighbor is invalid: patch=%s edge=%s got=%s" % [
+			internal,
+			PlanetMath.get_edge_name(edge),
+			neighbor,
+		])
+		if neighbor != null:
+			var round_trip := PlanetTopology.get_neighbor_patch(neighbor, _opposite_edge(edge))
+			_check(round_trip != null and round_trip.is_equal(internal), "Representative internal reciprocity failed: patch=%s edge=%s neighbor=%s" % [
+				internal,
+				PlanetMath.get_edge_name(edge),
+				neighbor,
+			])
+
+
+func _opposite_edge(edge: int) -> int:
+	match edge:
+		PlanetMath.Edge.LEFT:
+			return PlanetMath.Edge.RIGHT
+		PlanetMath.Edge.RIGHT:
+			return PlanetMath.Edge.LEFT
+		PlanetMath.Edge.TOP:
+			return PlanetMath.Edge.BOTTOM
+		PlanetMath.Edge.BOTTOM:
+			return PlanetMath.Edge.TOP
+	return -1
 
 
 func _make_boundary_patch(face: int, level: int, edge: int, parameter: int) -> PatchId:
