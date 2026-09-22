@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PlanetLodConfig" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://systems/planet/quadtree/planet_lod_config.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+split_pixels = 2.0
+merge_pixels = 0.8
+max_render_level = 6
+split_budget = 8
+merge_budget = 2
+mesh_budget = 4
+cpu_budget_ms = 4.0
+morph_seconds = 0.35
+show_borders = true
+show_overlay = true

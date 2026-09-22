@@ -8,4 +8,5 @@ script = ExtResource("1_rts")
 [node name="GimbalElevation" type="Node3D" parent="."]
 
 [node name="Camera" type="Camera3D" parent="GimbalElevation"]
-far = 100000.0
+near = 10.0
+far = 500000.0
