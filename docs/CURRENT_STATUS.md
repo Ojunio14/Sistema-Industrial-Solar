@@ -2,10 +2,10 @@
 
 ## Etapa atual
 
-Etapa 4 — Geologia Estrutural concluída tecnicamente, com regressão,
-inspeção gráfica e profiling comparável. Confirmação manual específica da
-geologia ainda não recebida (a confirmação anterior era da Etapa 3).
-Contratos, evidências e limites: `docs/stages/04_geologia_estrutural.md`.
+Etapa 5 — Clima e Biomas concluída tecnicamente, com regressão, inspeção
+gráfica, profiling comparável e confirmação manual de voo sem pausas
+relevantes. Contratos, evidências e limites:
+`docs/stages/05_clima_biomas.md`.
 
 ## Concluído
 
@@ -49,10 +49,17 @@ Contratos, evidências e limites: `docs/stages/04_geologia_estrutural.md`.
   resultado reutilizado por mesh/debug e erro estrutural incorporado ao SSE;
 - debug F5 de províncias/maturidade/tipos; F4 preservado;
 - testes geológicos e toda a suíte de terreno executada também com geologia.
+- clima estático global por seed/posição, independente de face/LOD/câmera, com
+  temperatura por latitude/altitude, influência oceânica, umidade, chuva e
+  sombra de chuva das cadeias reais;
+- dez famílias de bioma terrestre com pesos contínuos; geologia não é bioma e
+  terreno não depende da classificação climática;
+- debug F6 de campos climáticos e biomas; F4/F5 e quadtree/relevo/geologia
+  preservados; testes permanentes de continuidade, distribuição e integração.
 
 ## Em andamento
 
-Nenhuma implementação em andamento. Retorno manual da Etapa 4 solicitado.
+Nenhuma implementação em andamento.
 
 ## Próximo marco
 
@@ -77,9 +84,17 @@ Aguardar instrução explícita para a próxima etapa; não iniciada.
 - FreeFly pode atravessar a superfície; colisão planetária não pertence à etapa atual.
 - geologia aumenta custo por vértice (~35% no gerador no profile comparável);
   mantém frames controlados na rota medida, mas pode atrasar refinamento sob budget;
+- clima acrescenta ~77% ao custo de geração por vértice em perfil comparável
+  e aumenta o tempo de convergência; um pico inicial isolado de 119 ms não
+  teve causa confirmada e não se repetiu na captura instrumentada; a repetição
+  teve um frame isolado de 123 ms fora do update medido, também sem causa
+  confirmada; usuário não percebeu pausas relevantes no voo da Etapa 5;
+- maritimidade usa continentalidade como proxy, não distância exata até a costa;
+  rain shadow é envelope estático, e o blend do debug mostra só os dois pesos
+  principais enquanto a API preserva os dez;
 - debug categórico é facetado por triângulo; layouts geológicos ainda simplificados;
 - parágrafo histórico de quadtree em ARCHITECTURE.md está desatualizado;
-  o estado operacional implementado é o registrado aqui e nas Etapas 2–4.
+  o estado operacional implementado é o registrado aqui e nas Etapas 2–5.
 
 Nenhum bloqueador confirmado de topologia, 2:1 ou stitching permanece nos casos
 testados. Limites/evidências: `docs/stages/02_quadtree.md` e
@@ -96,12 +111,14 @@ Projeto validado com Godot 4.6.1 por meio de:
 - suíte completa do quadtree: 630.955 verificações, saída 0;
 - suíte de relevo base: 694.703; com geologia: 694.706 verificações, saída 0;
 - geologia: 158.752 verificações, oito seeds e zero falhas;
-- fingerprints idênticos de terreno base e geologia em processos independentes;
-- percurso gráfico Vulkan: 26 poses/73 capturas, hemisférios, macroformas,
-  geologia, borda entre faces e debug, com `TERRAIN_VISUAL_OK`;
-- profiling base/geologia, 2.580 updates: frame p95 16,645 → 16,717 ms;
-  pico 28,741 → 21,929 ms, sem redução de budgets/qualidade;
-- evidências persistentes em `docs/evidence/04_geologia_estrutural/`.
+- clima: 142.252 verificações, zero falhas; fingerprints idênticos de clima,
+  terreno e geologia em processos independentes;
+- percurso gráfico Vulkan: 39 poses/194 capturas, seis hemisférios, campos
+  climáticos, dez biomas, macroformas, geologia e borda entre faces,
+  com `TERRAIN_VISUAL_OK`;
+- perfil climático comparável, 2.580 updates: geração 21,12 → 37,40 µs/vértice,
+  warmup até idle 925 → 1.554 updates; frames variaram entre execuções;
+- evidências persistentes em `docs/evidence/05_clima_biomas/`.
 
 Todos os testes headless passaram fora do sandbox; somente warnings esperados dos
 casos negativos de CameraManager. Instruções em `tests/planet/README.md`.

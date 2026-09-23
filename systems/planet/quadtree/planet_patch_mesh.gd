@@ -69,12 +69,12 @@ static func _add_triangle(result: PackedInt32Array, a: int, b: int, c: int) -> v
 	if area < 0.0:
 		result.append_array(PackedInt32Array([a, b, c]))
 
-static func generate(id: PatchId, radius: float, mask: int, terrain: PlanetTerrain = null, meters_per_unit: float = 1.0) -> Dictionary:
-	var data := begin_generate(id, radius, mask, terrain, meters_per_unit)
+static func generate(id: PatchId, radius: float, mask: int, terrain: PlanetTerrain = null, meters_per_unit: float = 1.0, climate: PlanetClimate = null) -> Dictionary:
+	var data := begin_generate(id, radius, mask, terrain, meters_per_unit, climate)
 	advance_generate(data, WIDTH * WIDTH)
 	return data
 
-static func begin_generate(id: PatchId, radius: float, mask: int, terrain: PlanetTerrain = null, meters_per_unit: float = 1.0) -> Dictionary:
+static func begin_generate(id: PatchId, radius: float, mask: int, terrain: PlanetTerrain = null, meters_per_unit: float = 1.0, climate: PlanetClimate = null) -> Dictionary:
 	assert(id.is_valid() and radius > 0.0)
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
@@ -84,6 +84,10 @@ static func begin_generate(id: PatchId, radius: float, mask: int, terrain: Plane
 	colors.resize(WIDTH * WIDTH)
 	var geology := PackedFloat32Array()
 	geology.resize(WIDTH * WIDTH * 4)
+	var climate_fields := PackedFloat32Array()
+	climate_fields.resize(WIDTH * WIDTH * 4)
+	var biomes := PackedFloat32Array()
+	biomes.resize(WIDTH * WIDTH * 4)
 	var bounds := id.get_uv_bounds()
 	# Cube-face mapping is affine. Obtain the patch frame from the Stage 1 API
 	# once; interpolate that frame, then normalize per vertex. No face bases or
@@ -95,7 +99,9 @@ static func begin_generate(id: PatchId, radius: float, mask: int, terrain: Plane
 		"indices": indices(mask), "radius": radius, "next_vertex": 0,
 		"cube_origin": origin, "cube_u": axis_u, "cube_v": axis_v,
 		"terrain": terrain, "meters_per_unit": meters_per_unit, "colors": colors,
-		"geology": geology, "sample_output": PlanetTerrainSample.new()}
+		"geology": geology, "climate_fields": climate_fields, "biomes": biomes,
+		"climate": climate, "sample_output": PlanetTerrainSample.new(),
+		"climate_output": PlanetClimateSample.new() if climate != null else null}
 
 # Bounded CPU slice. The synchronous API above uses exactly the same generator.
 static func advance_generate(data: Dictionary, count: int, profiler: RefCounted = null) -> bool:
@@ -109,6 +115,10 @@ static func advance_generate(data: Dictionary, count: int, profiler: RefCounted 
 	var terrain: PlanetTerrain = data.terrain
 	var colors: PackedColorArray = data.colors
 	var geology: PackedFloat32Array = data.geology
+	var climate_fields: PackedFloat32Array = data.climate_fields
+	var biomes: PackedFloat32Array = data.biomes
+	var climate: PlanetClimate = data.climate
+	var climate_output: PlanetClimateSample = data.climate_output
 	var output: PlanetTerrainSample = data.sample_output
 	var meters_per_unit: float = data.meters_per_unit
 	var end := mini(WIDTH * WIDTH, int(data.next_vertex) + count)
@@ -125,15 +135,36 @@ static func advance_generate(data: Dictionary, count: int, profiler: RefCounted 
 		geology[i * 4 + 1] = output.geology.y
 		geology[i * 4 + 2] = output.geology.z
 		geology[i * 4 + 3] = output.geology.w
+		if climate != null:
+			climate.sample_into(normals[i], fields, climate_output)
+			var c := climate_output.climate
+			# Store normalized floats in the incremental loop, then let Image
+			# quantize the complete patch in native code once at finalization.
+			climate_fields[i * 4] = clampf((c.x + 40.0) / 80.0, 0.0, 1.0)
+			climate_fields[i * 4 + 1] = c.y
+			climate_fields[i * 4 + 2] = c.z
+			climate_fields[i * 4 + 3] = c.w
+			biomes[i * 4] = climate_output.rain_shadow
+			biomes[i * 4 + 1] = (climate_output.dominant + 1) / 11.0
+			biomes[i * 4 + 2] = (climate_output.secondary + 1) / 11.0
+			biomes[i * 4 + 3] = climate_output.top_pair_mix
 	if profiler != null:
 		profiler.finish(&"terrain_displace_us", started)
 	data.vertices = vertices
 	data.normals = normals
 	data.colors = colors
 	data.geology = geology
+	data.climate_fields = climate_fields
+	data.biomes = biomes
 	data.next_vertex = end
 	if end == WIDTH * WIDTH:
 		data.from = vertices
+		var climate_image := Image.create_from_data(WIDTH, WIDTH, false, Image.FORMAT_RGBAF, climate_fields.to_byte_array())
+		climate_image.convert(Image.FORMAT_RGBA8)
+		data.climate_fields = climate_image.get_data()
+		var biome_image := Image.create_from_data(WIDTH, WIDTH, false, Image.FORMAT_RGBAF, biomes.to_byte_array())
+		biome_image.convert(Image.FORMAT_RGBA8)
+		data.biomes = biome_image.get_data()
 	return end == WIDTH * WIDTH
 
 static func with_mask(data: Dictionary, mask: int) -> Dictionary:
@@ -209,10 +240,14 @@ static func as_array_mesh(data: Dictionary) -> ArrayMesh:
 		delta[i * 3 + 2] = offset.z
 	arrays[Mesh.ARRAY_CUSTOM0] = delta
 	arrays[Mesh.ARRAY_CUSTOM1] = data.geology
+	arrays[Mesh.ARRAY_CUSTOM2] = data.climate_fields
+	arrays[Mesh.ARRAY_CUSTOM3] = data.biomes
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {},
 		(Mesh.ARRAY_CUSTOM_RGB_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) |
-		(Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT))
+		(Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT) |
+		(Mesh.ARRAY_CUSTOM_RGBA8_UNORM << Mesh.ARRAY_FORMAT_CUSTOM2_SHIFT) |
+		(Mesh.ARRAY_CUSTOM_RGBA8_UNORM << Mesh.ARRAY_FORMAT_CUSTOM3_SHIFT))
 	var bounds := AABB(vertices[0], Vector3.ZERO)
 	for i in range(vertices.size()):
 		bounds = bounds.expand(vertices[i]).expand(from[i])

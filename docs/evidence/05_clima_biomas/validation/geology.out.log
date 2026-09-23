@@ -1,0 +1,6 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+GEOLOGY_GLOBAL {"age_min_mean_max":"(0.218891, 0.481796, 0.871543)","delta_min_mean_max_m":"(-107.6965, -0.774653, 157.7445)","descriptors":33,"fingerprint":"363a3680fbb2a31c98f8fc6e73ddadb8e7f301913be23cd72e2173cc84b735e7","land_percent":44.390869140625,"modified_samples":2399,"observed_ids":63,"percentages":{"Ancient interior":8.59375,"Closed basin":0.341796875,"Continental platform":29.84619140625,"Former marine":1.751708984375,"Igneous/volcanic":0.335693359375,"Oceanic basement":54.65087890625,"Orogenic belt":2.227783203125,"Sedimentary basin":1.434326171875,"Structural plateau":0.81787109375}}
+GEOLOGY_BOUNDARIES 110
+GEOLOGY_BENCH median_us base=12.111 integrated=15.225 standalone_query=12.892 checksum=-40871150.993
+GEOLOGY_TEST_OK: 158752 assertions; failures=0

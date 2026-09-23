@@ -18,6 +18,7 @@ func _run() -> void:
 	planet.definition = planet.definition.duplicate()
 	planet.definition.terrain_enabled = not args.has("--sphere")
 	planet.definition.geology_enabled = not args.has("--no-geology")
+	planet.definition.climate_enabled = not args.has("--no-climate")
 	var construction_start := Time.get_ticks_usec()
 	root.add_child(lab)
 	var construction_us := Time.get_ticks_usec() - construction_start
@@ -35,6 +36,7 @@ func _run() -> void:
 	var near_radius := 53000.0 if args.has("--macro-route") else 50500.0
 	var warmup_updates := 0
 	var warmup_peak_us := 0
+	var warmup_peak_detail := {}
 	if args.has("--settled-route"):
 		# Compare populated trees, not only the first frames of initial refinement.
 		camera.position = Vector3(0, 0, 140000)
@@ -43,7 +45,13 @@ func _run() -> void:
 		for frame in range(12000):
 			view.update_camera(camera, 0.05)
 			warmup_updates += 1
-			warmup_peak_us = maxi(warmup_peak_us, view.profile.times.get("update_us", 0))
+			var update_us: int = view.profile.times.get("update_us", 0)
+			if update_us > warmup_peak_us:
+				warmup_peak_us = update_us
+				warmup_peak_detail = view.profile.times.duplicate()
+				warmup_peak_detail.merge(view.profile.counts)
+				warmup_peak_detail["state"] = view.state
+				warmup_peak_detail["leaves"] = view.tree.leaves.size()
 			stable = stable + 1 if view.state == "idle" else 0
 			if stable == 3:
 				break
@@ -88,8 +96,10 @@ func _run() -> void:
 		print("PROFILE_PHASE %s leaves=%d state=%s" % [phase, view.tree.leaves.size(), view.state])
 	var summary := summarize(rows)
 	var report := {"debug": not args.has("--debug-off"), "renderer": RenderingServer.get_current_rendering_method(),
-		"terrain": planet.terrain != null, "geology": planet.terrain != null and planet.terrain.geology != null, "near_radius": near_radius, "construction_us": construction_us,
+		"terrain": planet.terrain != null, "geology": planet.terrain != null and planet.terrain.geology != null,
+		"climate": planet.climate != null, "near_radius": near_radius, "construction_us": construction_us,
 		"warmup_updates": warmup_updates, "warmup_peak_us": warmup_peak_us,
+		"warmup_peak_detail": warmup_peak_detail,
 		"summary": summary, "rows": rows}
 	var output := FileAccess.open(args[0], FileAccess.WRITE)
 	if output == null:

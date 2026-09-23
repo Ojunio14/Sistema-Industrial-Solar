@@ -39,17 +39,21 @@ var _planning: Array[PlanetPatch] = []
 var _planning_index := 0
 var _last_selection: Array = []
 var terrain: PlanetTerrain
+var climate: PlanetClimate
 var meters_per_unit := 1.0
 var debug_mode := 0
 const DEBUG_MODES := ["Faces/LOD", "Terra/oceano", "Altitude", "Continentalidade", "Macroformas", "Nivel do mar", "Costas",
 	"Provincia", "Maturidade", "Interiores antigos", "Cinturoes", "Bacias sedimentares", "Igneo/vulcanico",
-	"Planaltos estruturais", "Bacias fechadas", "Antigo marinho"]
+	"Planaltos estruturais", "Bacias fechadas", "Antigo marinho",
+	"Temperatura", "Umidade", "Influencia oceanica", "Precipitacao", "Sombra de chuva",
+	"Bioma dominante", "Blend dos biomas"]
 
-func initialize(p_radius: float, p_config: PlanetLodConfig, p_terrain: PlanetTerrain = null, p_meters_per_unit: float = 1.0) -> void:
+func initialize(p_radius: float, p_config: PlanetLodConfig, p_terrain: PlanetTerrain = null, p_meters_per_unit: float = 1.0, p_climate: PlanetClimate = null) -> void:
 	assert(p_radius > 0.0 and p_config.is_valid())
 	radius = p_radius
 	config = p_config
 	terrain = p_terrain
+	climate = p_climate
 	meters_per_unit = p_meters_per_unit
 	debug_mode = 2 if terrain != null else 0
 	_target = tree
@@ -304,7 +308,7 @@ func _build_slice() -> void:
 		profile.finish(&"stitch_us", started)
 		started = profile.stamp()
 		var cached := _geometry.has(key)
-		var data := PlanetPatchMesh.with_mask(_geometry[key], mask) if cached else PlanetPatchMesh.begin_generate(id, radius, mask, terrain, meters_per_unit)
+		var data := PlanetPatchMesh.with_mask(_geometry[key], mask) if cached else PlanetPatchMesh.begin_generate(id, radius, mask, terrain, meters_per_unit, climate)
 		profile.finish(&"generate_us", started)
 		profile.count(&"geometry_reused" if cached else &"generated")
 		_job = {"id": id, "data": data, "phase": "sample_init" if cached else "generate"}
@@ -405,11 +409,17 @@ func debug_text() -> String:
 		terrain_info = "Amostra radial: %.1f m | %s | mar 0 m\n" % [fields.x, PlanetTerrain.Form.keys()[int(fields.z)]]
 	if debug_mode == 4:
 		terrain_info += "0 oceano / 1 planicie / 2 colinas / 3 planalto / 4 serra / 5 cadeia / 6 vale / 7 bacia / 8 excepcional\n"
-	if debug_mode >= 7 and terrain != null and terrain.geology != null and not _camera_position.is_zero_approx():
+	if debug_mode >= 7 and debug_mode < 16 and terrain != null and terrain.geology != null and not _camera_position.is_zero_approx():
 		var geo := terrain.geology.query_direction(_camera_position.normalized())
 		terrain_info += "%s | %s | idade %.2f | peso %.2f | delta %.1f m\n" % [terrain.geology.stable_key(int(geo.x)),
 			PlanetGeology.TYPE_NAMES[PlanetGeology.type_of(int(geo.x))], geo.y, geo.z, geo.w]
-	return ("F4 relevo / F5 geologia: %s | seed %s\n" % [DEBUG_MODES[debug_mode], str(terrain.get_seed()) if terrain != null else "sphere"]) + terrain_info + "Leaves %d | total %d | visible~ %d | LOD %d..%d\nSplits %d / merges %d / commits %d | 2:1 %s\nStitched %d | %s | morph %.2f | pending %d\n%s leaf | stitch %s" % [
+	if debug_mode >= 16 and climate != null and not _camera_position.is_zero_approx():
+		var climate_sample := climate.query_direction(_camera_position.normalized())
+		var name: String = PlanetClimate.BIOME_NAMES[climate_sample.dominant] if climate_sample.dominant >= 0 else "Agua"
+		terrain_info += "%.1f C | umidade %.2f | oceano %.2f | chuva %.2f | sombra %.2f | %s\n" % [
+			climate_sample.climate.x, climate_sample.climate.y, climate_sample.climate.z,
+			climate_sample.climate.w, climate_sample.rain_shadow, name]
+	return ("F4 relevo / F5 geologia / F6 clima: %s | seed %s\n" % [DEBUG_MODES[debug_mode], str(terrain.get_seed()) if terrain != null else "sphere"]) + terrain_info + "Leaves %d | total %d | visible~ %d | LOD %d..%d\nSplits %d / merges %d / commits %d | 2:1 %s\nStitched %d | %s | morph %.2f | pending %d\n%s leaf | stitch %s" % [
 		tree.leaves.size(), tree.nodes.size(), visible_count, mini(low, high), high,
 		splits_last_update, merges_last_update, commits_last_update, "OK" if balance_ok else "FAILED",
 		stitched, state, morph, _pending.size() + int(not _job.is_empty()), sample.id, _edge_names(mask)]

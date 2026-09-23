@@ -13,7 +13,8 @@ func _run() -> void:
 	DirAccess.make_dir_recursive_absolute(output)
 	var lab := (load("res://scenes/planet_lab/planet_lab.tscn") as PackedScene).instantiate()
 	var definition: PlanetDefinition = lab.get_node("Planet").definition.duplicate()
-	definition.geology_enabled = args.has("--geology")
+	definition.geology_enabled = args.has("--geology") or args.has("--climate")
+	definition.climate_enabled = args.has("--climate")
 	lab.get_node("Planet").definition = definition
 	root.add_child(lab)
 	current_scene = lab
@@ -38,6 +39,35 @@ func _run() -> void:
 				selected[key] = true
 				scenarios.append({"name": "geology_" + key, "direction": province.direction,
 					"mode": 8 + province.type, "id": province.id})
+	if definition.climate_enabled:
+		var selected_biomes := {}
+		var best_shadow := -1.0
+		var best_dry := INF
+		var best_wet := -1.0
+		var shadow_direction := Vector3.ZERO
+		var dry_direction := Vector3.ZERO
+		var wet_direction := Vector3.ZERO
+		for i in range(8192):
+			var direction := PlanetTerrain.uniform_direction(i, 8192)
+			if planet.terrain.sample(direction) <= 0:
+				continue
+			var sample := planet.climate.query_direction(direction)
+			if not selected_biomes.has(sample.dominant):
+				selected_biomes[sample.dominant] = direction
+			if sample.rain_shadow > best_shadow:
+				best_shadow = sample.rain_shadow
+				shadow_direction = direction
+			if sample.climate.w < best_dry:
+				best_dry = sample.climate.w
+				dry_direction = direction
+			if sample.climate.w > best_wet:
+				best_wet = sample.climate.w
+				wet_direction = direction
+		for biome in selected_biomes:
+			scenarios.append({"name": "biome_%d" % biome, "direction": selected_biomes[biome], "climate": true})
+		scenarios.append({"name": "rain_shadow", "direction": shadow_direction, "climate": true})
+		scenarios.append({"name": "driest", "direction": dry_direction, "climate": true})
+		scenarios.append({"name": "wettest", "direction": wet_direction, "climate": true})
 	scenarios.append({"name": "cube_edge", "direction": Vector3(1, 0.3, 1).normalized()})
 	scenarios.append({"name": "retreat", "direction": Vector3(0, 0, 1), "orbital": true})
 	for scenario in scenarios:
@@ -79,6 +109,14 @@ func _run() -> void:
 			if scenario.name == "cube_edge":
 				modes = [7, 8, 9, 10, 11, 12, 13, 14, 15]
 			for mode in modes:
+				view.set_debug_mode(mode)
+				lab.get_node("Debug")._process(0.2)
+				await process_frame
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_mode%d.png" % mode))
+		if definition.climate_enabled:
+			var climate_modes: Array = [16, 17, 18, 19, 20, 21, 22] if scenario.get("orbital", false) or scenario.name == "cube_edge" else [20, 21, 22] if scenario.get("climate", false) else []
+			for mode in climate_modes:
 				view.set_debug_mode(mode)
 				lab.get_node("Debug")._process(0.2)
 				await process_frame

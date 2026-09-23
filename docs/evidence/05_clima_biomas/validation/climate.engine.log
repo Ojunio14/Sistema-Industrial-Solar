@@ -1,0 +1,6 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+CLIMATE_GLOBAL {"altitude_band_counts":[6474,677,122],"biome_percent":{"Alpine":0.9762133919978,"Desert":2.08992162793895,"Polar":15.7294101471195,"Salar/extreme desert":4.49608139694761,"Savanna":3.24487831706311,"Taiga":20.4867317475595,"Temperate":26.948989412897,"Tropical wet":7.69971126082772,"Tundra":8.75842155919153,"Wetland":9.56964113845731},"biomes_by_altitude":[[444,194,112,252,1845,696,1403,591,0,937],[116,42,39,75,109,0,87,40,17,152],[0,0,1,0,6,0,0,6,54,55]],"biomes_by_latitude":[[560,236,29,19,574,696,0,0,8,0],[0,0,123,290,1006,0,10,0,59,0],[0,0,0,18,380,0,1301,26,4,0],[0,0,0,0,0,0,179,611,0,1144]],"closed_basin_land_samples":2,"closed_basin_min_precipitation":0.685402154922485,"fingerprint":"a9aaf55266c0077440191c9155b4e0e0b7b60209f76eb5bff8fce85fcb53cbee","humidity_min_mean_max":[0.0,0.566902660919403,1.0],"land":7273,"latitude_band_counts":[2122,1488,1729,1934],"max_salar_weight":0.626027941703796,"temperature_min_mean_max_c":[-30.1158256530762,4.30209311804919,29.1783638000488],"very_dry":569,"very_wet":736}
+CLIMATE_BIOMES_OBSERVED [9, 7, 6, 4, 3, 8, 2, 1, 5, 0]
+CLIMATE_BOUNDARIES 90
+CLIMATE_TEST_OK: 142252 assertions; failures=0

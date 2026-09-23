@@ -1,5 +1,27 @@
 # Planet foundation tests
 
+## Clima e biomas (Etapa 5)
+
+O PlanetLab habilita clima por `PlanetDefinition.climate_enabled`. F6 percorre
+temperatura, umidade, influência oceânica, precipitação, rain shadow, bioma
+dominante e blend técnico de duas famílias; F4/F5 conservam seus modos.
+
+```powershell
+./tests/planet/run_validation.ps1
+./tests/planet/run_validation.ps1 -Only climate
+./tests/planet/run_terrain_visual.ps1 -Climate
+./tests/planet/run_profile.ps1 -Label geology-baseline -Graphics -MacroRoute -SettledRoute -NoClimate
+./tests/planet/run_profile.ps1 -Label climate -Graphics -MacroRoute -SettledRoute
+```
+
+Profiles devem ser sequenciais e com a mesma seed, resolução e rota. `-Climate`
+inclui geologia no visual para comparar a mesma superfície. O teste climático
+mede 16.384 direções globais, biomas por latitude/altitude, controles físicos,
+barlavento/sotavento, continuidade de 12 arestas/8 cantos/LODs, pesos, malha,
+quadtree e determinismo. A suíte completa compara dois processos independentes.
+O shader mostra apenas os dois pesos principais; consumidores futuros devem
+consultar os dez pesos da API quando precisarem de mistura completa.
+
 ## Geologia estrutural (Etapa 4)
 
 O PlanetLab habilita geologia por `PlanetDefinition.geology_enabled`. F5 percorre

@@ -6,7 +6,8 @@ param(
     [switch]$Sphere,
     [switch]$MacroRoute,
     [switch]$SettledRoute,
-    [switch]$NoGeology
+    [switch]$NoGeology,
+    [switch]$NoClimate
 )
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $output = Join-Path ([IO.Path]::GetTempPath()) ('planet-profile-' + $Label + '-' + [guid]::NewGuid().ToString('N'))
@@ -17,6 +18,7 @@ if ($Sphere) { $extra += ' --sphere' }
 if ($MacroRoute) { $extra += ' --macro-route' }
 if ($SettledRoute) { $extra += ' --settled-route' }
 if ($NoGeology) { $extra += ' --no-geology' }
+if ($NoClimate) { $extra += ' --no-climate' }
 $arguments = $mode + ' --path "' + $projectRoot + '" --script res://tests/planet/planet_profile_route.gd --log-file "' + (Join-Path $output 'engine.log') + '" -- "' + (Join-Path $output 'profile.json') + '"' + $extra
 Write-Output "PROFILE_DIR=$output"
 $p = Start-Process -FilePath $Godot -ArgumentList $arguments -WindowStyle Hidden -PassThru -RedirectStandardOutput (Join-Path $output 'out.log') -RedirectStandardError (Join-Path $output 'err.log')

@@ -89,6 +89,17 @@ da mesma consulta; `sample_into` reutiliza um resultado pertencente ao consumido
 sem scratch mutável compartilhado pela autoridade. Profundidade, estratigrafia e
 recursos continuam futuros; o contrato e seus limites estão na Etapa 4.
 
+## Clima e biomas superficiais
+
+`PlanetClimate` é uma autoridade determinística de consulta derivada do terreno
+final, sem influência inversa sobre sua altura ou sobre a geologia. Direção
+planetária unitária (ou posição relativa ao centro normalizada) e seed determinam
+campos climáticos contínuos. Dez pesos de bioma terrestres somam 1 em terra;
+água não recebe bioma terrestre. ID dominante é diagnóstico e não alimenta os
+próprios pesos. `PlanetClimateSample` é saída reutilizável pelo consumidor, e
+`sample_into` recebe a amostra de terreno já calculada. A mesh e o shader são
+derivados dessa API. Parâmetros e limites operacionais estão na Etapa 5.
+
 ## Planet Lab
 
 O Planet v0.1 usa uma cena/laboratório planetário mínima própria. Ela não depende da antiga hierarquia Galaxy / ScaledSpace / Local_Space.

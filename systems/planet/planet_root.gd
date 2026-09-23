@@ -5,6 +5,7 @@ extends Node3D
 @export var lod_config: PlanetLodConfig
 var quadtree_view: PlanetQuadtreeView
 var terrain: PlanetTerrain
+var climate: PlanetClimate
 
 
 func _ready() -> void:
@@ -15,9 +16,11 @@ func _ready() -> void:
 		lod_config = PlanetLodConfig.new()
 	if definition.terrain_enabled:
 		terrain = PlanetTerrain.new(definition.terrain_seed, definition.geology_enabled)
+		if definition.climate_enabled:
+			climate = PlanetClimate.new(definition.terrain_seed, terrain)
 	quadtree_view = PlanetQuadtreeView.new()
 	add_child(quadtree_view)
-	quadtree_view.initialize(get_base_radius_units(), lod_config, terrain, definition.meters_per_unit)
+	quadtree_view.initialize(get_base_radius_units(), lod_config, terrain, definition.meters_per_unit, climate)
 
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -25,7 +28,9 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		if event.keycode == KEY_F4:
 			quadtree_view.set_debug_mode(0 if quadtree_view.debug_mode >= 7 else (quadtree_view.debug_mode + 1) % 7)
 		elif event.keycode == KEY_F5:
-			quadtree_view.set_debug_mode(7 if quadtree_view.debug_mode < 7 or quadtree_view.debug_mode == 15 else quadtree_view.debug_mode + 1)
+			quadtree_view.set_debug_mode(7 if quadtree_view.debug_mode < 7 or quadtree_view.debug_mode >= 15 else quadtree_view.debug_mode + 1)
+		elif event.keycode == KEY_F6:
+			quadtree_view.set_debug_mode(16 if quadtree_view.debug_mode < 16 or quadtree_view.debug_mode >= 22 else quadtree_view.debug_mode + 1)
 
 
 func _process(delta: float) -> void:

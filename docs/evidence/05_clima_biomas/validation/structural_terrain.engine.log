@@ -1,0 +1,19 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+TERRAIN_CONSTRUCTION_MS 112.879
+TERRAIN_GLOBAL {"coast_crossings":93,"depth_min_mean_max_m":"(0.0, 908.1433, 2667.449)","fingerprint":"62b5d4955196c029c60e560c3ae2066bd910e9ee261c3ab8cc70b1671e6fa0bb","forms":{"0":{"count":8954,"max":-0.000000335522031491564,"mean":-920.734399193653,"min":-2667.44873046875},"1":{"count":6133,"max":255.861938476563,"mean":162.128854170968,"min":0.00370851578190923},"2":{"count":447,"max":504.999755859375,"mean":270.605739998337,"min":2.5932719707489},"3":{"count":263,"max":950.409545898438,"mean":659.890964604149,"min":7.19922399520874},"4":{"count":90,"max":867.621765136719,"mean":300.832561238607,"min":47.1355972290039},"5":{"count":232,"max":1322.26635742188,"mean":521.653777410244,"min":18.7313976287842},"6":{"count":97,"max":217.426116943359,"mean":-0.879786417656338,"min":-160.595993041992},"7":{"count":146,"max":224.069091796875,"mean":-141.631408286421,"min":-357.865173339844},"8":{"count":22,"max":1919.4140625,"mean":736.994436090643,"min":167.895309448242}},"land_min_mean_max_m":"(0.003709, 201.0502, 1919.414)","land_percent":44.390869140625,"ocean_percent":55.609130859375,"samples":16384,"seed":73129,"validation_ms":694.09}
+TERRAIN_SAMPLE_BENCH us/sample=24.678 checksum=-6811858.499
+TERRAIN_INDEX_COMPARISON median_us/query reference=23.556 indexed=14.371 samples=16384 repeats=3
+TERRAIN_SSE_MAX_SAMPLED_RATIO 0.62617
+TERRAIN_MORPH_CASE face_0 leaves=18 OK
+TERRAIN_MORPH_CASE face_1 leaves=18 OK
+TERRAIN_MORPH_CASE face_2 leaves=18 OK
+TERRAIN_MORPH_CASE face_3 leaves=18 OK
+TERRAIN_MORPH_CASE face_4 leaves=18 OK
+TERRAIN_MORPH_CASE face_5 leaves=18 OK
+TERRAIN_MORPH_CASE plateau leaves=45 OK
+TERRAIN_MORPH_CASE chain leaves=48 OK
+TERRAIN_MORPH_CASE exceptional leaves=48 OK
+TERRAIN_MORPH_CASE inland_sea leaves=45 OK
+TERRAIN_MORPH_CASE coast leaves=45 OK
+TERRAIN_TEST_OK: 694706 assertions, 0 failures

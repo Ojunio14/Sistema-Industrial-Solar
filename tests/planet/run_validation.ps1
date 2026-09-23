@@ -19,10 +19,14 @@ $cases = [ordered]@{
     structural_terrain = '--script res://tests/planet/planet_terrain_test.gd -- --with-geology'
     geology_repeat_a = '--script res://tests/planet/planet_geology_test.gd -- --determinism-only'
     geology_repeat_b = '--script res://tests/planet/planet_geology_test.gd -- --determinism-only'
+    climate = '--script res://tests/planet/planet_climate_test.gd'
+    climate_repeat_a = '--script res://tests/planet/planet_climate_test.gd -- --determinism-only'
+    climate_repeat_b = '--script res://tests/planet/planet_climate_test.gd -- --determinism-only'
 }
 $failed = $false
 $fingerprints = @()
 $geologyFingerprints = @()
+$climateFingerprints = @()
 foreach ($name in $cases.Keys) {
     if ($Only -and $name -ne $Only) { continue }
     $stdout = Join-Path $outputRoot ($name + '.out.log')
@@ -47,9 +51,16 @@ foreach ($name in $cases.Keys) {
         $capture = Select-String -LiteralPath $stdout -Pattern '"fingerprint":"([0-9a-f]+)"'
         if ($capture) { $geologyFingerprints += $capture.Matches[0].Groups[1].Value } else { $failed = $true }
     }
+    if ($name -like 'climate_repeat_*') {
+        $capture = Select-String -LiteralPath $stdout -Pattern '"fingerprint":"([0-9a-f]+)"'
+        if ($capture) { $climateFingerprints += $capture.Matches[0].Groups[1].Value } else { $failed = $true }
+    }
     if ($process.ExitCode -ne 0 -or (Select-String -LiteralPath $stderr -Pattern 'SCRIPT ERROR|Parse Error|TEST_FAILED' -Quiet)) { $failed = $true }
 }
 if (-not $Only) {
+    if ($climateFingerprints.Count -eq 2 -and $climateFingerprints[0] -eq $climateFingerprints[1]) {
+        Write-Output "CLIMATE_CROSS_PROCESS_DETERMINISM_OK $($climateFingerprints[0])"
+    } else { $failed = $true; Write-Output 'CLIMATE_CROSS_PROCESS_DETERMINISM_FAILED' }
     if ($geologyFingerprints.Count -eq 2 -and $geologyFingerprints[0] -eq $geologyFingerprints[1]) {
         Write-Output "GEOLOGY_CROSS_PROCESS_DETERMINISM_OK $($geologyFingerprints[0])"
     } else { $failed = $true; Write-Output 'GEOLOGY_CROSS_PROCESS_DETERMINISM_FAILED' }
