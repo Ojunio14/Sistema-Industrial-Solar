@@ -17,6 +17,7 @@ func _run() -> void:
 	var planet: PlanetRoot = lab.get_node("Planet")
 	planet.definition = planet.definition.duplicate()
 	planet.definition.terrain_enabled = not args.has("--sphere")
+	planet.definition.geology_enabled = not args.has("--no-geology")
 	var construction_start := Time.get_ticks_usec()
 	root.add_child(lab)
 	var construction_us := Time.get_ticks_usec() - construction_start
@@ -87,7 +88,7 @@ func _run() -> void:
 		print("PROFILE_PHASE %s leaves=%d state=%s" % [phase, view.tree.leaves.size(), view.state])
 	var summary := summarize(rows)
 	var report := {"debug": not args.has("--debug-off"), "renderer": RenderingServer.get_current_rendering_method(),
-		"terrain": planet.terrain != null, "near_radius": near_radius, "construction_us": construction_us,
+		"terrain": planet.terrain != null, "geology": planet.terrain != null and planet.terrain.geology != null, "near_radius": near_radius, "construction_us": construction_us,
 		"warmup_updates": warmup_updates, "warmup_peak_us": warmup_peak_us,
 		"summary": summary, "rows": rows}
 	var output := FileAccess.open(args[0], FileAccess.WRITE)

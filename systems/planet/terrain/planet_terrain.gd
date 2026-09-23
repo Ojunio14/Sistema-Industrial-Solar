@@ -37,8 +37,9 @@ var _main_buckets: Array[PackedVector4Array] = []
 var _minor_buckets: Array[PackedVector4Array] = []
 var _sea_buckets: Array[PackedVector4Array] = []
 var _region_buckets: Array[Array] = []
+var geology: PlanetGeology
 
-func _init(planet_seed: int = DEFAULT_SEED) -> void:
+func _init(planet_seed: int = DEFAULT_SEED, structural_geology: bool = false) -> void:
 	_seed = planet_seed
 	var rng := RandomNumberGenerator.new()
 	rng.seed = planet_seed
@@ -111,6 +112,22 @@ func _init(planet_seed: int = DEFAULT_SEED) -> void:
 						selected.append(region)
 				_region_buckets.append(selected)
 	_calibrate()
+	if structural_geology:
+		geology = PlanetGeology.new(planet_seed, self)
+
+func continental_snapshot() -> Dictionary:
+	var backgrounds := _anchors.duplicate()
+	for cap in _islands:
+		backgrounds.append(Vector3(cap.x, cap.y, cap.z))
+	return {"main": _main_buckets.duplicate(), "minor": _minor_buckets.duplicate(),
+		"seas": _sea_buckets.duplicate(), "phase": _phase, "bias": _bias, "backgrounds": backgrounds}
+
+func structural_blueprint() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for region in _regions:
+		result.append({"center": region.center, "u": region.u, "v": region.v,
+			"length": region.length, "width": region.width, "amplitude": region.amplitude, "kind": region.kind})
+	return result
 
 static func _make_buckets(caps: PackedVector4Array) -> Array[PackedVector4Array]:
 	# Exact broad phase in global Cartesian direction space. A discarded affine
@@ -192,7 +209,10 @@ static func _cap_field(d: Vector3, caps: PackedVector4Array) -> float:
 	return value
 
 func _warp(d: Vector3) -> float:
-	return 0.025 * sin(d.x * 8.0 + d.y * 3.0 + _phase) * sin(d.z * 7.0 - d.y * 4.0 - _phase)
+	return continental_warp(d, _phase)
+
+static func continental_warp(d: Vector3, phase: float) -> float:
+	return 0.025 * sin(d.x * 8.0 + d.y * 3.0 + phase) * sin(d.z * 7.0 - d.y * 4.0 - phase)
 
 func _calibrate() -> void:
 	# Only construction: approximately equal-area directions, not mesh vertices.
@@ -219,8 +239,13 @@ func _calibrate() -> void:
 	_bias = (low + high) * 0.5
 
 func continentality(d: Vector3) -> float:
+	return continental_field(d, _main_buckets, _minor_buckets, _sea_buckets, _phase, _bias)
+
+static func continental_field(d: Vector3, main: Array[PackedVector4Array], minor: Array[PackedVector4Array],
+		seas: Array[PackedVector4Array], phase: float, bias: float) -> float:
 	var bucket := _bucket(d)
-	return minf(maxf(_field(d, _main_buckets[bucket]) + _warp(d) + _bias, _field(d, _minor_buckets[bucket])), -_field(d, _sea_buckets[bucket]))
+	var warp := continental_warp(d, phase)
+	return minf(maxf(_field(d, main[bucket]) + warp + bias, _field(d, minor[bucket])), -_field(d, seas[bucket]))
 
 func sample(d: Vector3) -> float:
 	return sample_fields(d).x
@@ -229,6 +254,18 @@ func sample(d: Vector3) -> float:
 ## Vector4 is a value; no descriptors/RNG/arrays/dictionaries created per query.
 func sample_fields(d: Vector3) -> Vector4:
 	var c := continentality(d)
+	var result := _base_fields(d, c)
+	if geology != null:
+		result.x = clampf(result.x + geology.query_with_continentality(d, c).w, MIN_HEIGHT, MAX_HEIGHT)
+	return result
+
+func sample_into(d: Vector3, output: PlanetTerrainSample) -> void:
+	var c := continentality(d)
+	output.terrain = _base_fields(d, c)
+	output.geology = geology.query_with_continentality(d, c) if geology != null else Vector4.ZERO
+	output.terrain.x = clampf(output.terrain.x + output.geology.w, MIN_HEIGHT, MAX_HEIGHT)
+
+func _base_fields(d: Vector3, c: float) -> Vector4:
 	var coast := 1.0 - smoothstep(0.0, 0.055, absf(c))
 	if c <= 0.0:
 		var depth := 180.0 + 1050.0 * smoothstep(0.0, 0.18, -c)
@@ -277,4 +314,5 @@ func patch_error(id: PatchId) -> float:
 			if region.kind == Form.HILLS:
 				curvature = maxf(curvature, 2.0 * absf(region.amplitude) * (85.0 * 85.0 + 70.0 * 70.0))
 	var cell := 2.0 / (32.0 * (1 << id.level))
-	return minf(MAX_HEIGHT - MIN_HEIGHT, curvature * cell * cell * 0.25)
+	var structural_error := geology.error_estimate(d, span, cell) if geology != null else 0.0
+	return minf(MAX_HEIGHT - MIN_HEIGHT, curvature * cell * cell * 0.25 + structural_error)

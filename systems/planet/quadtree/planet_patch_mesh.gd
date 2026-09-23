@@ -82,6 +82,8 @@ static func begin_generate(id: PatchId, radius: float, mask: int, terrain: Plane
 	normals.resize(WIDTH * WIDTH)
 	var colors := PackedColorArray()
 	colors.resize(WIDTH * WIDTH)
+	var geology := PackedFloat32Array()
+	geology.resize(WIDTH * WIDTH * 4)
 	var bounds := id.get_uv_bounds()
 	# Cube-face mapping is affine. Obtain the patch frame from the Stage 1 API
 	# once; interpolate that frame, then normalize per vertex. No face bases or
@@ -92,7 +94,8 @@ static func begin_generate(id: PatchId, radius: float, mask: int, terrain: Plane
 	return {"id": id, "mask": mask, "vertices": vertices, "normals": normals, "uv": grid(),
 		"indices": indices(mask), "radius": radius, "next_vertex": 0,
 		"cube_origin": origin, "cube_u": axis_u, "cube_v": axis_v,
-		"terrain": terrain, "meters_per_unit": meters_per_unit, "colors": colors}
+		"terrain": terrain, "meters_per_unit": meters_per_unit, "colors": colors,
+		"geology": geology, "sample_output": PlanetTerrainSample.new()}
 
 # Bounded CPU slice. The synchronous API above uses exactly the same generator.
 static func advance_generate(data: Dictionary, count: int, profiler: RefCounted = null) -> bool:
@@ -105,20 +108,29 @@ static func advance_generate(data: Dictionary, count: int, profiler: RefCounted 
 	var radius: float = data.radius
 	var terrain: PlanetTerrain = data.terrain
 	var colors: PackedColorArray = data.colors
+	var geology: PackedFloat32Array = data.geology
+	var output: PlanetTerrainSample = data.sample_output
 	var meters_per_unit: float = data.meters_per_unit
 	var end := mini(WIDTH * WIDTH, int(data.next_vertex) + count)
 	for i in range(data.next_vertex, end):
 		normals[i] = (origin + axis_u * uv[i].x + axis_v * uv[i].y).normalized()
 	var started: int = profiler.stamp() if profiler != null else 0
 	for i in range(data.next_vertex, end):
-		var fields := terrain.sample_fields(normals[i]) if terrain != null else Vector4.ZERO
+		if terrain != null:
+			terrain.sample_into(normals[i], output)
+		var fields := output.terrain
 		vertices[i] = normals[i] * (radius + fields.x / meters_per_unit)
 		colors[i] = Color(clampf(fields.y + 0.5, 0.0, 1.0), fields.z / 8.0, fields.w, 1.0)
+		geology[i * 4] = output.geology.x
+		geology[i * 4 + 1] = output.geology.y
+		geology[i * 4 + 2] = output.geology.z
+		geology[i * 4 + 3] = output.geology.w
 	if profiler != null:
 		profiler.finish(&"terrain_displace_us", started)
 	data.vertices = vertices
 	data.normals = normals
 	data.colors = colors
+	data.geology = geology
 	data.next_vertex = end
 	if end == WIDTH * WIDTH:
 		data.from = vertices
@@ -196,9 +208,11 @@ static func as_array_mesh(data: Dictionary) -> ArrayMesh:
 		delta[i * 3 + 1] = offset.y
 		delta[i * 3 + 2] = offset.z
 	arrays[Mesh.ARRAY_CUSTOM0] = delta
+	arrays[Mesh.ARRAY_CUSTOM1] = data.geology
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {},
-		Mesh.ARRAY_CUSTOM_RGB_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT)
+		(Mesh.ARRAY_CUSTOM_RGB_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) |
+		(Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT))
 	var bounds := AABB(vertices[0], Vector3.ZERO)
 	for i in range(vertices.size()):
 		bounds = bounds.expand(vertices[i]).expand(from[i])

@@ -1,5 +1,35 @@
 # Planet foundation tests
 
+## Geologia estrutural (Etapa 4)
+
+O PlanetLab habilita geologia por `PlanetDefinition.geology_enabled`. F5 percorre
+províncias, maturidade, interiores antigos, cinturões, sedimentares, ígneos,
+planaltos, bacias fechadas e antigas áreas marinhas. F4 retorna aos modos do relevo.
+IDs são categóricos por triângulo; maturidade/peso interpolam entre vértices.
+Os filtros mostram o **tipo dominante**, não todas as influências sobrepostas.
+
+```powershell
+./tests/planet/run_validation.ps1
+./tests/planet/run_validation.ps1 -Only geology
+./tests/planet/run_validation.ps1 -Only structural_terrain
+./tests/planet/run_terrain_visual.ps1 -Geology
+./tests/planet/run_profile.ps1 -Label macro-baseline -Graphics -MacroRoute -SettledRoute -NoGeology
+./tests/planet/run_profile.ps1 -Label geology -Graphics -MacroRoute -SettledRoute
+```
+
+Execute os dois profiles sequencialmente. A rota, resolução, budgets e SSE são os
+mesmos; muda apenas a integração geológica (que pode exigir mais patches).
+Sem `-Geology`, a captura visual mantém a referência da Etapa 3. Sem
+`-NoGeology`, o profile usa a geologia atual. O construtor `PlanetTerrain.new(seed)`
+preserva a base da Etapa 3; passe `true` no segundo argumento para a integração.
+
+A suíte completa executa geologia, dois processos independentes e toda a suíte de
+terreno também com geologia, incluindo SSE, 16 máscaras, morph e budgets. Os testes
+novos cobrem IDs/descritores, seed/ordem, classificação, continuidade geológica real,
+12 arestas/8 cantos, LODs até 24, equivalência do índice espacial e consulta integrada.
+O benchmark geológico usa direções pré-calculadas e mediana de três passagens;
+consulta isolada inclui o contexto continental, integrado o reutiliza uma vez.
+
 ## Relevo macro (Etapa 3)
 
 Seed padrão: 73129, em `systems/planet/default_planet_definition.tres`.
@@ -12,7 +42,7 @@ não uma segunda esfera de água nem materiais/biomas.
 ./tests/planet/run_validation.ps1 -Only terrain
 ./tests/planet/run_terrain_visual.ps1
 ./tests/planet/run_profile.ps1 -Label sphere -Graphics -Sphere -MacroRoute -SettledRoute
-./tests/planet/run_profile.ps1 -Label terrain -Graphics -MacroRoute -SettledRoute
+./tests/planet/run_profile.ps1 -Label terrain -Graphics -MacroRoute -SettledRoute -NoGeology
 ```
 
 A suíte completa compara também fingerprints de duas execuções independentes.

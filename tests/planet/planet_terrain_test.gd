@@ -5,6 +5,7 @@ const EPS := 0.04 # Float32 position ULPs at 50 km, in meters.
 var failures := 0
 var assertions := 0
 var terrain: PlanetTerrain
+var structural := false
 var _coast_direction := Vector3.ZERO
 
 func _initialize() -> void:
@@ -19,7 +20,8 @@ func check(condition: bool, context: String) -> void:
 
 func _run() -> void:
 	var start := Time.get_ticks_usec()
-	terrain = PlanetTerrain.new()
+	structural = OS.get_cmdline_user_args().has("--with-geology")
+	terrain = PlanetTerrain.new(PlanetTerrain.DEFAULT_SEED, structural)
 	print("TERRAIN_CONSTRUCTION_MS %.3f" % ((Time.get_ticks_usec() - start) / 1000.0))
 	test_global()
 	test_determinism()
@@ -34,7 +36,7 @@ func _run() -> void:
 	test_error_envelope()
 	test_terrain_transitions()
 	await test_controller()
-	if not OS.get_cmdline_user_args().is_empty():
+	if not OS.get_cmdline_user_args().is_empty() and not OS.get_cmdline_user_args()[0].begins_with("--"):
 		write_map(OS.get_cmdline_user_args()[0])
 	print("TERRAIN_TEST_%s: %d assertions, %d failures" % ["OK" if failures == 0 else "FAILED", assertions, failures])
 	quit(0 if failures == 0 else 1)
@@ -96,8 +98,8 @@ func test_global() -> void:
 	print("TERRAIN_SAMPLE_BENCH us/sample=%.3f checksum=%.3f" % [float(Time.get_ticks_usec() - started) / 16384.0, sum])
 
 func test_determinism() -> void:
-	var same := PlanetTerrain.new(terrain.get_seed())
-	var other := PlanetTerrain.new(terrain.get_seed() + 1)
+	var same := PlanetTerrain.new(terrain.get_seed(), structural)
+	var other := PlanetTerrain.new(terrain.get_seed() + 1, structural)
 	var values := PackedFloat32Array()
 	var changed := 0
 	for i in range(512):
@@ -131,7 +133,7 @@ func test_continuity() -> void:
 func test_sampler_benchmark() -> void:
 	# Same FINAL descriptors and directions, changing only broad-phase indexing.
 	# Reference instance belongs exclusively to this test; production is untouched.
-	var reference := PlanetTerrain.new()
+	var reference := PlanetTerrain.new(PlanetTerrain.DEFAULT_SEED, structural)
 	for i in range(512):
 		reference._main_buckets[i] = reference._main_field
 		reference._minor_buckets[i] = reference._minor_field

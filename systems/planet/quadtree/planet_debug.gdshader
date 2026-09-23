@@ -10,12 +10,16 @@ uniform float meters_per_unit = 1.0;
 varying vec3 radial;
 varying vec3 planet_position;
 varying flat float macro_form;
+varying flat float province_id;
+varying vec2 geological_attributes;
 void vertex() {
 	VERTEX += CUSTOM0.xyz * (1.0 - morph);
 	radial = normalize(VERTEX);
 	planet_position = VERTEX;
 	// Categorical metadata must not invent intermediate IDs by interpolation.
 	macro_form = floor(COLOR.g * 8.0 + 0.5);
+	province_id = CUSTOM1.x;
+	geological_attributes = CUSTOM1.yz;
 }
 void fragment() {
 	// Technical unshaded lighting follows the actual morphed triangle.
@@ -40,6 +44,18 @@ void fragment() {
 	if (debug_mode == 6) {
 		float coast = max(COLOR.b, 1.0 - smoothstep(0.0, 50.0, abs(h)));
 		color = mix(vec3(0.06, 0.12, 0.22), vec3(1.0, 0.65, 0.15), coast);
+	}
+	if (debug_mode >= 7) {
+		int kind = int(province_id + 0.5) % 16;
+		vec3 province_color = 0.25 + 0.65 * fract(vec3(0.317, 0.537, 0.719) * (province_id + 1.0));
+		color = kind == 0 ? vec3(0.03, 0.13, 0.30) : province_color;
+		if (debug_mode == 8) {
+			color = mix(vec3(0.95, 0.24, 0.10), vec3(0.20, 0.45, 0.85), geological_attributes.x);
+		}
+		if (debug_mode >= 9) {
+			int selected_kind = debug_mode - 8;
+			color = mix(vec3(0.07, 0.09, 0.13), province_color, kind == selected_kind ? geological_attributes.y : 0.0);
+		}
 	}
 	vec2 width = max(fwidth(UV) * 1.5, vec2(0.0001));
 	vec2 edge = smoothstep(vec2(0.0), width, min(UV, 1.0 - UV));

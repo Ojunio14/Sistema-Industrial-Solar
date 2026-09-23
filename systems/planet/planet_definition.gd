@@ -7,6 +7,7 @@ const UNIT_DESCRIPTION := "1 Godot unit = 1 meter"
 @export_range(0.000001, 1000000.0, 0.000001, "or_greater") var meters_per_unit: float = 1.0
 @export var terrain_seed: int = 73129
 @export var terrain_enabled: bool = true
+@export var geology_enabled: bool = true
 
 
 func is_valid() -> bool:

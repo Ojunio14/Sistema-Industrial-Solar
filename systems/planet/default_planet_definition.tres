@@ -8,3 +8,4 @@ base_radius_meters = 50000.0
 meters_per_unit = 1.0
 terrain_seed = 73129
 terrain_enabled = true
+geology_enabled = true

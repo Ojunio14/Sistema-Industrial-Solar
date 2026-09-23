@@ -12,6 +12,9 @@ func _run() -> void:
 	var output: String = args[0]
 	DirAccess.make_dir_recursive_absolute(output)
 	var lab := (load("res://scenes/planet_lab/planet_lab.tscn") as PackedScene).instantiate()
+	var definition: PlanetDefinition = lab.get_node("Planet").definition.duplicate()
+	definition.geology_enabled = args.has("--geology")
+	lab.get_node("Planet").definition = definition
 	root.add_child(lab)
 	current_scene = lab
 	var planet: PlanetRoot = lab.get_node("Planet")
@@ -25,6 +28,16 @@ func _run() -> void:
 		scenarios.append({"name": "globe_%d" % i, "direction": PlanetMath.get_face_normal(i), "orbital": true})
 	for landmark in planet.terrain.debug_landmarks():
 		scenarios.append(landmark)
+	if definition.geology_enabled:
+		var selected := {}
+		for province in planet.terrain.geology.descriptors():
+			var key := str(province.type)
+			if province.type == PlanetGeology.Type.OROGEN:
+				key += "_young" if province.age < 0.45 else "_old"
+			if not selected.has(key):
+				selected[key] = true
+				scenarios.append({"name": "geology_" + key, "direction": province.direction,
+					"mode": 8 + province.type, "id": province.id})
 	scenarios.append({"name": "cube_edge", "direction": Vector3(1, 0.3, 1).normalized()})
 	scenarios.append({"name": "retreat", "direction": Vector3(0, 0, 1), "orbital": true})
 	for scenario in scenarios:
@@ -61,6 +74,16 @@ func _run() -> void:
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(output.path_join(scenario.name + ".png"))
 		print("TERRAIN_VISUAL_CAPTURE %s leaves=%d state=%s" % [scenario.name, view.tree.leaves.size(), view.state])
+		if definition.geology_enabled:
+			var modes: Array = [7, 8] if scenario.get("orbital", false) else [scenario.get("mode", 7)]
+			if scenario.name == "cube_edge":
+				modes = [7, 8, 9, 10, 11, 12, 13, 14, 15]
+			for mode in modes:
+				view.set_debug_mode(mode)
+				lab.get_node("Debug")._process(0.2)
+				await process_frame
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_mode%d.png" % mode))
 		if scenario.name == "cube_edge":
 			for mode in [0, 1, 3, 4, 5, 6]:
 				view.set_debug_mode(mode)

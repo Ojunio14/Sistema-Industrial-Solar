@@ -15,9 +15,14 @@ $cases = [ordered]@{
     terrain = '--script res://tests/planet/planet_terrain_test.gd'
     determinism_a = '--script res://tests/planet/planet_terrain_test.gd -- --determinism-only'
     determinism_b = '--script res://tests/planet/planet_terrain_test.gd -- --determinism-only'
+    geology = '--script res://tests/planet/planet_geology_test.gd'
+    structural_terrain = '--script res://tests/planet/planet_terrain_test.gd -- --with-geology'
+    geology_repeat_a = '--script res://tests/planet/planet_geology_test.gd -- --determinism-only'
+    geology_repeat_b = '--script res://tests/planet/planet_geology_test.gd -- --determinism-only'
 }
 $failed = $false
 $fingerprints = @()
+$geologyFingerprints = @()
 foreach ($name in $cases.Keys) {
     if ($Only -and $name -ne $Only) { continue }
     $stdout = Join-Path $outputRoot ($name + '.out.log')
@@ -38,9 +43,16 @@ foreach ($name in $cases.Keys) {
         $capture = Select-String -LiteralPath $stdout -Pattern '"fingerprint":"([0-9a-f]+)"'
         if ($capture) { $fingerprints += $capture.Matches[0].Groups[1].Value } else { $failed = $true }
     }
+    if ($name -like 'geology_repeat_*') {
+        $capture = Select-String -LiteralPath $stdout -Pattern '"fingerprint":"([0-9a-f]+)"'
+        if ($capture) { $geologyFingerprints += $capture.Matches[0].Groups[1].Value } else { $failed = $true }
+    }
     if ($process.ExitCode -ne 0 -or (Select-String -LiteralPath $stderr -Pattern 'SCRIPT ERROR|Parse Error|TEST_FAILED' -Quiet)) { $failed = $true }
 }
 if (-not $Only) {
+    if ($geologyFingerprints.Count -eq 2 -and $geologyFingerprints[0] -eq $geologyFingerprints[1]) {
+        Write-Output "GEOLOGY_CROSS_PROCESS_DETERMINISM_OK $($geologyFingerprints[0])"
+    } else { $failed = $true; Write-Output 'GEOLOGY_CROSS_PROCESS_DETERMINISM_FAILED' }
     if ($fingerprints.Count -eq 2 -and $fingerprints[0] -eq $fingerprints[1]) {
         Write-Output "TERRAIN_CROSS_PROCESS_DETERMINISM_OK $($fingerprints[0])"
     } else { $failed = $true; Write-Output 'TERRAIN_CROSS_PROCESS_DETERMINISM_FAILED' }

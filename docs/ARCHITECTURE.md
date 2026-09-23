@@ -69,6 +69,26 @@ Esses valores permanecem calibráveis.
 
 Salvar apenas aquilo que não puder ser reconstruído deterministicamente. Meshes, normals, colisões e caches não são persistência permanente.
 
+## Geologia estrutural superficial
+
+`PlanetGeology` é uma autoridade procedural separada de terreno, clima, biomas e
+recursos. É construída a partir da seed e de um snapshot do contexto continental
+e das macroformas, sem reter a instância de terreno. Descritores são somente-leitura
+após a construção; consultas não usam RNG nem dependem de face, patch, LOD ou câmera.
+
+`query_direction(d)` recebe direção unitária planetária; `query_position(p)` recebe
+posição relativa ao centro planetário e normaliza a direção (não consulta profundidade).
+O resultado é `Vector4(ID local, maturidade, influência dominante, deformação em metros)`.
+`type_of(ID)` e `describe(ID)` resolvem tipo e metadados; identidade entre consumidores
+usa `stable_key(ID)`, incluindo versão do gerador e seed, não apenas o ID local.
+
+IDs são discretos; maturidade e deformação são campos misturados contínuos. O ID
+dominante nunca determina sozinho a altura. `PlanetTerrain` permanece a autoridade
+radial única: macroforma base + modificador estrutural limitado. Mesh e debug derivam
+da mesma consulta; `sample_into` reutiliza um resultado pertencente ao consumidor,
+sem scratch mutável compartilhado pela autoridade. Profundidade, estratigrafia e
+recursos continuam futuros; o contrato e seus limites estão na Etapa 4.
+
 ## Planet Lab
 
 O Planet v0.1 usa uma cena/laboratório planetário mínima própria. Ela não depende da antiga hierarquia Galaxy / ScaledSpace / Local_Space.

@@ -41,7 +41,9 @@ var _last_selection: Array = []
 var terrain: PlanetTerrain
 var meters_per_unit := 1.0
 var debug_mode := 0
-const DEBUG_MODES := ["Faces/LOD", "Terra/oceano", "Altitude", "Continentalidade", "Macroformas", "Nivel do mar", "Costas"]
+const DEBUG_MODES := ["Faces/LOD", "Terra/oceano", "Altitude", "Continentalidade", "Macroformas", "Nivel do mar", "Costas",
+	"Provincia", "Maturidade", "Interiores antigos", "Cinturoes", "Bacias sedimentares", "Igneo/vulcanico",
+	"Planaltos estruturais", "Bacias fechadas", "Antigo marinho"]
 
 func initialize(p_radius: float, p_config: PlanetLodConfig, p_terrain: PlanetTerrain = null, p_meters_per_unit: float = 1.0) -> void:
 	assert(p_radius > 0.0 and p_config.is_valid())
@@ -403,7 +405,11 @@ func debug_text() -> String:
 		terrain_info = "Amostra radial: %.1f m | %s | mar 0 m\n" % [fields.x, PlanetTerrain.Form.keys()[int(fields.z)]]
 	if debug_mode == 4:
 		terrain_info += "0 oceano / 1 planicie / 2 colinas / 3 planalto / 4 serra / 5 cadeia / 6 vale / 7 bacia / 8 excepcional\n"
-	return ("F4: %s | seed %s\n" % [DEBUG_MODES[debug_mode], str(terrain.get_seed()) if terrain != null else "sphere"]) + terrain_info + "Leaves %d | total %d | visible~ %d | LOD %d..%d\nSplits %d / merges %d / commits %d | 2:1 %s\nStitched %d | %s | morph %.2f | pending %d\n%s leaf | stitch %s" % [
+	if debug_mode >= 7 and terrain != null and terrain.geology != null and not _camera_position.is_zero_approx():
+		var geo := terrain.geology.query_direction(_camera_position.normalized())
+		terrain_info += "%s | %s | idade %.2f | peso %.2f | delta %.1f m\n" % [terrain.geology.stable_key(int(geo.x)),
+			PlanetGeology.TYPE_NAMES[PlanetGeology.type_of(int(geo.x))], geo.y, geo.z, geo.w]
+	return ("F4 relevo / F5 geologia: %s | seed %s\n" % [DEBUG_MODES[debug_mode], str(terrain.get_seed()) if terrain != null else "sphere"]) + terrain_info + "Leaves %d | total %d | visible~ %d | LOD %d..%d\nSplits %d / merges %d / commits %d | 2:1 %s\nStitched %d | %s | morph %.2f | pending %d\n%s leaf | stitch %s" % [
 		tree.leaves.size(), tree.nodes.size(), visible_count, mini(low, high), high,
 		splits_last_update, merges_last_update, commits_last_update, "OK" if balance_ok else "FAILED",
 		stitched, state, morph, _pending.size() + int(not _job.is_empty()), sample.id, _edge_names(mask)]
