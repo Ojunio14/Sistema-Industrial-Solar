@@ -1,4 +1,14 @@
-# Validação da fundação doadora — Etapa 6
+# Validação da fundação e da geologia — Etapas 6–7
+
+O runner inclui `geology_test.gd` em dois processos independentes e compara o
+fingerprint. Verifica 8.192 alturas naturais antes/depois, ID/tipo/idade/
+influência, distribuição, bordas/cantos/LOD, fronteiras, workers concorrentes e
+igualdade dos atributos naturais de chunk com/sem geologia. Os testes da
+fundação permanecem com o oráculo imutável do doador.
+
+`surface_visual_test.gd` também captura F5: modos 1–9 no globo e província/
+maturidade nas outras oito poses. A comparação de hashes naturais com a
+Etapa 6 fica em `docs/evidence/07_reintegracao_geologia/natural_comparison.json`.
 
 `./tests/planet/run_validation.ps1` importa o projeto, abre PlanetLab em headless,
 testa câmeras, matemática, PlanetShape, geometria e LOD/WorkerThreadPool.

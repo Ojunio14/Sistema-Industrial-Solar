@@ -1,8 +1,10 @@
 # Arquitetura atual — Planet v0.1
 
 A Etapa 6 substituiu integralmente a superfície/renderer pela implementação
-runtime de Sistema_Industrial_v1. Detalhes e evidências:
-[06_substituicao_planeta.md](stages/06_substituicao_planeta.md).
+runtime de Sistema_Industrial_v1. A Etapa 7 acrescentou geologia consultável,
+sem mudar a autoridade natural. Detalhes:
+[06_substituicao_planeta.md](stages/06_substituicao_planeta.md) e
+[07_reintegracao_geologia.md](stages/07_reintegracao_geologia.md).
 
 ## Autoridade e escala
 
@@ -27,12 +29,27 @@ Workers produzem arrays locais. ArrayMesh/Nodes/SceneTree permanecem na main
 thread; revisão/alive invalidam jobs; shutdown recolhe tarefas pendentes.
 Normais usam stencil físico de 2 m, sem dependência de LOD/face.
 
+## Geologia superficial
+
+PlanetGeology recebe PlanetDefinition e deriva a subseed GEO2. Na construção,
+amostra PlanetShape e seleciona descritores a partir de altura, máscaras de
+montanha/planalto e relevo regional. Descritores e índice cartesiano 8³ ficam
+imutáveis durante consultas. `sample(direction)` retorna `Vector4(ID,
+maturidade, influência, tipo)`; `sample_with_surface` reutiliza componentes
+já obtidos pelo builder. Workers só leem a estrutura, sem Node/SceneTree ou
+Resource mutável. IDs são versionados e independentes de face, chunk e LOD.
+Geologia nunca retorna delta de altura.
+
+Uma cópia efêmera da classificação por vértice alimenta apenas o shader técnico
+de F5; a autoridade permanece no serviço consultável por direção/posição. Com
+F5 desligado, o material natural do doador permanece ativo. F4 mantém LOD.
+
 ## Sistemas suspensos
 
 archive/stages_02_05/.gdignore exclui gerador, renderer e testes antigos,
-preservando geologia, clima, dez biomas e materiais anteriores. Nenhum influencia
-o planeta atual. Etapas 4–5 são referências para futura reintegração sobre
-PlanetShape. Geologia/clima/biomas/recursos continuam conceitualmente separados.
+preservando a implementação histórica de geologia, clima, dez biomas e materiais.
+O código geológico antigo não roda; a Etapa 7 reimplementou sua camada de
+classificação sobre PlanetShape. Clima/biomas/recursos seguem desconectados.
 
 ## Mineração e deformação futuras
 
@@ -48,6 +65,6 @@ overhangs/cavernas continuam fora do escopo inicial.
 
 ## Planet Lab
 
-FreeFly, RTS, Orbital e CameraManager preservados. F4: LOD. Luz/ambiente
+FreeFly, RTS, Orbital e CameraManager preservados. F4: LOD; F5: geologia. Luz/ambiente
 constantes, fundo sólido e material técnico do doador. Sem nuvens, atmosfera,
 sky artístico, pós-processamento, oceano avançado ou colisão planetária.

@@ -24,6 +24,8 @@ class_name PlanetLODManager
 			(_runtime_material as ShaderMaterial).set_shader_parameter("show_lod", value)
 
 var shape: PlanetShape
+var geology: PlanetGeology
+var geology_debug_mode := 0
 var roots: Array[QuadtreeNode] = []
 var revision: int = 0
 var cache_hits: int = 0
@@ -39,6 +41,7 @@ var _cache: Dictionary = {}
 var _elapsed: float = 0.0
 var _debug_material: ShaderMaterial
 var _runtime_material: Material
+var _geology_material: ShaderMaterial
 var _force_selection := true
 var _sample_resolution: int = 17
 var _split_candidates: Array[QuadtreeNode] = []
@@ -57,6 +60,7 @@ func configure(source: PlanetDefinition) -> void:
 	_cache.clear()
 	_definition = source.duplicate(true) as PlanetDefinition if source else null
 	shape = PlanetShape.new(_definition) if _definition else null
+	geology = PlanetGeology.new(_definition) if _definition else null
 	if not _definition:
 		return
 	_sample_resolution = clampi(chunk_resolution, 5, 65)
@@ -71,6 +75,9 @@ func configure(source: PlanetDefinition) -> void:
 	shader_material.set_shader_parameter("show_lod", debug_lod_colors)
 	shader_material.set_shader_parameter("sea_normalized",
 		_definition.ocean_depth_m / maxf(_definition.ocean_depth_m + _definition.max_terrain_height_m, 0.01))
+	_geology_material = ShaderMaterial.new()
+	_geology_material.shader = preload("res://systems/planet/geology/geology_debug.gdshader")
+	_geology_material.set_shader_parameter("debug_mode", geology_debug_mode)
 	for face in range(6):
 		var node := _create_node(face, 0, Vector2i.ZERO)
 		roots.append(node)
@@ -229,7 +236,7 @@ func _dispatch_jobs() -> void:
 			cache_hits += 1
 			_uploads_this_frame += 1
 			continue
-		var builder := PlanetChunkBuilder.new(_definition, node.face, node.depth, node.cell, _sample_resolution)
+		var builder := PlanetChunkBuilder.new(_definition, node.face, node.depth, node.cell, _sample_resolution, geology)
 		var task := WorkerThreadPool.add_task(builder.build, false, "Planet " + node.key)
 		_jobs.append({"task": task, "builder": builder, "node": node, "revision": revision})
 
@@ -253,7 +260,7 @@ func _poll_jobs() -> void:
 			continue
 		var data: Dictionary = job.builder.result
 		var mesh := ArrayMesh.new()
-		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, data.arrays)
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, data.arrays, [], {}, data.format)
 		data.erase("arrays")
 		data["mesh"] = mesh
 		_attach(node, data)
@@ -276,7 +283,7 @@ func _attach(node: QuadtreeNode, data: Dictionary) -> void:
 	instance.layers = terrain_layers
 	instance.mesh = data.mesh
 	instance.custom_aabb = data.bounds.grow(0.01)
-	instance.material_override = _runtime_material
+	instance.material_override = _geology_material if geology_debug_mode > 0 else _runtime_material
 	instance.set_instance_shader_parameter("lod_color",
 		Color.from_hsv(fmod(float(node.depth) * 0.14 + float(node.face) * 0.015, 1.0), 0.62, 0.9))
 	instance.visible = node.depth == 0
@@ -346,6 +353,14 @@ func get_stats() -> Dictionary:
 		"generated": generated_chunks, "cache_hits": cache_hits, "discarded": discarded_jobs,
 		"build_ms": last_build_ms, "upload_ms": last_upload_ms, "revision": revision,
 		"rebalances": budget_rebalances}
+
+func set_geology_debug_mode(mode: int) -> void:
+	geology_debug_mode = posmod(mode, 10)
+	if _geology_material:
+		_geology_material.set_shader_parameter("debug_mode", geology_debug_mode)
+	for node: QuadtreeNode in _nodes.values():
+		if is_instance_valid(node.mesh_instance):
+			node.mesh_instance.material_override = _geology_material if geology_debug_mode > 0 else _runtime_material
 
 
 func _exit_tree() -> void:

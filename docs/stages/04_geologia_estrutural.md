@@ -3,6 +3,12 @@
 > Estado após a [Etapa 6](06_substituicao_planeta.md): design/código preservados,
 > temporariamente desconectados. Reintegração sobre PlanetShape ainda não realizada.
 
+> **Nota posterior (Etapa 7):** os conceitos de província, identidade e maturidade
+> foram reintegrados como serviço de classificação sobre PlanetShape; o código
+> histórico e seus modificadores de altura continuam arquivados. Consulte
+> [07_reintegracao_geologia.md](07_reintegracao_geologia.md). O restante desta
+> página descreve a implementação e as medições históricas da Etapa 4.
+
 Estado: concluída tecnicamente, com regressão, inspeção gráfica e profiling.
 Confirmação de voo manual específica desta etapa ainda não recebida.
 Referência: Godot 4.6.1, seed 73129, raio 50.000 m.

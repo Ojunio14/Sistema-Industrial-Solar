@@ -69,7 +69,8 @@ func _run() -> void:
 		expect(not FileAccess.file_exists("res://systems/planet/terrain/planet_terrain.gd"), "old sampler outside runtime")
 		var classes := ProjectSettings.get_global_class_list()
 		for entry in classes:
-			expect(entry.class not in ["PlanetTerrain", "PlanetGeology", "PlanetClimate", "PlanetQuadtreeView"], "legacy class excluded: " + entry.class)
+			expect(entry.class not in ["PlanetTerrain", "PlanetClimate", "PlanetQuadtreeView"], "legacy class excluded: " + entry.class)
+		expect(renderer.geology != null and renderer.geology_debug_mode == 0, "independent geology service, natural material")
 	camera.near = 0.5
 	camera.current = true
 	renderer.set_process(false)
@@ -117,6 +118,13 @@ func _run() -> void:
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png(output.path_join(scenario.name + "_lod.png"))
 		renderer.debug_lod_colors = false
+		if not reference:
+			for mode in range(1, 10 if scenario.name == "01_globe" else 3):
+				renderer.set_geology_debug_mode(mode)
+				await process_frame
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_geology_%02d.png" % mode))
+			renderer.set_geology_debug_mode(0)
 		print("CAPTURE ", scenario.name, " ", renderer.get_stats())
 	# Continuous navigation measured separately from convergence and screenshots.
 	rows.clear()

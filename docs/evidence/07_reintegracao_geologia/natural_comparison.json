@@ -1,0 +1,61 @@
+{
+  "matches": true,
+  "poses": [
+    {
+      "stage6_sha256": "1c82b438ad413d6f5b4c2bc0d19364e8f10020d24f04b477b39a2eb375b987fe",
+      "identical": true,
+      "stage7_sha256": "1c82b438ad413d6f5b4c2bc0d19364e8f10020d24f04b477b39a2eb375b987fe",
+      "pose": "01_globe"
+    },
+    {
+      "stage6_sha256": "ab7fbe8e121c09bae094840d4f54a8016f8de9c89368f8d835b28c1b5b6da8f6",
+      "identical": true,
+      "stage7_sha256": "ab7fbe8e121c09bae094840d4f54a8016f8de9c89368f8d835b28c1b5b6da8f6",
+      "pose": "02_low_orbit"
+    },
+    {
+      "stage6_sha256": "fa4a83c09f6e1d367d483ae5ec39ed916b9805837fe95a84b5227867430dfce8",
+      "identical": true,
+      "stage7_sha256": "fa4a83c09f6e1d367d483ae5ec39ed916b9805837fe95a84b5227867430dfce8",
+      "pose": "03_kilometers"
+    },
+    {
+      "stage6_sha256": "e35284c8fb0ba58bbf2d26a1a917bec00c97f62b058f5d7c4c23efb3b82897d0",
+      "identical": true,
+      "stage7_sha256": "e35284c8fb0ba58bbf2d26a1a917bec00c97f62b058f5d7c4c23efb3b82897d0",
+      "pose": "04_hundreds"
+    },
+    {
+      "stage6_sha256": "1d9395234be5a7b73d8e662e453378f7ee83285b6be1ecb7f7d4d26b24e597de",
+      "identical": true,
+      "stage7_sha256": "1d9395234be5a7b73d8e662e453378f7ee83285b6be1ecb7f7d4d26b24e597de",
+      "pose": "05_ground"
+    },
+    {
+      "stage6_sha256": "292a9954a9cf0db8cd1db95a875c6daaae016ad444f90a170714db1cd730f6f1",
+      "identical": true,
+      "stage7_sha256": "292a9954a9cf0db8cd1db95a875c6daaae016ad444f90a170714db1cd730f6f1",
+      "pose": "06_mountains"
+    },
+    {
+      "stage6_sha256": "721ecda2404c8a02042a500f37ac7098429c08718b0adc370c90176b5effbb27",
+      "identical": true,
+      "stage7_sha256": "721ecda2404c8a02042a500f37ac7098429c08718b0adc370c90176b5effbb27",
+      "pose": "07_horizon"
+    },
+    {
+      "stage6_sha256": "b8046abb09798e317952f75204cc3e427b3b4db1991e37feb05281cfc7aa7038",
+      "identical": true,
+      "stage7_sha256": "b8046abb09798e317952f75204cc3e427b3b4db1991e37feb05281cfc7aa7038",
+      "pose": "08_cube_edge"
+    },
+    {
+      "stage6_sha256": "39d1b7fd5c4c9ae196bbe97a974b7ca027ff3b5b6b887403b21680059c48d4bd",
+      "identical": true,
+      "stage7_sha256": "39d1b7fd5c4c9ae196bbe97a974b7ca027ff3b5b6b887403b21680059c48d4bd",
+      "pose": "09_retreat"
+    }
+  ],
+  "reference": "Stage 6 target_repeat",
+  "method": "SHA-256 of PNG bytes, same 1100x760 Vulkan capture script and poses"
+}
