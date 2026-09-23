@@ -1,5 +1,9 @@
 # Etapa 2 — Quadtree global
 
+> Nota histórica: esta implementação de superfície/renderização foi substituída
+> integralmente na [Etapa 6 — Substituição do planeta](06_substituicao_planeta.md).
+> Seus parâmetros e resultados descrevem a implementação anterior.
+
 Status: concluída após otimização, regressão estrutural e confirmação do usuário
 de que não percebe mais pausas relevantes no voo manual. Limites abaixo.
 

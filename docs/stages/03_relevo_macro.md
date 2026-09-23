@@ -1,5 +1,9 @@
 # Etapa 3 — Relevo macro
 
+> Nota histórica: esta implementação de superfície/renderização foi substituída
+> integralmente na [Etapa 6 — Substituição do planeta](06_substituicao_planeta.md).
+> Seus parâmetros e resultados descrevem a implementação anterior.
+
 Estado: implementação e validação técnica concluídas em 22/09/2026.
 O usuário confirmou não perceber pausas relevantes no voo manual com o relevo.
 

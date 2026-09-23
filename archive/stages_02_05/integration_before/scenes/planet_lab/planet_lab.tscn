@@ -1,0 +1,57 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="PackedScene" path="res://systems/cameras/free_fly_camera.tscn" id="1_free_fly"]
+[ext_resource type="PackedScene" path="res://systems/cameras/rts_camera.tscn" id="2_rts"]
+[ext_resource type="PackedScene" path="res://systems/cameras/orbital_camera.tscn" id="3_orbital"]
+[ext_resource type="Script" path="res://scenes/planet_lab/camera_debug_overlay.gd" id="4_debug"]
+[ext_resource type="Script" path="res://systems/planet/planet_root.gd" id="5_planet_root"]
+[ext_resource type="Resource" path="res://systems/planet/default_planet_definition.tres" id="6_definition"]
+[ext_resource type="Resource" path="res://systems/planet/quadtree/default_planet_lod.tres" id="7_lod"]
+
+[node name="PlanetLab" type="Node3D"]
+
+[node name="Planet" type="Node3D" parent="."]
+script = ExtResource("5_planet_root")
+definition = ExtResource("6_definition")
+lod_config = ExtResource("7_lod")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-32, 28, -24)
+light_color = Color(1, 0.95, 0.87, 1)
+light_energy = 1.2
+shadow_enabled = false
+
+[node name="Cameras" type="Node3D" parent="."]
+
+[node name="FreeFlyCamera" parent="Cameras" instance=ExtResource("1_free_fly")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 140000)
+base_speed = 15000.0
+near = 10.0
+far = 500000.0
+
+[node name="RTSCamera" parent="Cameras" instance=ExtResource("2_rts")]
+position = Vector3(0, 50000, 0)
+min_zoom = 20000.0
+max_zoom = 150000.0
+zoom_speed = 5000.0
+pan_speed = 2.0
+
+[node name="OrbitalCamera" parent="Cameras" node_paths=PackedStringArray("target") instance=ExtResource("3_orbital")]
+target = NodePath("../../Planet")
+orbit_radius = 140000.0
+minimum_orbit_distance = 51000.0
+maximum_orbit_distance = 350000.0
+zoom_step = 5000.0
+
+[node name="Debug" type="CanvasLayer" parent="."]
+script = ExtResource("4_debug")
+
+[node name="ActiveCameraLabel" type="Label" parent="Debug"]
+offset_left = 12.0
+offset_top = 10.0
+offset_right = 220.0
+offset_bottom = 36.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.75)
+theme_override_font_sizes/font_size = 14
+text = "Camera: None"

@@ -1,0 +1,13 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+Vulkan 1.3.212 - Forward+ - Using Device #0: AMD - AMD Radeon(TM) Vega 3 Graphics
+
+CAPTURE 01_globe { "visible": 93, "resident": 122, "queued": 0, "jobs": 0, "cached": 0, "depth": 3, "triangles": 59520, "generated": 122, "cache_hits": 0, "discarded": 0, "build_ms": 24.401, "upload_ms": 0.005, "revision": 1, "rebalances": 0 }
+CAPTURE 02_low_orbit { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 44, "depth": 5, "triangles": 245760, "generated": 554, "cache_hits": 0, "discarded": 0, "build_ms": 20.435, "upload_ms": 0.004, "revision": 1, "rebalances": 0 }
+CAPTURE 03_kilometers { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 96, "depth": 6, "triangles": 245760, "generated": 622, "cache_hits": 0, "discarded": 0, "build_ms": 20.939, "upload_ms": 0.003, "revision": 1, "rebalances": 0 }
+CAPTURE 04_hundreds { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 96, "depth": 8, "triangles": 245760, "generated": 754, "cache_hits": 0, "discarded": 0, "build_ms": 32.683, "upload_ms": 0.004, "revision": 1, "rebalances": 12 }
+CAPTURE 05_ground { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 96, "depth": 8, "triangles": 245760, "generated": 770, "cache_hits": 0, "discarded": 0, "build_ms": 36.214, "upload_ms": 0.003, "revision": 1, "rebalances": 14 }
+CAPTURE 06_mountains { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 84, "depth": 8, "triangles": 245760, "generated": 782, "cache_hits": 12, "discarded": 0, "build_ms": 28.218, "upload_ms": 0.006, "revision": 1, "rebalances": 20 }
+CAPTURE 07_horizon { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 72, "depth": 8, "triangles": 245760, "generated": 786, "cache_hits": 36, "discarded": 0, "build_ms": 19.629, "upload_ms": 0.003, "revision": 1, "rebalances": 23 }
+CAPTURE 08_cube_edge { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 96, "depth": 6, "triangles": 245760, "generated": 1266, "cache_hits": 36, "discarded": 0, "build_ms": 18.317, "upload_ms": 0.004, "revision": 1, "rebalances": 23 }
+CAPTURE 09_retreat { "visible": 96, "resident": 126, "queued": 0, "jobs": 0, "cached": 96, "depth": 3, "triangles": 61440, "generated": 1286, "cache_hits": 36, "discarded": 0, "build_ms": 23.604, "upload_ms": 0.003, "revision": 1, "rebalances": 23 }
+SURFACE_VISUAL_OK frames=720

@@ -48,3 +48,15 @@
 - **Decisão:** não adicionar texturas finais antecipadamente. Assets entram quando a etapa correspondente exigir e seus requisitos técnicos estiverem definidos.
 - **Motivo:** evitar dependências prematuras e assets órfãos.
 - **Consequências:** cada etapa deve justificar os assets que introduzir.
+
+
+## Substituição integral pela fundação doadora — Etapa 6
+
+- **Status:** aprovado explicitamente pelo usuário em 23/09/2026.
+- **Decisão:** usar PlanetShape, cube-sphere, chunks, LOD, normais e workers do
+  Sistema_Industrial_v1 com preset 100 km/seed 12051965, sem híbrido com renderer
+  anterior. Supera a implementação macro e a restrição de geração continental
+  das Etapas 2–3: ruído/warp do doador são agora a autoridade natural deliberada.
+- **Consequências:** antigas quotas/âncoras não são requisitos; geologia/clima/
+  biomas preservados mas desconectados. Mineração e base_height + edit_delta
+  continuam no plano. Nenhuma reintegração, efeito ou gameplay nesta execução.

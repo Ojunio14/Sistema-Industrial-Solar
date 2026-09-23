@@ -1,0 +1,29 @@
+{
+  "01_globe": {
+    "mean_absolute_rgb_0_255": 0.0
+  },
+  "02_low_orbit": {
+    "mean_absolute_rgb_0_255": 0.01880193236714976
+  },
+  "03_kilometers": {
+    "mean_absolute_rgb_0_255": 0.0473024154589372
+  },
+  "04_hundreds": {
+    "mean_absolute_rgb_0_255": 0.0
+  },
+  "05_ground": {
+    "mean_absolute_rgb_0_255": 0.0
+  },
+  "06_mountains": {
+    "mean_absolute_rgb_0_255": 0.315431884057971
+  },
+  "07_horizon": {
+    "mean_absolute_rgb_0_255": 0.001348792270531401
+  },
+  "08_cube_edge": {
+    "mean_absolute_rgb_0_255": 0.0
+  },
+  "09_retreat": {
+    "mean_absolute_rgb_0_255": 0.062148792270531404
+  }
+}

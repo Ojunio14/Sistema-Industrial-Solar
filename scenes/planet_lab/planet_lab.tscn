@@ -1,26 +1,38 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="PackedScene" path="res://systems/cameras/free_fly_camera.tscn" id="1_free_fly"]
 [ext_resource type="PackedScene" path="res://systems/cameras/rts_camera.tscn" id="2_rts"]
 [ext_resource type="PackedScene" path="res://systems/cameras/orbital_camera.tscn" id="3_orbital"]
 [ext_resource type="Script" path="res://scenes/planet_lab/camera_debug_overlay.gd" id="4_debug"]
-[ext_resource type="Script" path="res://systems/planet/planet_root.gd" id="5_planet_root"]
-[ext_resource type="Resource" path="res://systems/planet/default_planet_definition.tres" id="6_definition"]
-[ext_resource type="Resource" path="res://systems/planet/quadtree/default_planet_lod.tres" id="7_lod"]
+[ext_resource type="PackedScene" path="res://systems/planet/planet.tscn" id="5_planet"]
+
+[sub_resource type="Environment" id="Environment_technical"]
+background_mode = 1
+background_color = Color(0.012, 0.017, 0.029, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.64, 0.71, 0.85, 1)
+ambient_light_energy = 0.25
+ambient_light_sky_contribution = 0.0
+reflected_light_source = 1
 
 [node name="PlanetLab" type="Node3D"]
 
-[node name="Planet" type="Node3D" parent="."]
-script = ExtResource("5_planet_root")
-definition = ExtResource("6_definition")
-lod_config = ExtResource("7_lod")
+[node name="Planet" parent="." instance=ExtResource("5_planet")]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_technical")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+rotation_degrees = Vector3(-35, -30, 0)
+light_energy = 1.5
+shadow_enabled = false
 
 [node name="Cameras" type="Node3D" parent="."]
 
 [node name="FreeFlyCamera" parent="Cameras" instance=ExtResource("1_free_fly")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 140000)
 base_speed = 15000.0
-near = 10.0
+near = 0.5
 far = 500000.0
 
 [node name="RTSCamera" parent="Cameras" instance=ExtResource("2_rts")]

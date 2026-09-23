@@ -1,0 +1,4 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+TERRAIN min=-350.0 m max=874.7 m ocean=45.3% regions={ 4: 167, 3: 1162, 2: 410, 5: 529, 1: 930, 0: 857, 6: 41 } local_step=13.815 m peak=(-0.83414, -0.045166, 0.5497)
+Planet terrain: PASS (4096 amostras).

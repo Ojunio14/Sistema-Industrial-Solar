@@ -1,0 +1,230 @@
+{
+  "target": {
+    "frame_ms": {
+      "median": 30.188,
+      "p95": 31.483,
+      "max": 94.446
+    },
+    "update_ms": {
+      "median": 0.959,
+      "p95": 7.742,
+      "max": 14.57
+    },
+    "upload_poll_ms": {
+      "median": 0.258,
+      "p95": 0.47,
+      "max": 0.782
+    },
+    "observed_chunk_build_ms": {
+      "median": 24.323,
+      "p95": 35.283,
+      "max": 210.049
+    },
+    "max_workers": 2,
+    "max_queue": 328,
+    "max_resident": 510,
+    "max_uploads": 2,
+    "frames_over_50ms": 2,
+    "frames_over_100ms": 0,
+    "phases": {
+      "approach": {
+        "median": 30.149,
+        "p95": 33.748,
+        "max": 94.446
+      },
+      "near_lateral": {
+        "median": 29.665,
+        "p95": 31.126,
+        "max": 31.876
+      },
+      "retreat": {
+        "median": 30.424,
+        "p95": 31.324,
+        "max": 32.039
+      }
+    },
+    "backend": "forward_plus",
+    "frames": 720
+  },
+  "reference": {
+    "frame_ms": {
+      "median": 30.18,
+      "p95": 31.106,
+      "max": 32.044
+    },
+    "update_ms": {
+      "median": 1.004,
+      "p95": 9.247,
+      "max": 18.977
+    },
+    "upload_poll_ms": {
+      "median": 0.254,
+      "p95": 0.476,
+      "max": 0.978
+    },
+    "observed_chunk_build_ms": {
+      "median": 22.86,
+      "p95": 34.02,
+      "max": 57.087
+    },
+    "max_workers": 2,
+    "max_queue": 318,
+    "max_resident": 510,
+    "max_uploads": 2,
+    "frames_over_50ms": 0,
+    "frames_over_100ms": 0,
+    "phases": {
+      "approach": {
+        "median": 30.122,
+        "p95": 31.127,
+        "max": 31.778
+      },
+      "near_lateral": {
+        "median": 30.345,
+        "p95": 31.165,
+        "max": 31.785
+      },
+      "retreat": {
+        "median": 30.069,
+        "p95": 31.083,
+        "max": 32.044
+      }
+    },
+    "backend": "forward_plus",
+    "frames": 720
+  },
+  "target_repeat": {
+    "frame_ms": {
+      "median": 30.089,
+      "p95": 31.117,
+      "max": 33.409
+    },
+    "update_ms": {
+      "median": 0.949,
+      "p95": 8.7,
+      "max": 15.58
+    },
+    "upload_poll_ms": {
+      "median": 0.254,
+      "p95": 0.469,
+      "max": 1.104
+    },
+    "observed_chunk_build_ms": {
+      "median": 23.399,
+      "p95": 31.613,
+      "max": 45.655
+    },
+    "max_workers": 2,
+    "max_queue": 325,
+    "max_resident": 510,
+    "max_uploads": 2,
+    "frames_over_50ms": 0,
+    "frames_over_100ms": 0,
+    "phases": {
+      "approach": {
+        "median": 29.889,
+        "p95": 31.048,
+        "max": 33.409
+      },
+      "near_lateral": {
+        "median": 30.331,
+        "p95": 31.231,
+        "max": 32.65
+      },
+      "retreat": {
+        "median": 29.627,
+        "p95": 31.083,
+        "max": 31.729
+      }
+    },
+    "backend": "forward_plus",
+    "frames": 720
+  },
+  "old_stage5_different_route": {
+    "renderer": "forward_plus",
+    "near_radius": 53000.0,
+    "warmup_updates": 1433,
+    "warmup_peak_us": 51153,
+    "construction_us": 129637,
+    "summary": {
+      "array_mesh_us": {
+        "max_ms": 3.49,
+        "p95_ms": 1.857,
+        "peak_phase": "settle",
+        "total_ms": 339.141
+      },
+      "balance_us": {
+        "max_ms": 14.597,
+        "p95_ms": 7.549,
+        "peak_phase": "settle",
+        "total_ms": 946.646000000001
+      },
+      "debug_us": {
+        "max_ms": 6.062,
+        "p95_ms": 3.343,
+        "peak_phase": "settle",
+        "total_ms": 385.509
+      },
+      "frame_us": {
+        "max_ms": 29.178,
+        "p95_ms": 17.313,
+        "peak_phase": "near",
+        "total_ms": 41933.6319999999
+      },
+      "generate_us": {
+        "max_ms": 9.844,
+        "p95_ms": 6.48,
+        "peak_phase": "approach",
+        "total_ms": 8637.182
+      },
+      "sample_us": {
+        "max_ms": 4.246,
+        "p95_ms": 1.93,
+        "peak_phase": "lateral",
+        "total_ms": 314.82
+      },
+      "selection_sse_us": {
+        "max_ms": 8.47,
+        "p95_ms": 0.0,
+        "peak_phase": "settle",
+        "total_ms": 123.126
+      },
+      "selection_total_us": {
+        "max_ms": 23.067,
+        "p95_ms": 19.184,
+        "peak_phase": "settle",
+        "total_ms": 346.493
+      },
+      "stitch_us": {
+        "max_ms": 3.31,
+        "p95_ms": 1.773,
+        "peak_phase": "near",
+        "total_ms": 77.4390000000001
+      },
+      "terrain_displace_us": {
+        "max_ms": 9.762,
+        "p95_ms": 6.415,
+        "peak_phase": "approach",
+        "total_ms": 8427.72399999999
+      },
+      "update_us": {
+        "max_ms": 23.103,
+        "p95_ms": 6.528,
+        "peak_phase": "settle",
+        "total_ms": 10749.537
+      },
+      "visual_create_us": {
+        "max_ms": 0.6,
+        "p95_ms": 0.309,
+        "peak_phase": "settle",
+        "total_ms": 59.8920000000001
+      },
+      "visual_replace_us": {
+        "max_ms": 0.987,
+        "p95_ms": 0.799,
+        "peak_phase": "settle",
+        "total_ms": 24.704
+      }
+    }
+  }
+}

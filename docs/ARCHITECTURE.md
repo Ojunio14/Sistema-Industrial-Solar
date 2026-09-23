@@ -1,107 +1,53 @@
-# Arquitetura aprovada — Planet v0.1
+# Arquitetura atual — Planet v0.1
 
-## Superfície planetária
+A Etapa 6 substituiu integralmente a superfície/renderer pela implementação
+runtime de Sistema_Industrial_v1. Detalhes e evidências:
+[06_substituicao_planeta.md](stages/06_substituicao_planeta.md).
 
-Existe uma única superfície física e visual do planeta. Mineração futura não será uma segunda malha sobre o terreno.
+## Autoridade e escala
 
-## Autoridade dos dados
+Uma superfície radial, 1 unidade = 1 metro, raio 50.000 m e seed 12051965.
+PlanetShape.sample_base_height / sample_height_m é a autoridade natural.
+Direção/seed/configuração determinam a altura independentemente de câmera,
+face, chunk, LOD e ordem. Mesh/futura colisão/caches são dados derivados.
+Preset único: systems/planet/surface/data/test_planet_100km.tres.
+Sem quotas continentais ou anchors da antiga Etapa 3.
 
-Dados do terreno são a fonte de verdade. Mesh, colisão e caches são representações derivadas e reconstruíveis.
+## Runtime
 
-Fluxo conceitual:
+PlanetLab → PlanetRoot → PlanetLODManager → QuadtreeNode → PlanetChunkBuilder.
+PlanetRoot adapta câmeras/overlay. CubeSphereMapping é a conversão canônica.
+IDs face/depth/cell, chave face/depth/x/y; não dependem de Node/XYZ da mesh.
+O quadro UV mudou para o doador: IDs antigos não são diretamente intercambiáveis.
 
-```text
-dados do terreno → mesh / colisão / caches
-```
+Seis quadtrees; 17×17 amostras; LOD8; erro projetado/tamanho aparente de quad,
+histerese, troca pai/quatro filhos e saias. Não há antigo stitching 2:1/morph.
+Até 510 residentes, 96 em cache, dois workers/uploads e budget flexível de 2 ms.
+Workers produzem arrays locais. ArrayMesh/Nodes/SceneTree permanecem na main
+thread; revisão/alive invalidam jobs; shutdown recolhe tarefas pendentes.
+Normais usam stencil físico de 2 m, sem dependência de LOD/face.
 
-## Terreno principal
+## Sistemas suspensos
 
-A direção arquitetural aprovada é um heightfield esférico/radial. Voxel global não será usado como fundação do planeta.
+archive/stages_02_05/.gdignore exclui gerador, renderer e testes antigos,
+preservando geologia, clima, dez biomas e materiais anteriores. Nenhum influencia
+o planeta atual. Etapas 4–5 são referências para futura reintegração sobre
+PlanetShape. Geologia/clima/biomas/recursos continuam conceitualmente separados.
 
-Cavernas, túneis e overhangs complexos não fazem parte do escopo inicial.
+## Mineração e deformação futuras
 
-## Coordenadas
-
-A direção hierárquica prevista é:
-
-```text
-Planet
-→ Cube Face
-→ UV
-→ Quadtree Patch
-→ Mining Chunk
-→ Cell
-```
-
-Identidades persistentes de regiões não devem depender exclusivamente de XYZ global.
-
-## Cube-sphere e quadtree
-
-Cada face da cube-sphere terá seu próprio quadtree.
-
-A API de vizinhança entre faces deverá ser centralizada; sistemas individuais não deverão inventar regras próprias de borda.
-
-O quadtree definitivo deverá posteriormente trabalhar com:
-
-- Screen Space Error;
-- balanceamento 2:1;
-- edge stitching;
-- geomorphing;
-- skirts somente como fallback.
-
-Esses mecanismos ainda não estão implementados.
-
-## Mining Zones
-
-Mining Zone será simultaneamente um conceito de gameplay e um mecanismo técnico para ativação de dados detalhados de mineração. Não é uma segunda superfície.
-
-## Mining Chunks
-
-A direção aprovada é:
-
-- aproximadamente 256 × 256 m;
-- células nominais de aproximadamente 2 × 2 m;
-- dados detalhados apenas onde necessários.
-
-Esses valores permanecem calibráveis.
-
-## Persistência
-
-Salvar apenas aquilo que não puder ser reconstruído deterministicamente. Meshes, normals, colisões e caches não são persistência permanente.
-
-## Geologia estrutural superficial
-
-`PlanetGeology` é uma autoridade procedural separada de terreno, clima, biomas e
-recursos. É construída a partir da seed e de um snapshot do contexto continental
-e das macroformas, sem reter a instância de terreno. Descritores são somente-leitura
-após a construção; consultas não usam RNG nem dependem de face, patch, LOD ou câmera.
-
-`query_direction(d)` recebe direção unitária planetária; `query_position(p)` recebe
-posição relativa ao centro planetário e normaliza a direção (não consulta profundidade).
-O resultado é `Vector4(ID local, maturidade, influência dominante, deformação em metros)`.
-`type_of(ID)` e `describe(ID)` resolvem tipo e metadados; identidade entre consumidores
-usa `stable_key(ID)`, incluindo versão do gerador e seed, não apenas o ID local.
-
-IDs são discretos; maturidade e deformação são campos misturados contínuos. O ID
-dominante nunca determina sozinho a altura. `PlanetTerrain` permanece a autoridade
-radial única: macroforma base + modificador estrutural limitado. Mesh e debug derivam
-da mesma consulta; `sample_into` reutiliza um resultado pertencente ao consumidor,
-sem scratch mutável compartilhado pela autoridade. Profundidade, estratigrafia e
-recursos continuam futuros; o contrato e seus limites estão na Etapa 4.
-
-## Clima e biomas superficiais
-
-`PlanetClimate` é uma autoridade determinística de consulta derivada do terreno
-final, sem influência inversa sobre sua altura ou sobre a geologia. Direção
-planetária unitária (ou posição relativa ao centro normalizada) e seed determinam
-campos climáticos contínuos. Dez pesos de bioma terrestres somam 1 em terra;
-água não recebe bioma terrestre. ID dominante é diagnóstico e não alimenta os
-próprios pesos. `PlanetClimateSample` é saída reutilizável pelo consumidor, e
-`sample_into` recebe a amostra de terreno já calculada. A mesh e o shader são
-derivados dessa API. Parâmetros e limites operacionais estão na Etapa 5.
+Planet → Cube Face → Quadtree Patch/Chunk → Mining Zone → Mining Chunk → Cell.
+base_height(direction) + terrain_edit_delta(position_m) = final_height.
+Mining Zones ativarão dados detalhados sem segunda superfície; chunks ~256×256 m
+e células ~2 m. A mesh global não precisa dessa resolução. Deltas serão aplicados
+antes de gerar vértices/normais/colisão; snapshots/revisões invalidarão chunks
+afetados e seus caches/jobs. Persistir somente alterações não reconstruíveis.
+Configure hoje reconstrói globalmente; edição, volume, invalidação regional,
+colisão e persistência são futuros. Heightfield radial sem voxel global;
+overhangs/cavernas continuam fora do escopo inicial.
 
 ## Planet Lab
 
-O Planet v0.1 usa uma cena/laboratório planetário mínima própria. Ela não depende da antiga hierarquia Galaxy / ScaledSpace / Local_Space.
-
-Isso não impede que sistemas espaciais equivalentes sejam introduzidos futuramente no jogo completo.
+FreeFly, RTS, Orbital e CameraManager preservados. F4: LOD. Luz/ambiente
+constantes, fundo sólido e material técnico do doador. Sem nuvens, atmosfera,
+sky artístico, pós-processamento, oceano avançado ou colisão planetária.

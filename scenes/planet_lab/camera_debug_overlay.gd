@@ -19,10 +19,9 @@ func _refresh_label(camera_id: StringName) -> void:
 
 func _process(delta: float) -> void:
 	var planet := get_parent().get_node_or_null("Planet") as PlanetRoot
-	if planet == null or planet.quadtree_view == null:
+	if planet == null or planet.renderer == null:
 		return
-	var started: int = planet.quadtree_view.profile.stamp()
-	active_camera_label.visible = planet.lod_config.show_overlay
+	active_camera_label.visible = planet.show_overlay
 	if not active_camera_label.visible:
 		return
 	_refresh_elapsed += delta
@@ -30,5 +29,4 @@ func _process(delta: float) -> void:
 		return
 	_refresh_elapsed = 0.0
 	_refresh_label(CameraManager.get_active_camera_id())
-	active_camera_label.text += "\n" + planet.quadtree_view.debug_text()
-	planet.quadtree_view.profile.finish(&"debug_us", started)
+	active_camera_label.text += "\n" + planet.debug_text()

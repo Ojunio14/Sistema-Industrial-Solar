@@ -1,5 +1,8 @@
 # Etapa 4 — Geologia Estrutural
 
+> Estado após a [Etapa 6](06_substituicao_planeta.md): design/código preservados,
+> temporariamente desconectados. Reintegração sobre PlanetShape ainda não realizada.
+
 Estado: concluída tecnicamente, com regressão, inspeção gráfica e profiling.
 Confirmação de voo manual específica desta etapa ainda não recebida.
 Referência: Godot 4.6.1, seed 73129, raio 50.000 m.

@@ -1,0 +1,10 @@
+{
+  "scripts/PlanetDefinition.gd": "879b942e80b5eb8302c2a3432952858cd9f511728d9c42d878bab74bb25db6aa",
+  "scripts/PlanetShape.gd": "566a8714a30c11cb65afd29241429cb8f9b7baf6df4650d0dc9c541595a18e0c",
+  "scripts/CubeSphereMapping.gd": "0dac155ad0d66ab49fa47baa80fe9c17a016836b5007a0ae7ee8696b5c262d6b",
+  "scripts/lod/PlanetLODManager.gd": "c974b1cd0d7c5199606f5cf57b8514e6731c171a027e9a31bda6a43d58adfe72",
+  "scripts/lod/PlanetChunkBuilder.gd": "f544e604b18484758d38c1f03c0eb4f025e12bef09bffd39c1831144743d1fb2",
+  "scripts/lod/QuadtreeNode.gd": "c8f0d9ee709228e4956aebc7bb862fffac901f3dbd06d122a7e253db07881fa0",
+  "materials/planet_lod_debug.gdshader": "f1b0e55e5fb2530682b6722f1a44d5cc6ebaa41a851c52650194d655bd020471",
+  "data/test_planet_100km.tres": "33ae07093fe3ae4dc05924809c84e569c005823f87146b73c0571094b6d7a730"
+}

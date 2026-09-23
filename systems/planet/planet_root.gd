@@ -1,52 +1,32 @@
 class_name PlanetRoot
 extends Node3D
-
+## Planet Lab adapter only; all surface/LOD work belongs to the donor pipeline.
 @export var definition: PlanetDefinition
-@export var lod_config: PlanetLodConfig
-var quadtree_view: PlanetQuadtreeView
-var terrain: PlanetTerrain
-var climate: PlanetClimate
-
+@export var show_overlay := true
+var renderer: PlanetLODManager
 
 func _ready() -> void:
-	if definition == null or not definition.is_valid():
-		push_error("PlanetRoot requires a valid definition.")
-		return
-	if lod_config == null:
-		lod_config = PlanetLodConfig.new()
-	if definition.terrain_enabled:
-		terrain = PlanetTerrain.new(definition.terrain_seed, definition.geology_enabled)
-		if definition.climate_enabled:
-			climate = PlanetClimate.new(definition.terrain_seed, terrain)
-	quadtree_view = PlanetQuadtreeView.new()
-	add_child(quadtree_view)
-	quadtree_view.initialize(get_base_radius_units(), lod_config, terrain, definition.meters_per_unit, climate)
-
-
-func _unhandled_key_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and quadtree_view != null:
-		if event.keycode == KEY_F4:
-			quadtree_view.set_debug_mode(0 if quadtree_view.debug_mode >= 7 else (quadtree_view.debug_mode + 1) % 7)
-		elif event.keycode == KEY_F5:
-			quadtree_view.set_debug_mode(7 if quadtree_view.debug_mode < 7 or quadtree_view.debug_mode >= 15 else quadtree_view.debug_mode + 1)
-		elif event.keycode == KEY_F6:
-			quadtree_view.set_debug_mode(16 if quadtree_view.debug_mode < 16 or quadtree_view.debug_mode >= 22 else quadtree_view.debug_mode + 1)
-
-
-func _process(delta: float) -> void:
-	var camera := get_viewport().get_camera_3d()
-	if camera != null and quadtree_view != null:
-		quadtree_view.update_camera(camera, delta)
-
+	assert(definition != null and is_equal_approx(definition.radius_m, 50000.0))
+	renderer = PlanetLODManager.new()
+	renderer.name = "Surface"
+	add_child(renderer)
+	renderer.configure(definition)
 
 func get_base_radius_units() -> float:
-	return definition.get_base_radius_units() if definition != null else 0.0
+	return definition.radius_m
 
+func sample_base_height(direction: Vector3) -> float:
+	return renderer.shape.sample_base_height(direction)
 
-func _get_configuration_warnings() -> PackedStringArray:
-	var warnings := PackedStringArray()
-	if definition == null:
-		warnings.append("PlanetRoot requires a PlanetDefinition.")
-	elif not definition.is_valid():
-		warnings.append("PlanetRoot has an invalid PlanetDefinition.")
-	return warnings
+func _unhandled_key_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and renderer != null:
+		if event.keycode == KEY_F4:
+			renderer.debug_lod_colors = not renderer.debug_lod_colors
+
+func debug_text() -> String:
+	if renderer == null:
+		return "Inicializando superfície"
+	var s := renderer.get_stats()
+	return "Doador | seed %d | raio %.0f m | F4 LOD\nChunks %d / residentes %d | LOD %d | triângulos %d\nFila %d | workers %d | cache %d | revisão %d\nGeração %.2f ms | uploads %.2f ms" % [
+		definition.seed, definition.radius_m, s.visible, s.resident, s.depth, s.triangles,
+		s.queued, s.jobs, s.cached, s.revision, s.build_ms, s.upload_ms]
