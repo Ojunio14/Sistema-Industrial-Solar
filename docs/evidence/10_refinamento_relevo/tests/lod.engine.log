@@ -1,0 +1,5 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+NEAR { "visible": 96, "resident": 126, "queued": 0, "jobs": 0, "cached": 0, "depth": 4, "triangles": 18432, "generated": 126, "cache_hits": 0, "discarded": 0, "build_ms": 7.761, "upload_ms": 0.002, "revision": 1, "rebalances": 0 }
+FINAL { "visible": 6, "resident": 6, "queued": 0, "jobs": 0, "cached": 0, "depth": 0, "triangles": 1152, "generated": 360, "cache_hits": 20, "discarded": 2, "build_ms": 12.072, "upload_ms": 0.003, "revision": 2, "rebalances": 10 }
+Planet LOD: PASS (4936 verificações).

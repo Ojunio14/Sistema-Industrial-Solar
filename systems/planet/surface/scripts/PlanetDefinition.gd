@@ -110,6 +110,10 @@ class_name PlanetDefinition
 		emit_changed()
 
 @export_group("Detalhe regional")
+@export var relief_enabled: bool = true:
+	set(value):
+		relief_enabled = value
+		emit_changed()
 @export_range(0.1, 128.0, 0.01) var detail_scale: float = 28.0:
 	set(value):
 		detail_scale = maxf(value, 0.1)
@@ -130,6 +134,11 @@ class_name PlanetDefinition
 
 func get_diameter_m() -> float:
 	return radius_m * 2.0
+
+
+## Conservative bound of natural relief; max_terrain_height_m remains the legacy color scale.
+func natural_max_height_m() -> float:
+	return 45.0 + lowland_height_m + (3.0*mountain_height_m + 2.0*plateau_height_m + 400.0 if relief_enabled else 0.0)
 
 
 func get_surface_gravity_acceleration(local_position: Vector3) -> Vector3:

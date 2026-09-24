@@ -24,7 +24,7 @@ func _init(source: PlanetDefinition, face_id: int, level: int, address: Vector2i
 
 func build() -> void:
 	var started := Time.get_ticks_usec()
-	var shape := PlanetShape.new(definition)
+	var shape := PlanetShape.new(definition, geology)
 	var size := 1.0 / float(1 << depth)
 	var origin := Vector2(cell) * size
 	var count := resolution * resolution
@@ -89,6 +89,10 @@ func build() -> void:
 	# A saia cobre apenas a pequena diferença entre LODs. Uma fração grande do
 	# espaçamento vira uma parede visível em silhueta, principalmente em montanhas.
 	var spacing := 2.0 * definition.radius_m * size / float(resolution - 1)
+	if definition.relief_enabled:
+		# Sampling can miss a crest on a coarse grid; include an analytic envelope
+		# in SSE, without changing the terrain function according to LOD.
+		error_m = maxf(error_m, TerrainRelief.unresolved_error(spacing))
 	var skirt_m := maxf(2.0, maxf(error_m * 1.5, spacing * 0.04))
 	var edges: Array[PackedInt32Array] = []
 	for edge in range(4):
@@ -125,7 +129,7 @@ func build() -> void:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	# Float32 AABB position + size can lose a few ULPs at 50 km.
 	result = {"arrays": arrays, "format": (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) if geology else 0,
-		"bounds": bounds.grow(0.05), "error_m": error_m * 1.5,
+		"bounds": bounds.grow(0.05 + (TerrainRelief.unresolved_error(spacing) if definition.relief_enabled else 0.0)), "error_m": error_m * 1.5,
 		"skirt_m": skirt_m, "build_ms": (Time.get_ticks_usec() - started) / 1000.0,
 		"min_height_m": min_height, "max_height_m": max_height,
 		"land_fraction": float(land_samples) / float(count)}

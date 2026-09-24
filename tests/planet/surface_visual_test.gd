@@ -72,6 +72,7 @@ func _run() -> void:
 			expect(entry.class not in ["PlanetTerrain", "PlanetQuadtreeView"], "legacy class excluded: " + entry.class)
 		expect(renderer.geology != null and renderer.geology_debug_mode == 0, "independent geology service, natural material")
 		expect(renderer.climate != null and renderer.climate_debug_mode == 0, "independent climate service, natural material")
+		expect(renderer.biomes != null and renderer.biome_debug_mode == 0, "independent biome service, natural material")
 	camera.near = 0.5
 	camera.current = true
 	renderer.set_process(false)
@@ -132,6 +133,12 @@ func _run() -> void:
 				await RenderingServer.frame_post_draw
 				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_climate_%02d.png" % mode))
 			renderer.set_climate_debug_mode(0)
+			for mode in range(1, 4):
+				renderer.set_biome_debug_mode(mode)
+				await process_frame
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_biome_%02d.png" % mode))
+			renderer.set_biome_debug_mode(0)
 		print("CAPTURE ", scenario.name, " ", renderer.get_stats())
 	# Continuous navigation measured separately from convergence and screenshots.
 	rows.clear()
@@ -149,6 +156,7 @@ func _run() -> void:
 	FileAccess.open(output.path_join("report.json"), FileAccess.WRITE).store_string(JSON.stringify(report))
 	if not reference:
 		await capture_climate_targets()
+		await capture_biome_targets()
 	print("SURFACE_VISUAL_", "FAILED" if failed else "OK", " frames=", rows.size())
 	scene.queue_free()
 	await process_frame
@@ -208,6 +216,44 @@ func capture_climate_targets() -> void:
 		renderer.set_climate_debug_mode(0)
 	FileAccess.open(output.path_join("climate_targets.json"), FileAccess.WRITE).store_string(JSON.stringify(results))
 	print("CLIMATE_TARGETS ", results.size())
+
+func capture_biome_targets() -> void:
+	var best_directions: Array[Vector3] = []
+	var best_weights := PackedFloat32Array()
+	best_weights.resize(10)
+	for i in range(10):
+		best_directions.append(Vector3.ZERO)
+	for i in range(8192):
+		var y := 1.0 - 2.0 * (float(i) + 0.5) / 8192.0
+		var radial := sqrt(1.0 - y * y)
+		var angle := float(i) * 2.399963229728653
+		var d := Vector3(cos(angle) * radial, y, sin(angle) * radial)
+		var sample := renderer.biomes.sample(d)
+		if sample.dominant >= 0 and sample.dominant_weight > best_weights[sample.dominant]:
+			best_weights[sample.dominant] = sample.dominant_weight
+			best_directions[sample.dominant] = d
+	var results := []
+	for biome_id in range(10):
+		var d := best_directions[biome_id]
+		if d.is_zero_approx():
+			continue
+		var point := shape.point_on_planet(d)
+		camera.position = point + d * 4500.0
+		camera.look_at(Vector3.ZERO, Vector3.FORWARD if absf(d.y) > 0.92 else Vector3.UP)
+		await settle_debug("biome_%d" % biome_id)
+		var sample := renderer.biomes.sample(d)
+		results.append({"id": biome_id, "name": PlanetBiomes.NAMES[biome_id],
+			"direction": str(d), "dominant_weight": sample.dominant_weight,
+			"secondary": sample.secondary, "secondary_weight": sample.secondary_weight,
+			"slope": sample.regional_slope, "stats": renderer.get_stats()})
+		for mode in range(1, 4):
+			renderer.set_biome_debug_mode(mode)
+			await process_frame
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().save_png(output.path_join("target_biome_%02d_mode_%02d.png" % [biome_id, mode]))
+		renderer.set_biome_debug_mode(0)
+	FileAccess.open(output.path_join("biome_targets.json"), FileAccess.WRITE).store_string(JSON.stringify(results))
+	print("BIOME_TARGETS ", results.size(), " debug_create_ms=", renderer.biome_debug_create_ms)
 
 func settle_debug(label: String) -> void:
 	renderer._force_selection = true

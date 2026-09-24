@@ -60,3 +60,25 @@
 - **Consequências:** antigas quotas/âncoras não são requisitos; geologia/clima/
   biomas preservados mas desconectados. Mineração e base_height + edit_delta
   continuam no plano. Nenhuma reintegração, efeito ou gameplay nesta execução.
+
+## Continentes separados do relevo e resolução próxima — Etapa 10
+
+- **Status:** direção arquitetural aprovada explicitamente pelo usuário em 24/09/2026.
+- **Decisão:** preservar distribuição continental do doador em ContinentalShape,
+  substituir completamente seu relevo terrestre por TerrainRelief orientado
+  por descritores de geologia estrutural. PlanetShape compõe a altura natural.
+  Supera a restrição geométrica da Etapa 7 e a tentativa parcial de apenas
+  acrescentar detalhe sobre o relevo antigo.
+- **Dependências:** continentes → geologia estrutural → relevo → clima → biomas.
+  A classificação geológica superficial consome a altura final, mas não volta
+  a dirigir relevo. Não há seleção de geometria por bioma ou clima.
+- **Resolução:** 17×17, máximo LOD9, mesmos budgets/workers. LOD9 reduz o
+  espaçamento pela metade (24,4→12,2 m no centro). 33×33/LOD8 atingiu densidade
+  semelhante, mas ~469 mil vértices ativos e ~94 ms/chunk mediano, contra
+  ~137 mil e ~23 ms com 17×17 no ensaio inicial congelado. A busca ordenada
+  de vítimas para redistribuição de LOD encerra quando não há prioridade viável.
+- **Consequências:** geologia v3 muda descritores e IDs; clima e biomas são
+  reconstruídos sem preservar percentuais. O oráculo histórico fica somente
+  em testes; runtime não requer projeto doador. Não há morph novo nem malha
+  global de 2 m. Natural height + terrain edit delta continua o contrato futuro.
+- **Evidências e limites:** [Etapa 10](stages/10_refinamento_relevo.md).

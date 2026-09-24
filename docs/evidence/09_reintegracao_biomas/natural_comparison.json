@@ -1,0 +1,447 @@
+{
+  "reference": "08_reintegracao_clima",
+  "matching": 88,
+  "files": [
+    {
+      "sha256": "05f0d7af6963722738b4166d280e31611af6cb4f2fe57a5925854537fa88ac3a",
+      "file": "01_globe_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "cb00a0dc3ec414b7411dac94eed30ac367030c60e1c7965b140ef52f08777b4b",
+      "file": "01_globe_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "24868e755e0cbf9f3fcb1a8c85e8e29f7b0e79ec9ef34c414e4714588e3f1ebf",
+      "file": "01_globe_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "4ed0ee18b21a2b79d7714b92e8a7bbbac27c9b0297266949ecbf1c114ff8ff35",
+      "file": "01_globe_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "4082ea0d8f973e9b837940db206b85122683e97ecf48c0686cfc6c22af0ecf0b",
+      "file": "01_globe_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "d2e79fdd32a15e2065bc39e038204c03ad74bd6d3a872fe9eeaad1c64aa3cc18",
+      "file": "01_globe_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "7dabdf4918332d12875e9af4ab9b583238c516cca9b500786370c3cc8635205d",
+      "file": "01_globe_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "9949c40f0a68d31a6ee5718769a1f2dcee43702994f0c650c7b7fe74e8cf764e",
+      "file": "01_globe_geology_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "9053d3b6a55d785ed62cb1f7f672a95c1738bb02fced0ed6f3b4a8beb9f252d5",
+      "file": "01_globe_geology_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "3e7566bba51950d750a72b981f8b199c35f4ac9674410480a06e728d92fefae2",
+      "file": "01_globe_geology_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "169748686dc5d4ca070bded01aa3119c3b046a35e9373f361144052d612d385f",
+      "file": "01_globe_geology_06.png",
+      "identical": true
+    },
+    {
+      "sha256": "d54c1cb802f53778d374a129487faeebe3b8dcae09af84a9bfe0145cf3ffe490",
+      "file": "01_globe_geology_07.png",
+      "identical": true
+    },
+    {
+      "sha256": "58052d44c48e6fc49c34468531ea68e9d591436914433287cc8043592e31c2e4",
+      "file": "01_globe_geology_08.png",
+      "identical": true
+    },
+    {
+      "sha256": "c48ef66ea81b4a30e802f562df3d1e223a480c9638149231b41cbdd14703a5b9",
+      "file": "01_globe_geology_09.png",
+      "identical": true
+    },
+    {
+      "sha256": "3124abbf0fd882c5304b9caae15765a81f907a62c1cf829153fec863fd1bcf54",
+      "file": "01_globe_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "1c82b438ad413d6f5b4c2bc0d19364e8f10020d24f04b477b39a2eb375b987fe",
+      "file": "01_globe.png",
+      "identical": true
+    },
+    {
+      "sha256": "5a62498c71a21057a2fe8025dbb063bef708db1d56e7c91eeacdd75555293abd",
+      "file": "02_low_orbit_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "8f026ad1069756ecf58072c01a8ae7d140ce961450365b6c890ccf60c6a80f79",
+      "file": "02_low_orbit_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "bd4d4975a414a986ecf8de42833f62caaa131ae4dabf5ac11a3a9d0bb3a1cf03",
+      "file": "02_low_orbit_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "6d3fddd4e2f855c07ad1cf974bc34679e8de53550988e8af5bd6e38291892a4b",
+      "file": "02_low_orbit_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "718c9b11c4196d54344bd1d9b22fa3cc386a94f077e97d4fabd9d95eb14a8c68",
+      "file": "02_low_orbit_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "fbc05552862608074f78bc360332309712dc246de569c7dcfd12a06f465c342d",
+      "file": "02_low_orbit_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "e1e1991770261234d10abd631bb301211de1bec81d6e2540b0f5e7d79db129ea",
+      "file": "02_low_orbit_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "98916e7ae584db438373080f8ea2fdd299c5cca2bb97803de86d330f06a80e26",
+      "file": "02_low_orbit_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "ab7fbe8e121c09bae094840d4f54a8016f8de9c89368f8d835b28c1b5b6da8f6",
+      "file": "02_low_orbit.png",
+      "identical": true
+    },
+    {
+      "sha256": "e0c8d6e26333c9a659239e2380dfbfb13490b36a842dcc66549403f940e1379d",
+      "file": "03_kilometers_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "b25dce2beac5325657d2e64c96d156d1f06d8736e057132535a764fd4629cd2a",
+      "file": "03_kilometers_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "ea32f106f5ea4b32c7afc4931bcf1e3b094b5176391b444a99d76ba50b299912",
+      "file": "03_kilometers_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "ad7ce55ac8091ce03e69805c2265f161f85dc14a4db753e230077f2ae6c06743",
+      "file": "03_kilometers_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "0ad9e2ad013e0a306f487e5ed44cc5673bfc1a42016a8b879461a5c16309f6cb",
+      "file": "03_kilometers_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "73dde7336c5bfcbdc3d0f1c673e6bf75b2c43c71eb01b8365add0c17718e7246",
+      "file": "03_kilometers_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "98a3e6dc5617def3c427d2b291c15b8d64fa1e132caa8271d3e49c03b3a1b426",
+      "file": "03_kilometers_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "49ba00cb0143c812af9134652dbd8dbb025afe5cc8ec63b5b115ec5072d2317b",
+      "file": "03_kilometers_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "fa4a83c09f6e1d367d483ae5ec39ed916b9805837fe95a84b5227867430dfce8",
+      "file": "03_kilometers.png",
+      "identical": true
+    },
+    {
+      "sha256": "1d828da19ccdee07be1a4ac310c73c65be6b59ff47b4fdece4715c42378a59db",
+      "file": "04_hundreds_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "80483b03030ca0556d74e205511b18c85e3eb09434f37f3e1bfe56ab3ac0f03c",
+      "file": "04_hundreds_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "e80174c1ebbf90a6816be9abb44fd41baf1a1dd5bf6e53d8036135f1bf2ef6dc",
+      "file": "04_hundreds_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "14c94447b0f152438a93695e3bcf61d2b849bc470294c8dbcedc1fc434b78b30",
+      "file": "04_hundreds_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "73242f4957c61d36d843978512595292d8ad0d78bbfba6c8d878e0bb4f181c6e",
+      "file": "04_hundreds_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "1aa49ce712c920188247790ec5ec734abd86187d5dd18d3515b300a3c4c02879",
+      "file": "04_hundreds_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "68b979b2715a59f330653eb20ed90175b5223835eb08edd06da5f9c0bc02b0e5",
+      "file": "04_hundreds_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "51207b6d121794f9e233335631b273f6a44fa3d5b90e0a88dc9e2052c7095bd9",
+      "file": "04_hundreds_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "e35284c8fb0ba58bbf2d26a1a917bec00c97f62b058f5d7c4c23efb3b82897d0",
+      "file": "04_hundreds.png",
+      "identical": true
+    },
+    {
+      "sha256": "984d6c3a389b2568326c596b9c057c78a1d198914d8bbe3a26947542defdb3c1",
+      "file": "05_ground_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "4092d062d9961bef988cba139bf849290ed938ecec687f7807b60a28227c334d",
+      "file": "05_ground_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "da977941e919542437fbf44068f11ec4f4662a657d558a7cc4f340f246e12902",
+      "file": "05_ground_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "1abc562ed1186ee5389e6246f6fcce96a5e7a5010470f5d60845874f827b26be",
+      "file": "05_ground_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "0164f1e96acbbc16c38839008bde1499abcc5d4617cabafaea1e3aa8e35601dd",
+      "file": "05_ground_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "33c8c32e8f7e544407309fe0a44610643bb8f930fdc4782c39a7e32c43e38469",
+      "file": "05_ground_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "78215b523764ac02717dce41550aa6782c310d59afbce7ae4ff2e1847a322628",
+      "file": "05_ground_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "9d6c892fad558d9660d32e524d9caccd21d8f5fc098aa3a20a715050b2215dec",
+      "file": "05_ground_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "1d9395234be5a7b73d8e662e453378f7ee83285b6be1ecb7f7d4d26b24e597de",
+      "file": "05_ground.png",
+      "identical": true
+    },
+    {
+      "sha256": "50b5423c3a2a4a932d6c6a924a8177bd25626e971aa592dd29b938351aa91a1a",
+      "file": "06_mountains_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "bef5b62ee13593a97a1e043744bb4048f020092ef5988135839f07f049f128ae",
+      "file": "06_mountains_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "bd9dcbef76b01ebe273e1d45f58465cd1e3ec9c6acbca1fdf4f03cd16838ef9d",
+      "file": "06_mountains_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "fcaff5a36b1d094bec1a0dbe0b5c613484c8ebd94e83a710546ea4289bc88f20",
+      "file": "06_mountains_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "bca250fa6dcb8a3229c3b0cb894a3007d9f5732aa040c9c2feb65a7a641575fc",
+      "file": "06_mountains_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "a348494287a9ae2f4a619cae1bd062521a17732d3ee025b659d76eb6bc761d63",
+      "file": "06_mountains_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "e487e41a6e4618cf9e548626bc9d75fedb4d84f3b58656c2fcdbaa5481696abc",
+      "file": "06_mountains_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "4a641800fcd45edd13d5fe207ae247cf7ef669a9f54760e5dc6f82cffb9ceb62",
+      "file": "06_mountains_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "292a9954a9cf0db8cd1db95a875c6daaae016ad444f90a170714db1cd730f6f1",
+      "file": "06_mountains.png",
+      "identical": true
+    },
+    {
+      "sha256": "52a28827650973746c3674a6f211165524e9cd321cd0fe62b2b886fb3e1253ae",
+      "file": "07_horizon_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "7718965c7f8f05ddb07ab1ade8841eeb6b3fae5c09501afa7ce56817ec1ac18f",
+      "file": "07_horizon_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "21cf12beea06403d0627b50a2d4cd60a5763d023c022bc72040663b67f648d12",
+      "file": "07_horizon_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "d0dbbbd33a9e22b23dc3c70539b14663175b1545d7427d24603a1311771fbac3",
+      "file": "07_horizon_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "a1040160bc8286091ecc1c32eafa92afa64111cada77fd82f736c07dcf28c8de",
+      "file": "07_horizon_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "ede262ef2d64eb1257062cd4711410eec1cafb8f34798ed87c0f822772a053d4",
+      "file": "07_horizon_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "938110ca793a6918df6a9799f10af9eeca531747b14d5a45a435cf44a39b7212",
+      "file": "07_horizon_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "c9bf7e2b7b685d3cd9fc62e8ba3247a77833fad50decd24f90716821a6e5a760",
+      "file": "07_horizon_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "721ecda2404c8a02042a500f37ac7098429c08718b0adc370c90176b5effbb27",
+      "file": "07_horizon.png",
+      "identical": true
+    },
+    {
+      "sha256": "4f254c9693422cdc5d94d93fe8403669e0828b4397080897b75f06d4b5135f43",
+      "file": "08_cube_edge_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "e6ab258396864184931fbae434a007809010a428ad3fa96a376d9a57f9b20740",
+      "file": "08_cube_edge_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "3d2dbb2aa0df88e6808d96d8299d11b315104a9e376792ae2d47d808c0dd4f1f",
+      "file": "08_cube_edge_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "0501a841f1ab4d6b28bb45aeff47431f015f640c774b497e3c87c8b2f52fffc4",
+      "file": "08_cube_edge_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "e0c810025071ff2b69f75c8be877764eda32507153a0df2fe2bc89297d8dfa5a",
+      "file": "08_cube_edge_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "2e8b629a5357ad9522a9df03569b05561530abdbb9540cb43115488ff7bd18c2",
+      "file": "08_cube_edge_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "620e44ba23641818adeba5e917eb9ec2b1d2aa94c1a09342d754cbcb1935e3a6",
+      "file": "08_cube_edge_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "f3cc2d86f5705fe6f3f1ac5075f47ff291752e5703687a1b9c30eaa274f7c11d",
+      "file": "08_cube_edge_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "b8046abb09798e317952f75204cc3e427b3b4db1991e37feb05281cfc7aa7038",
+      "file": "08_cube_edge.png",
+      "identical": true
+    },
+    {
+      "sha256": "2ad73dc6b2ef416d773bf1f68c546083ae0f82d908aa9c5628bc0b0f914ec39b",
+      "file": "09_retreat_climate_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "370e5173ba15892a385591f5baee42d8f8636566412780a5b9b1347d9708a783",
+      "file": "09_retreat_climate_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "bc5e0b338613bc88c660410fa61e0445e33cad305ff3aabdcf08122fbd6efbd1",
+      "file": "09_retreat_climate_03.png",
+      "identical": true
+    },
+    {
+      "sha256": "0ce30197d99a08398c0c6e915d6373624d094ddaac47ab892836a6b93b3ba8a9",
+      "file": "09_retreat_climate_04.png",
+      "identical": true
+    },
+    {
+      "sha256": "8dbb7d7c93c8adef29a8a4d039db6ad781e07040d0c22fbf73394d5305ac2164",
+      "file": "09_retreat_climate_05.png",
+      "identical": true
+    },
+    {
+      "sha256": "81a1180e7c2d04c7c9145fd1f7e316abc1186357ec93ee0cd86beb63acfa4ee9",
+      "file": "09_retreat_geology_01.png",
+      "identical": true
+    },
+    {
+      "sha256": "a206bc2b6115dfd20805148638edf9195bb3afb40ff4f67f8ba322c853de440b",
+      "file": "09_retreat_geology_02.png",
+      "identical": true
+    },
+    {
+      "sha256": "6448889cefe696e963a905a34f63aaa9d943979a973f3ccb705216b7c0e2bf3d",
+      "file": "09_retreat_lod.png",
+      "identical": true
+    },
+    {
+      "sha256": "39d1b7fd5c4c9ae196bbe97a974b7ca027ff3b5b6b887403b21680059c48d4bd",
+      "file": "09_retreat.png",
+      "identical": true
+    }
+  ],
+  "all_identical": true
+}

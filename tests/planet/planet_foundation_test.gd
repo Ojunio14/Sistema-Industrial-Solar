@@ -61,7 +61,7 @@ func _test_shape_determinism_and_limits() -> void:
 			"A altura ficou abaixo da profundidade configurada."
 		)
 		_expect(
-			first_height <= definition.sea_level_m + definition.max_terrain_height_m,
+			first_height <= definition.sea_level_m + definition.natural_max_height_m(),
 			"A altura ultrapassou o máximo configurado."
 		)
 

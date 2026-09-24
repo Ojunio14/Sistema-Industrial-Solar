@@ -3,7 +3,7 @@ class_name PlanetLODManager
 
 @export_group("LOD")
 @export_range(5, 65, 2) var chunk_resolution: int = 17
-@export_range(0, 12) var max_depth: int = 8
+@export_range(0, 12) var max_depth: int = 9
 @export_range(0.5, 64.0, 0.5) var split_error_pixels: float = 8.0
 @export_range(2.0, 64.0, 1.0) var max_quad_pixels: float = 10.0
 @export_range(0.1, 0.9, 0.05) var merge_ratio: float = 0.55
@@ -28,6 +28,8 @@ var geology: PlanetGeology
 var geology_debug_mode := 0
 var climate: PlanetClimate
 var climate_debug_mode := 0
+var biomes: PlanetBiomes
+var biome_debug_mode := 0
 var roots: Array[QuadtreeNode] = []
 var revision: int = 0
 var cache_hits: int = 0
@@ -46,6 +48,9 @@ var _runtime_material: Material
 var _geology_material: ShaderMaterial
 var _climate_material: ShaderMaterial
 var _climate_textures: Array[Texture2D] = []
+var _biome_material: ShaderMaterial
+var _biome_textures: Array[Texture2D] = []
+var biome_debug_create_ms := 0.0
 var _force_selection := true
 var _sample_resolution: int = 17
 var _split_candidates: Array[QuadtreeNode] = []
@@ -63,9 +68,10 @@ func configure(source: PlanetDefinition) -> void:
 	_queue.clear()
 	_cache.clear()
 	_definition = source.duplicate(true) as PlanetDefinition if source else null
-	shape = PlanetShape.new(_definition) if _definition else null
 	geology = PlanetGeology.new(_definition) if _definition else null
-	climate = PlanetClimate.new(_definition) if _definition else null
+	shape = PlanetShape.new(_definition, geology) if _definition else null
+	climate = PlanetClimate.new(_definition, -1, geology) if _definition else null
+	biomes = PlanetBiomes.new(_definition, climate, geology) if _definition else null
 	if not _definition:
 		return
 	_sample_resolution = clampi(chunk_resolution, 5, 65)
@@ -87,6 +93,11 @@ func configure(source: PlanetDefinition) -> void:
 	_climate_material.shader = preload("res://systems/planet/climate/climate_debug.gdshader")
 	_climate_material.set_shader_parameter("debug_mode", climate_debug_mode)
 	_climate_textures.clear()
+	_biome_material = ShaderMaterial.new()
+	_biome_material.shader = preload("res://systems/planet/biomes/biome_debug.gdshader")
+	_biome_material.set_shader_parameter("debug_mode", biome_debug_mode)
+	_biome_textures.clear()
+	biome_debug_create_ms = 0.0
 	for face in range(6):
 		var node := _create_node(face, 0, Vector2i.ZERO)
 		roots.append(node)
@@ -119,17 +130,21 @@ func select_lod(local_eye: Vector3, focal_pixels: float, ortho_pixels_per_m: flo
 		_select(root, local_eye, focal_pixels, ortho_pixels_per_m)
 	_split_candidates.sort_custom(func(a: QuadtreeNode, b: QuadtreeNode) -> bool: return a.priority > b.priority)
 	_merge_candidates.sort_custom(func(a: QuadtreeNode, b: QuadtreeNode) -> bool: return a.priority < b.priority)
+	# Merge candidates are sorted: once eviction is too expensive, all remaining
+	# victims are too expensive too. This bounds rejected-split work at capacity.
 	for candidate in _split_candidates:
 		if not candidate.alive or not candidate.children.is_empty():
 			continue
 		if _nodes.size() + 4 > maxi(6, max_resident_chunks):
 			# Transferir orçamento de regiões menos importantes ao mudar de posição.
 			for victim in _merge_candidates:
-				if not victim.alive or not victim.is_split or _contains(victim, candidate):
-					continue
-				if victim.children.any(func(child: QuadtreeNode) -> bool: return not child.children.is_empty()):
+				if not victim.alive or not victim.is_split:
 					continue
 				if candidate.priority <= victim.priority * 2.0:
+					break
+				if _contains(victim, candidate):
+					continue
+				if victim.children.any(func(child: QuadtreeNode) -> bool: return not child.children.is_empty()):
 					continue
 				_merge(victim)
 				budget_rebalances += 1
@@ -190,7 +205,7 @@ static func _contains(region: QuadtreeNode, node: QuadtreeNode) -> bool:
 
 func _behind_horizon(node: QuadtreeNode, eye: Vector3) -> bool:
 	var inner_radius := _definition.radius_m + _definition.sea_level_m - _definition.ocean_depth_m
-	var outer_radius := _definition.radius_m + _definition.sea_level_m + _definition.max_terrain_height_m
+	var outer_radius := _definition.radius_m + _definition.sea_level_m + _definition.natural_max_height_m()
 	if eye.length() <= inner_radius or inner_radius <= 0.0:
 		return false
 	var center := node.bounds.get_center()
@@ -367,6 +382,7 @@ func set_geology_debug_mode(mode: int) -> void:
 	geology_debug_mode = posmod(mode, 10)
 	if geology_debug_mode > 0:
 		climate_debug_mode = 0
+		biome_debug_mode = 0
 	if _geology_material:
 		_geology_material.set_shader_parameter("debug_mode", geology_debug_mode)
 	_refresh_chunk_materials()
@@ -375,6 +391,7 @@ func set_climate_debug_mode(mode: int) -> void:
 	climate_debug_mode = posmod(mode, 6)
 	if climate_debug_mode > 0:
 		geology_debug_mode = 0
+		biome_debug_mode = 0
 		if _climate_textures.is_empty() and climate:
 			_climate_textures = climate.create_debug_textures()
 			_climate_material.set_shader_parameter("climate_fields", _climate_textures[0])
@@ -383,7 +400,24 @@ func set_climate_debug_mode(mode: int) -> void:
 		_climate_material.set_shader_parameter("debug_mode", climate_debug_mode)
 	_refresh_chunk_materials()
 
+func set_biome_debug_mode(mode: int) -> void:
+	biome_debug_mode = posmod(mode, 4)
+	if biome_debug_mode > 0:
+		geology_debug_mode = 0
+		climate_debug_mode = 0
+		if _biome_textures.is_empty() and biomes:
+			var started := Time.get_ticks_usec()
+			_biome_textures = biomes.create_debug_textures()
+			_biome_material.set_shader_parameter("biome_dominant", _biome_textures[0])
+			_biome_material.set_shader_parameter("biome_blend", _biome_textures[1])
+			biome_debug_create_ms = (Time.get_ticks_usec() - started) / 1000.0
+	if _biome_material:
+		_biome_material.set_shader_parameter("debug_mode", biome_debug_mode)
+	_refresh_chunk_materials()
+
 func _active_material() -> Material:
+	if biome_debug_mode > 0:
+		return _biome_material
 	if climate_debug_mode > 0:
 		return _climate_material
 	if geology_debug_mode > 0:

@@ -2,72 +2,60 @@
 
 ## Etapa atual
 
-Etapa 8: clima estático como dados reintegrado sobre a fundação da Etapa 6.
-PlanetShape segue sendo a única autoridade de altura; geologia e clima não
-alteram relevo. Detalhes: [08_reintegracao_clima.md](stages/08_reintegracao_clima.md).
+Etapa 10: continentes separados do relevo, geologia estrutural e resolução
+próxima 17×17/LOD9 implementada e validada. Detalhes em
+[10_refinamento_relevo.md](stages/10_refinamento_relevo.md).
 
-## Implementado e validado
+## Arquitetura implementada
 
-- Preset 100 km, raio 50.000 m, seed 12051965, escala 1 m/unidade.
-- Seis quadtrees, chunks 17×17, LOD8, saias, SSE/histerese/cache do doador.
-- Normais físicas 2 m; dois workers, uploads na main thread, revisão/alive.
-- Planet Lab, três câmeras, overlay/F4; luz técnica sem efeitos planetários.
-- Pipeline antigo arquivado em archive/stages_02_05, ignorado pela engine.
-- PlanetGeology separado, 40 descritores derivados do relevo atual, nove tipos
-  incluindo fundos, ID/idade/influência, consulta independente de face/LOD.
-- F5: nove vistas técnicas de geologia; F4: LOD. Material natural intacto.
-- PlanetClimate independente da geologia: grade global 192×96 de altitude,
-  oceanicidade e relevo a montante do vento; temperatura, umidade, precipitação
-  e sombra de chuva consultáveis sem biomas nem dados climáticos na mesh.
-- F6: cinco vistas técnicas climáticas, desligado preserva o material natural.
-  Consultas de worker com saída local e arrays imutáveis; seed CLI8 estável.
-- Clima: 34.865 verificações sem falhas no teste isolado, 12 arestas/8 cantos,
-  cinco profundidades de LOD e par real barlavento/sotavento. Em 4.436 amostras
-  terrestres, temperatura média 3,53 °C, umidade 0,481, precipitação 0,355 e
-  continentalidade 0,483. Construção ~1,0 s; 8.192 consultas quentes ~85 ms
-  e 8.192 chamadas diretas a `climate.sample()` ~188 ms.
-- Regressão da Etapa 6 mantida; geologia 52.400 checagens em cada um de dois
-  processos, fingerprints iguais, zero falhas. 12 arestas/8 cantos e 106
-  fronteiras testadas; workers concorrentes e altura/mesh inalteradas.
-- Nove capturas naturais idênticas por hash à Etapa 6; captura Vulkan geológica
-  e rota de 720 frames aprovadas.
-- Nove capturas naturais, F4 e F5 novamente idênticas por hash à Etapa 7 após
-  adicionar clima (43 PNGs idênticos); F6 capturado em nove poses e oito alvos
-  climáticos. Rota gráfica final de 720 frames no projeto principal aprovada,
-  p95 17,00 ms, máximo 18,13 ms, com filas/workers drenados nas capturas.
-- Regressão completa: import/cena/câmeras/matemática/terrain/LOD aprovados;
-  85.196 contratos em dois processos, hashes iguais aos doador.
-- Comparação Vulkan de nove poses: globo, centenas, solo e borda de face
-  idênticos pixel a pixel com material técnico; sem piora clara nas demais.
-- Frame p95 repetição isolada 31,117 ms versus 31,106 ms do doador;
-  máximo 33,409 versus 32,044 ms. Budgets de produção respeitados.
+- ContinentalShape preserva máscara e contorno terra/água do doador. A faixa
+  costeira compatível é separada do relevo interior, substituído por completo.
+- PlanetShape compõe a única altura natural com TerrainRelief. Geologia v3
+  orienta cadeias, maturidade, planaltos, bacias e formas ígneas. Não há ciclo:
+  continentes → geologia estrutural → relevo → clima → biomas.
+- Clima/biomas são reconstruídos da nova altura, sem recalibração de percentuais.
+- Cube-sphere, quadtree, chunks e budgets preservados: 17×17/LOD9, 510 residentes,
+  96 cache, dois workers/uploads. ~12,2 m no centro da face, menor nas bordas.
+- Normais físicas a 2 m; bounds, SSE e culling consideram relevo final.
+  Troca conjunta dos filhos e saias; busca ordenada de vítimas de LOD corrigida.
+- Planet Lab mantém FreeFly/RTS/Orbital e F4/F5/F6/F7. Material técnico preservado.
 
-## Preservado para depois
+## Resultados desta execução
 
-Geologia histórica, clima e dez biomas estão preservados em arquivo. As
-implementações atuais de geologia e clima são somente dados; biomas desconectados.
-Mineração continua planejada: base_height + edit_delta; zonas/chunks ~256 m,
-células ~2 m. Edição/colisão/mineração/materiais finais não implementados.
+- 8.192 direções: máscara e sinal terra/água iguais à Etapa 9; 4.436 terrestres.
+- Curvatura regional nas novas cadeias ~49,8% maior; planícies selecionadas
+  variam no máximo 1,75 m em 20 m. Relevo máximo amostrado 644,83 m.
+- Espaçamento sob a câmera próxima: 21,13→10,56 m; planície ~12,20 m.
+  Alternativa 33×33 requer ~469 mil vértices contra ~137 mil com 17×17.
+- Clima médio terrestre 4,20 °C; umidade 0,51784. Biomas: tropical 12,15%,
+  savana 1,13%, deserto 15,40%, temperado 25,68%, pântano 3,67%, taiga 20,47%,
+  tundra 15,92%, polar 5,59%. Salar/alpino: nenhuma dominância nas amostras;
+  as dez famílias continuam cobertas por casos controlados, sem quotas.
+- Suíte principal: zero falhas. Por processo: 93.388 contratos de superfície,
+  52.416 geologia, 34.883 clima, 75.497 biomas e 65.331 relevo; fingerprints
+  iguais em dois processos. Câmeras/fundação/terreno/LOD também passaram.
+- Planet Lab abriu graficamente no projeto principal. Comparação em dez poses,
+  mais solo a 30 m e sequência de transições. Performance e condições de
+  medição detalhadas na etapa. Repetição comparável: p95 23,43→16,97 ms;
+  custo por chunk ~23,70→51,75 ms (mediana observada). Houve variação de
+  apresentação em outra rodada; não se promete FPS constante entre execuções.
 
-## Problemas
+## Histórico e testes
 
-- **CONFIRMADO:** malha/cores técnicas revelam polígonos próximos como no doador.
-- **CONFIRMADO:** primeira medição teve dois frames >50 ms, máximo 94,446 ms;
-  repetição isolada sem frames >50 ms, causa original não confirmada.
-- **RISCO:** saias/troca discreta/LOD8/budget cheio podem causar popping/latência.
-- **DÍVIDA TÉCNICA:** reintegração e invalidação regional futuras; navegação RTS
-  esférica/colisão ainda não validadas integralmente. FreeFly atravessa terreno.
-- **RISCO:** construção geológica síncrona mediu 0,69–1,25 s neste hardware;
-  eventual múltiplos planetas ou reconfiguração em tempo real exigirão trabalho
-  assíncrono ou cache de descritores.
-- **RISCO:** payload de debug adiciona ~16 bytes/vértice e alguns ms por chunk,
-  com variação relevante entre execuções; pode ser criado sob demanda no futuro.
-- **RISCO:** clima soma cerca de 1 s de construção síncrona por configuração;
-  múltiplos planetas ou reconfiguração frequente podem pedir cache ou construção
-  assíncrona. A grade 192×96 aproxima vales e costas pequenas.
+Etapas 6–9 são histórico; sua geometria/hash não é exigência do terreno atual.
+A fixture da Etapa 9 fica somente nos testes, conferida contra o oráculo original.
+`relief_enabled=false` retorna substrato continental, não o relevo da Etapa 9.
+`tests/planet/run_validation.ps1` cobre regressões e determinismo entre processos.
+Evidências comparáveis: `docs/evidence/10_refinamento_relevo`.
 
-Evidências: docs/evidence/06_substituicao_planeta,
-docs/evidence/07_reintegracao_geologia e docs/evidence/08_reintegracao_clima. Runner:
-tests/planet/run_validation.ps1; capturas: surface_visual_test.gd.
-Percentuais/contagens das Etapas 2–5 são históricos, não estado atual.
-Próximo trabalho: aguardar instrução; biomas e mineração não iniciados.
+## Limites e próximo escopo
+
+- **CONFIRMADO:** algumas escarpas costeiras e depressões rasas pertencem ao
+  contorno preservado. Material técnico/seabed opaco não representa água/PBR.
+- **RISCO:** orçamento cheio ou viagens rápidas podem atrasar LOD9; saias e
+  troca discreta não equivalem a morph. Construção geológica/climática síncrona.
+- **DÍVIDA TÉCNICA:** modelo geomorfológico aproximado, sem erosão física;
+  grade climática regional, colisão/navegação RTS esférica e edição regional futuras.
+- Nenhum material final, vegetação, recurso ou mineração iniciados. Aguardar
+  instrução. Natural height + terrain edit delta = final height; células ~2 m
+  somente nas futuras Mining Zones, com chunks ~256×256 m.

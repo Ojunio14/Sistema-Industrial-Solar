@@ -1,0 +1,4 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+Vulkan 1.3.212 - Forward+ - Using Device #0: AMD - AMD Radeon(TM) Vega 3 Graphics
+
+RELIEF_CAPTURE ground_relative { "visible": 384, "resident": 510, "queued": 0, "jobs": 0, "cached": 16, "depth": 8, "triangles": 245760, "generated": 526, "cache_hits": 0, "discarded": 0, "build_ms": 24.507, "upload_ms": 0.002, "revision": 2, "rebalances": 4, &"active_vertices": 137088, &"mesh_payload_mib": 15.3138427734375, &"static_mib": 55.0671672821045, &"video_mib": 42.7464752197266, &"render_cpu_ms": 0.391999989748, &"render_gpu_ms": 7.34899997711182, &"ground_depth": 8, &"ground_spacing_m": 21.0961239645258 }

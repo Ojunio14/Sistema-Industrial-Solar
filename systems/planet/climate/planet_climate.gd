@@ -11,6 +11,7 @@ const LAPSE_C_PER_M := 0.0065
 var _planet_seed: int
 var _climate_seed: int
 var _sea_level: float
+var _radius_m: float
 var _phase: float
 var _shape: PlanetShape # Somente sample() direto na main thread; workers usam sample_with_surface_into().
 var _heights := PackedFloat32Array()
@@ -20,12 +21,13 @@ var _ocean := PackedFloat32Array()
 var _shadow := PackedFloat32Array()
 var _windward := PackedFloat32Array()
 
-func _init(definition: PlanetDefinition, climate_seed_override: int = -1) -> void:
+func _init(definition: PlanetDefinition, climate_seed_override: int = -1, geology_context: PlanetGeology = null) -> void:
 	_planet_seed = definition.seed
 	_climate_seed = climate_seed_override if climate_seed_override >= 0 else definition.seed ^ SEED_SALT
 	_sea_level = definition.sea_level_m
+	_radius_m = definition.radius_m
 	_phase = float(_hash(_climate_seed) & 65535) * TAU / 65535.0
-	_shape = PlanetShape.new(definition.duplicate(true))
+	_shape = PlanetShape.new(definition.duplicate(true), geology_context)
 	_build_fields()
 
 func get_seed() -> int:
@@ -38,6 +40,21 @@ func sample(direction: Vector3) -> PlanetClimateSample:
 
 func sample_position(local_position: Vector3) -> PlanetClimateSample:
 	return sample(local_position.normalized())
+
+## Inclinação regional aproximada da grade de relevo já construída. A escala
+## angular de 0,025 rad (~1,25 km) evita outra consulta a PlanetShape por bioma.
+func regional_slope(direction: Vector3) -> float:
+	var d := direction.normalized()
+	var east := Vector3.UP.cross(d)
+	if east.length_squared() < 0.00000001:
+		east = Vector3.RIGHT
+	else:
+		east = east.normalized()
+	var north := east.cross(d).normalized()
+	var step := 0.025
+	var rise_e := _sample_grid(_heights, (d + east * step).normalized()) - _sample_grid(_heights, (d - east * step).normalized())
+	var rise_n := _sample_grid(_heights, (d + north * step).normalized()) - _sample_grid(_heights, (d - north * step).normalized())
+	return sqrt(rise_e * rise_e + rise_n * rise_n) / (2.0 * _radius_m * step)
 
 ## Uso direto na main thread. O caminho com surface fornecida é seguro no worker.
 func sample_into(direction: Vector3, output: PlanetClimateSample) -> void:

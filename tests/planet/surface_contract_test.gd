@@ -1,4 +1,5 @@
 extends SceneTree
+const Stage9Shape = preload("res://tests/planet/fixtures/stage9_shape.gd")
 
 var checks := 0
 var failures := 0
@@ -41,7 +42,7 @@ func _run() -> void:
 		values.append(fields)
 		heights.append(shape.sample_height_m(d))
 		check(fields.is_finite(), "finite components")
-		check(fields.x >= -350.0 and fields.x <= 900.0, "height bounds")
+		check(fields.x >= -350.0 and fields.x <= definition.natural_max_height_m(), "height bounds")
 		check(absf(shape.point_on_planet(d).length() - 50000.0 - fields.x) < 0.015, "metric radius plus height")
 	for i in range(8191, -1, -1):
 		check(values[i] == shape.sample_components(direction_at(i, 8192)), "query order independent")
@@ -109,9 +110,18 @@ func _run() -> void:
 	var report := {"shape": digest(values.to_byte_array()), "heights": digest(heights.to_byte_array()), "meshes": mesh_fingerprints, "checks": checks, "failures": failures}
 	if not reference:
 		var oracle: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://tests/planet/donor_contracts.json"))
-		check(report.shape == oracle.shape and report.heights == oracle.heights, "exact donor natural surface fingerprint")
+		var legacy := Stage9Shape.new(definition)
+		var legacy_values := PackedVector4Array()
+		var legacy_heights := PackedFloat64Array()
+		for i in range(8192):
+			var d := direction_at(i,8192)
+			var old := legacy.sample_components(d)
+			legacy_values.append(old)
+			legacy_heights.append(old.x)
+			check(shape.sample_continental_components(d).y==old.y,"exact donor continental distribution")
+		check(digest(legacy_values.to_byte_array())==oracle.shape and digest(legacy_heights.to_byte_array())==oracle.heights,"independent historical donor oracle")
 		for key in mesh_fingerprints:
-			check(mesh_fingerprints[key] == oracle.meshes[key], "exact donor geometry/normals/indices " + key)
+			check(mesh_fingerprints[key][2] == oracle.meshes[key][2], "preserved donor topology " + key)
 		report.checks = checks
 		report.failures = failures
 	var args := OS.get_cmdline_user_args()

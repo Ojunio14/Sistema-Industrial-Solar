@@ -1,7 +1,7 @@
 param([string]$Godot = 'D:\Aldean junio\Criaçao_de_Jogos\Usando_Godot\Godot\Godot-4.6\Godot_v4.6.1-stable_win64.exe')
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
-$outputRoot = Join-Path ([IO.Path]::GetTempPath()) ('planet-stage8-' + [guid]::NewGuid().ToString('N'))
+$outputRoot = Join-Path ([IO.Path]::GetTempPath()) ('planet-stage10-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $outputRoot | Out-Null
 $cases = [ordered]@{
     import = '--editor --import --quit'
@@ -16,6 +16,10 @@ $cases = [ordered]@{
     geology_b = '--script res://tests/planet/geology_test.gd'
     climate_a = '--script res://tests/planet/climate_test.gd'
     climate_b = '--script res://tests/planet/climate_test.gd'
+    biome_a = '--script res://tests/planet/biome_test.gd'
+    biome_b = '--script res://tests/planet/biome_test.gd'
+    relief_a = '--script res://tests/planet/relief_test.gd'
+    relief_b = '--script res://tests/planet/relief_test.gd'
 }
 $failed = $false
 foreach ($name in $cases.Keys) {
@@ -29,6 +33,15 @@ foreach ($name in $cases.Keys) {
     Get-Content -LiteralPath $stdout -Tail 5
     Get-Content -LiteralPath $stderr
     if ($process.ExitCode -ne 0 -or (Select-String -LiteralPath @($stdout,$stderr) -Pattern 'SCRIPT ERROR|Parse Error|TEST_FAILED|SHADER ERROR|^ERROR:' -Quiet)) { $failed = $true }
+}
+$surfacePrints = @()
+foreach ($case in @('contracts_a','contracts_b')) {
+    $match = Select-String -LiteralPath (Join-Path $outputRoot ($case + '.out.log')) -Pattern 'SURFACE_CONTRACT ([0-9a-f]{64})'
+    if ($match) { $surfacePrints += $match.Matches[0].Groups[1].Value }
+}
+if ($surfacePrints.Count -ne 2 -or $surfacePrints[0] -ne $surfacePrints[1]) {
+    Write-Output 'Natural surface fingerprint differs between processes.'
+    $failed = $true
 }
 $fingerprints = @()
 foreach ($case in @('geology_a', 'geology_b')) {
@@ -48,6 +61,26 @@ foreach ($case in @('climate_a', 'climate_b')) {
 }
 if ($climateFingerprints.Count -ne 2 -or $climateFingerprints[0] -ne $climateFingerprints[1]) {
     Write-Output 'Climate fingerprint differs between processes.'
+    $failed = $true
+}
+$biomeFingerprints = @()
+foreach ($case in @('biome_a', 'biome_b')) {
+    $log = Join-Path $outputRoot ($case + '.out.log')
+    $match = Select-String -LiteralPath $log -Pattern 'BIOME fingerprint=([0-9a-f]{64})'
+    if ($match) { $biomeFingerprints += $match.Matches[0].Groups[1].Value }
+}
+if ($biomeFingerprints.Count -ne 2 -or $biomeFingerprints[0] -ne $biomeFingerprints[1]) {
+    Write-Output 'Biome fingerprint differs between processes.'
+    $failed = $true
+}
+$reliefFingerprints = @()
+foreach ($case in @('relief_a', 'relief_b')) {
+    $log = Join-Path $outputRoot ($case + '.out.log')
+    $match = Select-String -LiteralPath $log -Pattern 'RELIEF fingerprint=([0-9a-f]{64})'
+    if ($match) { $reliefFingerprints += $match.Matches[0].Groups[1].Value }
+}
+if ($reliefFingerprints.Count -ne 2 -or $reliefFingerprints[0] -ne $reliefFingerprints[1]) {
+    Write-Output 'Relief fingerprint differs between processes.'
     $failed = $true
 }
 Write-Output "Logs: $outputRoot"

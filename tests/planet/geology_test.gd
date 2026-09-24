@@ -124,7 +124,7 @@ func _initialize() -> void:
 	check(edge_checks >= 12 * 33, "12 arestas cobertas")
 	check(corner_checks >= 8 * 3, "8 cantos cobertos")
 	# Mesmo ponto físico reaparece em malhas de diferentes profundidades.
-	for depth in [0, 1, 2, 4, 8]:
+	for depth in [0, 1, 2, 4, 8, 9]:
 		var d := CubeSphereMapping.face_uv_to_direction(0, Vector2(0.5, 0.5))
 		check(geology.sample(d) == geology.sample_with_surface(d, shape.sample_components(d)), "LOD %d" % depth)
 	# Suavidade de campos numéricos perto de mudanças discretas de província.
@@ -156,7 +156,7 @@ func _initialize() -> void:
 	check(legacy.result.bounds == integrated.result.bounds, "AABB natural")
 	check(legacy.result.error_m == integrated.result.error_m, "erro LOD natural")
 	var shared_debug := PackedFloat32Array()
-	for depth in [0, 1, 2, 4, 8]:
+	for depth in [0, 1, 2, 4, 8, 9]:
 		var cell: Vector2i = Vector2i.ZERO if depth == 0 else Vector2i.ONE * (1 << (depth - 1))
 		var builder := PlanetChunkBuilder.new(definition, 0, depth, cell, 17, geology)
 		builder.build()

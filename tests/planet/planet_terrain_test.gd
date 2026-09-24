@@ -47,7 +47,7 @@ func _initialize() -> void:
 
 	var ocean_fraction := float(ocean_count) / SAMPLE_COUNT
 	_expect(minimum >= definition.sea_level_m - definition.ocean_depth_m, "O fundo ultrapassou a profundidade máxima.")
-	_expect(maximum <= definition.sea_level_m + definition.max_terrain_height_m, "O pico ultrapassou a altura máxima.")
+	_expect(maximum <= definition.sea_level_m + definition.natural_max_height_m(), "O pico ultrapassou a altura máxima.")
 	_expect(minimum < -80.0, "O planeta precisa de oceano profundo perceptível.")
 	_expect(maximum > 250.0, "O planeta precisa de relevo continental perceptível.")
 	_expect(ocean_fraction > 0.2 and ocean_fraction < 0.8, "A razão terra/água ficou extrema: %.1f%% de oceano." % (ocean_fraction * 100.0))

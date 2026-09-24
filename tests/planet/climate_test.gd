@@ -205,7 +205,7 @@ func _initialize() -> void:
 			climate.sample_into(reference_direction, output)
 			var expected := output.fields()
 			var expected_shadow := output.rain_shadow
-			for depth in [0, 1, 2, 4, 8]:
+			for depth in [0, 1, 2, 4, 8, 9]:
 				var patch_count: int = 1 << int(depth)
 				var cell := Vector2i(floori(uv.x * patch_count), floori(uv.y * patch_count))
 				var local_uv := Vector2(uv.x * patch_count - cell.x, uv.y * patch_count - cell.y)

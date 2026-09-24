@@ -1,10 +1,10 @@
 class_name PlanetGeology
 extends RefCounted
-## Geologia superficial: descritores derivados uma vez do relevo natural.
+## Structural geology built BEFORE natural relief, from continental context.
 ## Depois da construção, províncias e índice espacial são somente leitura.
 ## Vector4 da consulta: ID local, maturidade 0..1, influência 0..1, tipo.
 
-const GENERATOR_VERSION := 2
+const GENERATOR_VERSION := 3
 const SEED_SALT := 0x47454F32 # GEO2; não reutiliza IDs da antiga fundação.
 enum Type { OCEANIC, CRATON, OROGEN, SEDIMENTARY, IGNEOUS, PLATEAU, CLOSED_BASIN, FORMER_MARINE, PLATFORM }
 const TYPE_NAMES := ["Fundo oceânico", "Interior antigo", "Cinturão montanhoso", "Bacia sedimentar", "Ígneo/vulcânico", "Planalto estrutural", "Bacia fechada", "Antiga região marinha", "Plataforma continental"]
@@ -21,11 +21,17 @@ class Province:
 	var radius: float
 	var age: float
 	var strength: float
+	var axis: Vector3
+	var side: Vector3
+	var phase: float
 
 var _planet_seed: int
 var _geology_seed: int
 var _sea_level: float
-var _shape: PlanetShape # Consultas diretas na main thread; workers passam componentes próprios.
+var _continental: ContinentalShape
+var _direct_relief: TerrainRelief
+var _structure := FastNoiseLite.new()
+var _uplift := FastNoiseLite.new()
 var _provinces: Array[Province] = []
 var _buckets: Array[Array] = []
 
@@ -33,7 +39,10 @@ func _init(definition: PlanetDefinition, geology_seed_override: int = -1) -> voi
 	_planet_seed = definition.seed
 	_geology_seed = geology_seed_override if geology_seed_override >= 0 else definition.seed ^ SEED_SALT
 	_sea_level = definition.sea_level_m
-	_shape = PlanetShape.new(definition.duplicate(true))
+	_continental = ContinentalShape.new(definition.duplicate(true))
+	_direct_relief = TerrainRelief.new(definition)
+	ContinentalShape._configure(_structure,_geology_seed+311,2)
+	ContinentalShape._configure(_uplift,_geology_seed+719,2)
 	_generate()
 	_build_index()
 
@@ -49,7 +58,8 @@ func describe(local_id: int) -> Dictionary:
 	for p in _provinces:
 		if p.id == local_id:
 			return {"id": p.id, "key": stable_key(p.id), "type": p.kind,
-				"center": p.center, "radius": p.radius, "age": p.age, "strength": p.strength}
+				"center": p.center, "radius": p.radius, "age": p.age, "strength": p.strength,
+				"axis": p.axis, "side": p.side, "phase": p.phase}
 	return {}
 
 func descriptors() -> Array[Dictionary]:
@@ -59,7 +69,28 @@ func descriptors() -> Array[Dictionary]:
 	return result
 
 func sample(direction: Vector3) -> Vector4:
-	return sample_with_surface(direction, _shape.sample_components(direction))
+	var continental := _continental.sample(direction)
+	return sample_with_surface(direction, _direct_relief.sample(direction,continental,self))
+
+## Borrowed read-only bucket; no allocation. Relief consumes descriptors, never
+## the categorical province ID or a classification derived from final height.
+func relief_candidates(direction: Vector3) -> Array:
+	var p := direction.normalized()
+	var ix := clampi(int((p.x+1.0)*4.0),0,7)
+	var iy := clampi(int((p.y+1.0)*4.0),0,7)
+	var iz := clampi(int((p.z+1.0)*4.0),0,7)
+	return _buckets[ix+BINS*(iy+BINS*iz)]
+
+## Seeding potential only, not another terrain authority. Coarse structural
+## fields rank descriptor locations before relief exists, breaking the cycle.
+func _structural_surface(direction: Vector3) -> Vector4:
+	var c := _continental.sample(direction)
+	if c.x<=_sea_level+5.0:
+		return Vector4(c.x,c.y,0.0,0.0)
+	var p := direction.normalized()
+	var belt := smoothstep(0.45,0.88,1.0-absf(_structure.get_noise_3dv(p*3.1)))*c.w
+	var plateau := smoothstep(0.25,0.68,_uplift.get_noise_3dv(p*4.2)*0.5+0.5)*c.w
+	return Vector4(c.x+300.0*belt+120.0*plateau,c.y,belt,plateau)
 
 func sample_position(local_position: Vector3) -> Vector4:
 	return sample(local_position.normalized())
@@ -108,14 +139,14 @@ static func _suitability(kind: int, s: Vector4) -> float:
 	return 0.0
 
 func _generate() -> void:
-	# Candidatos globais iguais em área; score lê altura/máscaras/relevo de PlanetShape.
+	# Equal-area candidates ranked from continents and structural potential only.
 	var candidates: Array = []
 	for i in range(3072):
 		var y := 1.0 - 2.0 * (float(i) + 0.5) / 3072.0
 		var angle := float(i) * 2.399963229728653
 		var radial := sqrt(maxf(0.0, 1.0 - y * y))
 		var direction := Vector3(cos(angle) * radial, y, sin(angle) * radial)
-		var s := _shape.sample_components(direction)
+		var s := _structural_surface(direction)
 		var h := s.x - _sea_level
 		if h <= 5.0 or s.y < 0.48:
 			continue
@@ -123,10 +154,10 @@ func _generate() -> void:
 		if tangent.length_squared() < 0.1:
 			tangent = Vector3.RIGHT.cross(direction).normalized()
 		var bitangent := direction.cross(tangent)
-		var n1 := _shape.sample_base_height((direction + tangent * 0.035).normalized()) - _sea_level
-		var n2 := _shape.sample_base_height((direction - tangent * 0.035).normalized()) - _sea_level
-		var n3 := _shape.sample_base_height((direction + bitangent * 0.035).normalized()) - _sea_level
-		var n4 := _shape.sample_base_height((direction - bitangent * 0.035).normalized()) - _sea_level
+		var n1 := _structural_surface((direction + tangent * 0.035).normalized()).x - _sea_level
+		var n2 := _structural_surface((direction - tangent * 0.035).normalized()).x - _sea_level
+		var n3 := _structural_surface((direction + bitangent * 0.035).normalized()).x - _sea_level
+		var n4 := _structural_surface((direction - bitangent * 0.035).normalized()).x - _sea_level
 		var relief := absf(n1 - n2) + absf(n3 - n4)
 		var depression := maxf(0.0, (n1 + n2 + n3 + n4) * 0.25 - h)
 		candidates.append({"direction": direction, "h": h, "land": s.y,
@@ -156,6 +187,13 @@ func _generate() -> void:
 			province.center = center
 			province.radius = RADII[kind] * (0.9 + 0.2 * candidate.jitter)
 			province.age = clampf(MATURITY[kind] + (candidate.jitter - 0.5) * 0.14, 0.0, 1.0)
+			if kind == Type.OROGEN:
+				province.age = lerpf(0.18,0.82,candidate.jitter)
+			var tangent := Vector3.UP.cross(center).normalized()
+			if tangent.is_zero_approx(): tangent=Vector3.RIGHT.cross(center).normalized()
+			province.phase = candidate.jitter*TAU
+			province.axis = tangent.rotated(center,province.phase)
+			province.side = center.cross(province.axis).normalized()
 			province.strength = 1.0 if kind == Type.CRATON else 1.6
 			if kind == Type.IGNEOUS:
 				province.strength = 2.0
