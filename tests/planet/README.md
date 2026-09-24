@@ -1,4 +1,4 @@
-# Validação da fundação e da geologia — Etapas 6–7
+# Validação da fundação, geologia e clima — Etapas 6–8
 
 O runner inclui `geology_test.gd` em dois processos independentes e compara o
 fingerprint. Verifica 8.192 alturas naturais antes/depois, ID/tipo/idade/
@@ -6,9 +6,18 @@ influência, distribuição, bordas/cantos/LOD, fronteiras, workers concorrentes
 igualdade dos atributos naturais de chunk com/sem geologia. Os testes da
 fundação permanecem com o oráculo imutável do doador.
 
+O runner inclui também `climate_test.gd` em dois processos e compara o
+fingerprint climático. Ele valida 8.192 direções, campos finitos, seed e ordem,
+latitude/altitude/oceano controlados, caso barlavento/sotavento, 12 bordas,
+oito cantos, cinco LODs, consultas concorrentes e igualdade de altura, arrays,
+bounds e erro LOD antes/depois. Estatísticas globais são impressas pelo teste.
+
 `surface_visual_test.gd` também captura F5: modos 1–9 no globo e província/
 maturidade nas outras oito poses. A comparação de hashes naturais com a
 Etapa 6 fica em `docs/evidence/07_reintegracao_geologia/natural_comparison.json`.
+F6 captura cinco modos nas nove poses e oito alvos climáticos em
+`docs/evidence/08_reintegracao_clima/`; as nove imagens naturais são comparadas
+por hash com a Etapa 7.
 
 `./tests/planet/run_validation.ps1` importa o projeto, abre PlanetLab em headless,
 testa câmeras, matemática, PlanetShape, geometria e LOD/WorkerThreadPool.
@@ -28,11 +37,11 @@ Captura gráfica, com Godot 4.6.1 (não usar headless):
 & $Godot --path . --rendering-method forward_plus --script res://tests/planet/surface_visual_test.gd -- C:/Temp/planet-stage6-visual
 ```
 
-Cria 18 PNGs de 9 poses (globo, órbita baixa, quilômetros, centenas de metros,
+Cria capturas naturais e de debug de 9 poses (globo, órbita baixa, quilômetros, centenas de metros,
 solo, montanhas, horizonte, borda de face, afastamento) e `report.json` com a
 rota contínua de 720 frames. Mesmos parâmetros de produção; nenhum budget ou
 LOD reduzido. As imagens têm material técnico do doador, sem texturas finais,
-clima, atmosfera, nuvens ou água. O chão submarino é terreno opaco.
+biomas, atmosfera, nuvens ou água. O chão submarino é terreno opaco.
 
 A suíte LOD usa adicionalmente uma configuração pequena para testar transições
 rapidamente. A captura gráfica exercita separadamente 17×17, nível 8, 510

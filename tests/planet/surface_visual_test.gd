@@ -69,8 +69,9 @@ func _run() -> void:
 		expect(not FileAccess.file_exists("res://systems/planet/terrain/planet_terrain.gd"), "old sampler outside runtime")
 		var classes := ProjectSettings.get_global_class_list()
 		for entry in classes:
-			expect(entry.class not in ["PlanetTerrain", "PlanetClimate", "PlanetQuadtreeView"], "legacy class excluded: " + entry.class)
+			expect(entry.class not in ["PlanetTerrain", "PlanetQuadtreeView"], "legacy class excluded: " + entry.class)
 		expect(renderer.geology != null and renderer.geology_debug_mode == 0, "independent geology service, natural material")
+		expect(renderer.climate != null and renderer.climate_debug_mode == 0, "independent climate service, natural material")
 	camera.near = 0.5
 	camera.current = true
 	renderer.set_process(false)
@@ -125,6 +126,12 @@ func _run() -> void:
 				await RenderingServer.frame_post_draw
 				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_geology_%02d.png" % mode))
 			renderer.set_geology_debug_mode(0)
+			for mode in range(1, 6):
+				renderer.set_climate_debug_mode(mode)
+				await process_frame
+				await RenderingServer.frame_post_draw
+				root.get_texture().get_image().save_png(output.path_join(scenario.name + "_climate_%02d.png" % mode))
+			renderer.set_climate_debug_mode(0)
 		print("CAPTURE ", scenario.name, " ", renderer.get_stats())
 	# Continuous navigation measured separately from convergence and screenshots.
 	rows.clear()
@@ -140,10 +147,79 @@ func _run() -> void:
 	var report := {"reference": reference, "renderer": RenderingServer.get_current_rendering_method(), "camera_fov": camera.fov,
 		"captures": captures, "rows": rows, "failed": failed, "peak": str(peak)}
 	FileAccess.open(output.path_join("report.json"), FileAccess.WRITE).store_string(JSON.stringify(report))
+	if not reference:
+		await capture_climate_targets()
 	print("SURFACE_VISUAL_", "FAILED" if failed else "OK", " frames=", rows.size())
 	scene.queue_free()
 	await process_frame
 	quit(1 if failed else 0)
+
+func capture_climate_targets() -> void:
+	var coast := Vector3.ZERO
+	var interior := Vector3.ZERO
+	for i in range(4096):
+		var y := 1.0 - 2.0 * (float(i) + 0.5) / 4096.0
+		var radial := sqrt(1.0 - y * y)
+		var angle := float(i) * 2.399963229728653
+		var d := Vector3(cos(angle) * radial, y, sin(angle) * radial)
+		if absf(y) > 0.8 or shape.sample_base_height(d) < 30.0:
+			continue
+		var climate_sample := renderer.climate.sample(d)
+		if coast.is_zero_approx() and climate_sample.ocean_influence > 0.85:
+			coast = d
+		if interior.is_zero_approx() and climate_sample.ocean_influence < 0.20:
+			interior = d
+		if not coast.is_zero_approx() and not interior.is_zero_approx():
+			break
+	expect(not coast.is_zero_approx() and not interior.is_zero_approx(), "coast and interior visual targets")
+	var targets: Array[Dictionary] = [
+		{"name": "equator", "direction": Vector3.RIGHT, "altitude": 20000.0, "offset": 0.0, "modes": [1, 2, 4]},
+		{"name": "midlatitude", "direction": Vector3(0.85, 0.5, 0.2).normalized(), "altitude": 12000.0, "offset": 0.0, "modes": [1, 2, 4]},
+		{"name": "north_pole", "direction": Vector3.UP, "altitude": 20000.0, "offset": 0.0, "modes": [1, 2, 4]},
+		{"name": "south_pole", "direction": Vector3.DOWN, "altitude": 20000.0, "offset": 0.0, "modes": [1, 2, 4]},
+		{"name": "coast", "direction": coast, "altitude": 8000.0, "offset": 0.0, "modes": [2, 3, 4]},
+		{"name": "interior", "direction": interior, "altitude": 8000.0, "offset": 0.0, "modes": [2, 3, 4]},
+		{"name": "windward", "direction": Vector3(0.59688, 0.795306, 0.105938), "altitude": 1800.0, "offset": 2500.0, "modes": [2, 4, 5]},
+		{"name": "lee", "direction": Vector3(0.621577, 0.783287, 0.010171), "altitude": 1800.0, "offset": 2500.0, "modes": [2, 4, 5]}
+	]
+	var results := []
+	for target in targets:
+		var d: Vector3 = target.direction
+		if d.is_zero_approx():
+			continue
+		d = d.normalized()
+		var point := shape.point_on_planet(d)
+		var tangent := d.cross(Vector3.UP).normalized()
+		if tangent.is_zero_approx():
+			tangent = d.cross(Vector3.FORWARD).normalized()
+		camera.position = point + d * target.altitude + tangent * target.offset
+		camera.look_at(Vector3.ZERO if target.offset == 0.0 else point,
+			Vector3.FORWARD if absf(d.y) > 0.92 and target.offset == 0.0 else (Vector3.UP if target.offset == 0.0 else d))
+		await settle_debug(target.name)
+		var context := renderer.climate.sample(d)
+		results.append({"name": target.name, "direction": str(d), "fields": context.fields(),
+			"shadow": context.rain_shadow, "altitude_m": context.altitude_m,
+			"stats": renderer.get_stats()})
+		for mode in target.modes:
+			renderer.set_climate_debug_mode(mode)
+			await process_frame
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().save_png(output.path_join("target_" + target.name + "_climate_%02d.png" % mode))
+		renderer.set_climate_debug_mode(0)
+	FileAccess.open(output.path_join("climate_targets.json"), FileAccess.WRITE).store_string(JSON.stringify(results))
+	print("CLIMATE_TARGETS ", results.size())
+
+func settle_debug(label: String) -> void:
+	renderer._force_selection = true
+	var stable := 0
+	for frame in range(3600):
+		renderer._process(1.0 / 60.0)
+		await process_frame
+		var stats := renderer.get_stats()
+		stable = stable + 1 if stats.jobs == 0 and stats.queued == 0 else 0
+		if stable >= 30:
+			return
+	expect(false, "climate target convergence " + label)
 
 func tick(phase: String) -> void:
 	var start := Time.get_ticks_usec()

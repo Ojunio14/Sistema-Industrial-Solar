@@ -1,10 +1,11 @@
 # Arquitetura atual — Planet v0.1
 
 A Etapa 6 substituiu integralmente a superfície/renderer pela implementação
-runtime de Sistema_Industrial_v1. A Etapa 7 acrescentou geologia consultável,
-sem mudar a autoridade natural. Detalhes:
+runtime de Sistema_Industrial_v1. A Etapa 7 acrescentou geologia consultável;
+a Etapa 8 acrescentou clima consultável. Nenhum dos dois muda a autoridade natural. Detalhes:
 [06_substituicao_planeta.md](stages/06_substituicao_planeta.md) e
-[07_reintegracao_geologia.md](stages/07_reintegracao_geologia.md).
+[07_reintegracao_geologia.md](stages/07_reintegracao_geologia.md) e
+[08_reintegracao_clima.md](stages/08_reintegracao_clima.md).
 
 ## Autoridade e escala
 
@@ -44,12 +45,31 @@ Uma cópia efêmera da classificação por vértice alimenta apenas o shader té
 de F5; a autoridade permanece no serviço consultável por direção/posição. Com
 F5 desligado, o material natural do doador permanece ativo. F4 mantém LOD.
 
+## Clima superficial
+
+PlanetClimate recebe PlanetDefinition, deriva a subseed CLI8 e precomputa uma
+grade global 192×96 do relevo real de PlanetShape: altitude, terra/água,
+montanhas, oceanicidade propagada e barlavento/sotavento conforme ventos que
+variam com latitude. `sample(direction)` retorna PlanetClimateSample com
+temperatura, umidade, precipitação, influência oceânica, sombra de chuva,
+exposição e altitude; não retorna bioma ou delta de altura. Latitude e altitude
+da superfície atual determinam a temperatura. A consulta de worker
+`sample_with_surface_into` recebe componentes do terreno já amostrados e lê
+somente arrays imutáveis, sem Node/SceneTree ou RNG. Geologia não alimenta o
+clima. A construção global é síncrona uma vez por configuração, não por chunk.
+
+F6 alterna cinco visualizações climáticas com texturas globais criadas sob
+demanda. F5/F6 selecionam materiais técnicos mutuamente exclusivos. Nenhum
+campo climático é anexado aos vértices da mesh natural, e F6 desligado conserva
+exatamente seu material. Materiais/biomas futuros poderão consultar o serviço
+ou receber somente os campos de que precisarem.
+
 ## Sistemas suspensos
 
 archive/stages_02_05/.gdignore exclui gerador, renderer e testes antigos,
 preservando a implementação histórica de geologia, clima, dez biomas e materiais.
-O código geológico antigo não roda; a Etapa 7 reimplementou sua camada de
-classificação sobre PlanetShape. Clima/biomas/recursos seguem desconectados.
+O código geológico e climático antigo não roda; Etapas 7 e 8 reimplementaram
+suas camadas de dados sobre PlanetShape. Biomas/recursos seguem desconectados.
 
 ## Mineração e deformação futuras
 
@@ -65,6 +85,7 @@ overhangs/cavernas continuam fora do escopo inicial.
 
 ## Planet Lab
 
-FreeFly, RTS, Orbital e CameraManager preservados. F4: LOD; F5: geologia. Luz/ambiente
+FreeFly, RTS, Orbital e CameraManager preservados. F4: LOD; F5: geologia;
+F6: temperatura, umidade, oceanicidade, precipitação e sombra de chuva. Luz/ambiente
 constantes, fundo sólido e material técnico do doador. Sem nuvens, atmosfera,
 sky artístico, pós-processamento, oceano avançado ou colisão planetária.

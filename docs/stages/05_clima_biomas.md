@@ -1,7 +1,8 @@
 # Etapa 5 — Clima e Biomas
 
-> Estado após a [Etapa 6](06_substituicao_planeta.md): design/código preservados,
-> temporariamente desconectados. Reintegração sobre PlanetShape ainda não realizada.
+> Estado histórico após a [Etapa 6](06_substituicao_planeta.md): design/código
+> preservados e desconectados. O clima foi posteriormente reintegrado sobre
+> PlanetShape na [Etapa 8](08_reintegracao_clima.md); biomas continuam pendentes.
 
 Estado: concluída tecnicamente; limites e custo de execução registrados abaixo.
 Referência: Godot 4.6.1, seed 73129, raio 50.000 m, escala 1 m/unidade.

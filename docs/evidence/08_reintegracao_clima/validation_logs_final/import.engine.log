@@ -1,0 +1,135 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] _update_scan_actions | Started Scanning actions... (112 steps)
+[   0% ] _update_scan_actions | 01_globe.png
+[   0% ] _update_scan_actions | 01_globe_climate_01.png
+[   1% ] _update_scan_actions | 01_globe_climate_02.png
+[   2% ] _update_scan_actions | 01_globe_climate_03.png
+[   3% ] _update_scan_actions | 01_globe_climate_04.png
+[   4% ] _update_scan_actions | 01_globe_climate_05.png
+[   5% ] _update_scan_actions | 01_globe_geology_01.png
+[   6% ] _update_scan_actions | 01_globe_geology_02.png
+[   7% ] _update_scan_actions | 01_globe_geology_03.png
+[   7% ] _update_scan_actions | 01_globe_geology_04.png
+[   8% ] _update_scan_actions | 01_globe_geology_05.png
+[   9% ] _update_scan_actions | 01_globe_geology_06.png
+[  10% ] _update_scan_actions | 01_globe_geology_07.png
+[  11% ] _update_scan_actions | 01_globe_geology_08.png
+[  12% ] _update_scan_actions | 01_globe_geology_09.png
+[  13% ] _update_scan_actions | 01_globe_lod.png
+[  14% ] _update_scan_actions | 02_low_orbit.png
+[  15% ] _update_scan_actions | 02_low_orbit_climate_01.png
+[  15% ] _update_scan_actions | 02_low_orbit_climate_02.png
+[  16% ] _update_scan_actions | 02_low_orbit_climate_03.png
+[  17% ] _update_scan_actions | 02_low_orbit_climate_04.png
+[  18% ] _update_scan_actions | 02_low_orbit_climate_05.png
+[  19% ] _update_scan_actions | 02_low_orbit_geology_01.png
+[  20% ] _update_scan_actions | 02_low_orbit_geology_02.png
+[  21% ] _update_scan_actions | 02_low_orbit_lod.png
+[  22% ] _update_scan_actions | 03_kilometers.png
+[  23% ] _update_scan_actions | 03_kilometers_climate_01.png
+[  23% ] _update_scan_actions | 03_kilometers_climate_02.png
+[  24% ] _update_scan_actions | 03_kilometers_climate_03.png
+[  25% ] _update_scan_actions | 03_kilometers_climate_04.png
+[  26% ] _update_scan_actions | 03_kilometers_climate_05.png
+[  27% ] _update_scan_actions | 03_kilometers_geology_01.png
+[  28% ] _update_scan_actions | 03_kilometers_geology_02.png
+[  29% ] _update_scan_actions | 03_kilometers_lod.png
+[  30% ] _update_scan_actions | 04_hundreds.png
+[  30% ] _update_scan_actions | 04_hundreds_climate_01.png
+[  31% ] _update_scan_actions | 04_hundreds_climate_02.png
+[  32% ] _update_scan_actions | 04_hundreds_climate_03.png
+[  33% ] _update_scan_actions | 04_hundreds_climate_04.png
+[  34% ] _update_scan_actions | 04_hundreds_climate_05.png
+[  35% ] _update_scan_actions | 04_hundreds_geology_01.png
+[  36% ] _update_scan_actions | 04_hundreds_geology_02.png
+[  37% ] _update_scan_actions | 04_hundreds_lod.png
+[  38% ] _update_scan_actions | 05_ground.png
+[  38% ] _update_scan_actions | 05_ground_climate_01.png
+[  39% ] _update_scan_actions | 05_ground_climate_02.png
+[  40% ] _update_scan_actions | 05_ground_climate_03.png
+[  41% ] _update_scan_actions | 05_ground_climate_04.png
+[  42% ] _update_scan_actions | 05_ground_climate_05.png
+[  43% ] _update_scan_actions | 05_ground_geology_01.png
+[  44% ] _update_scan_actions | 05_ground_geology_02.png
+[  45% ] _update_scan_actions | 05_ground_lod.png
+[  46% ] _update_scan_actions | 06_mountains.png
+[  46% ] _update_scan_actions | 06_mountains_climate_01.png
+[  47% ] _update_scan_actions | 06_mountains_climate_02.png
+[  48% ] _update_scan_actions | 06_mountains_climate_03.png
+[  49% ] _update_scan_actions | 06_mountains_climate_04.png
+[  50% ] _update_scan_actions | 06_mountains_climate_05.png
+[  51% ] _update_scan_actions | 06_mountains_geology_01.png
+[  52% ] _update_scan_actions | 06_mountains_geology_02.png
+[  53% ] _update_scan_actions | 06_mountains_lod.png
+[  53% ] _update_scan_actions | 07_horizon.png
+[  54% ] _update_scan_actions | 07_horizon_climate_01.png
+[  55% ] _update_scan_actions | 07_horizon_climate_02.png
+[  56% ] _update_scan_actions | 07_horizon_climate_03.png
+[  57% ] _update_scan_actions | 07_horizon_climate_04.png
+[  58% ] _update_scan_actions | 07_horizon_climate_05.png
+[  59% ] _update_scan_actions | 07_horizon_geology_01.png
+[  60% ] _update_scan_actions | 07_horizon_geology_02.png
+[  61% ] _update_scan_actions | 07_horizon_lod.png
+[  61% ] _update_scan_actions | 08_cube_edge.png
+[  62% ] _update_scan_actions | 08_cube_edge_climate_01.png
+[  63% ] _update_scan_actions | 08_cube_edge_climate_02.png
+[  64% ] _update_scan_actions | 08_cube_edge_climate_03.png
+[  65% ] _update_scan_actions | 08_cube_edge_climate_04.png
+[  66% ] _update_scan_actions | 08_cube_edge_climate_05.png
+[  67% ] _update_scan_actions | 08_cube_edge_geology_01.png
+[  68% ] _update_scan_actions | 08_cube_edge_geology_02.png
+[  69% ] _update_scan_actions | 08_cube_edge_lod.png
+[  69% ] _update_scan_actions | 09_retreat.png
+[  70% ] _update_scan_actions | 09_retreat_climate_01.png
+[  71% ] _update_scan_actions | 09_retreat_climate_02.png
+[  72% ] _update_scan_actions | 09_retreat_climate_03.png
+[  73% ] _update_scan_actions | 09_retreat_climate_04.png
+[  74% ] _update_scan_actions | 09_retreat_climate_05.png
+[  75% ] _update_scan_actions | 09_retreat_geology_01.png
+[  76% ] _update_scan_actions | 09_retreat_geology_02.png
+[  76% ] _update_scan_actions | 09_retreat_lod.png
+[  77% ] _update_scan_actions | target_coast_climate_02.png
+[  78% ] _update_scan_actions | target_coast_climate_03.png
+[  79% ] _update_scan_actions | target_coast_climate_04.png
+[  80% ] _update_scan_actions | target_equator_climate_01.png
+[  81% ] _update_scan_actions | target_equator_climate_02.png
+[  82% ] _update_scan_actions | target_equator_climate_04.png
+[  83% ] _update_scan_actions | target_interior_climate_02.png
+[  84% ] _update_scan_actions | target_interior_climate_03.png
+[  84% ] _update_scan_actions | target_interior_climate_04.png
+[  85% ] _update_scan_actions | target_lee_climate_02.png
+[  86% ] _update_scan_actions | target_lee_climate_04.png
+[  87% ] _update_scan_actions | target_lee_climate_05.png
+[  88% ] _update_scan_actions | target_midlatitude_climate_01.png
+[  89% ] _update_scan_actions | target_midlatitude_climate_02.png
+[  90% ] _update_scan_actions | target_midlatitude_climate_04.png
+[  91% ] _update_scan_actions | target_north_pole_climate_01.png
+[  92% ] _update_scan_actions | target_north_pole_climate_02.png
+[  92% ] _update_scan_actions | target_north_pole_climate_04.png
+[  93% ] _update_scan_actions | target_south_pole_climate_01.png
+[  94% ] _update_scan_actions | target_south_pole_climate_02.png
+[  95% ] _update_scan_actions | target_south_pole_climate_04.png
+[  96% ] _update_scan_actions | target_windward_climate_02.png
+[  97% ] _update_scan_actions | target_windward_climate_04.png
+[  98% ] _update_scan_actions | target_windward_climate_05.png
+[ DONE ] _update_scan_actions
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[  33% ] loading_editor_layout | Reopening scenes...
+[  50% ] loading_editor_layout | Loading central editor layout...
+[  66% ] loading_editor_layout | Loading plugin window layout...
+[  83% ] loading_editor_layout | Editor layout ready.
+[ DONE ] loading_editor_layout
+

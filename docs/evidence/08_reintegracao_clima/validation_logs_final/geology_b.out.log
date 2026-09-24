@@ -1,0 +1,6 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+GEOLOGY fingerprint=e2b211a5782be4fe0948374a68f5fd384ed0d7d5b42454f0ce848ad644701575
+GEOLOGY descriptors=40 types=[3756, 960, 349, 717, 25, 302, 102, 80, 1901] land=2535 ocean=0 igneous=25 boundaries=106 edges=960 corners=192
+GEOLOGY construction_ms=931.766 mixed_8192_ms=627.734 pure_8192_ms=54.667 chunks_12_median_ms=20.901/21.952 chunks_12_p95_ms=22.318/25.719
+GEOLOGY checks=52400 failures=0

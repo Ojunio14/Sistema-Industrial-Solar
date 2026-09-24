@@ -26,6 +26,8 @@ class_name PlanetLODManager
 var shape: PlanetShape
 var geology: PlanetGeology
 var geology_debug_mode := 0
+var climate: PlanetClimate
+var climate_debug_mode := 0
 var roots: Array[QuadtreeNode] = []
 var revision: int = 0
 var cache_hits: int = 0
@@ -42,6 +44,8 @@ var _elapsed: float = 0.0
 var _debug_material: ShaderMaterial
 var _runtime_material: Material
 var _geology_material: ShaderMaterial
+var _climate_material: ShaderMaterial
+var _climate_textures: Array[Texture2D] = []
 var _force_selection := true
 var _sample_resolution: int = 17
 var _split_candidates: Array[QuadtreeNode] = []
@@ -61,6 +65,7 @@ func configure(source: PlanetDefinition) -> void:
 	_definition = source.duplicate(true) as PlanetDefinition if source else null
 	shape = PlanetShape.new(_definition) if _definition else null
 	geology = PlanetGeology.new(_definition) if _definition else null
+	climate = PlanetClimate.new(_definition) if _definition else null
 	if not _definition:
 		return
 	_sample_resolution = clampi(chunk_resolution, 5, 65)
@@ -78,6 +83,10 @@ func configure(source: PlanetDefinition) -> void:
 	_geology_material = ShaderMaterial.new()
 	_geology_material.shader = preload("res://systems/planet/geology/geology_debug.gdshader")
 	_geology_material.set_shader_parameter("debug_mode", geology_debug_mode)
+	_climate_material = ShaderMaterial.new()
+	_climate_material.shader = preload("res://systems/planet/climate/climate_debug.gdshader")
+	_climate_material.set_shader_parameter("debug_mode", climate_debug_mode)
+	_climate_textures.clear()
 	for face in range(6):
 		var node := _create_node(face, 0, Vector2i.ZERO)
 		roots.append(node)
@@ -283,7 +292,7 @@ func _attach(node: QuadtreeNode, data: Dictionary) -> void:
 	instance.layers = terrain_layers
 	instance.mesh = data.mesh
 	instance.custom_aabb = data.bounds.grow(0.01)
-	instance.material_override = _geology_material if geology_debug_mode > 0 else _runtime_material
+	instance.material_override = _active_material()
 	instance.set_instance_shader_parameter("lod_color",
 		Color.from_hsv(fmod(float(node.depth) * 0.14 + float(node.face) * 0.015, 1.0), 0.62, 0.9))
 	instance.visible = node.depth == 0
@@ -356,11 +365,36 @@ func get_stats() -> Dictionary:
 
 func set_geology_debug_mode(mode: int) -> void:
 	geology_debug_mode = posmod(mode, 10)
+	if geology_debug_mode > 0:
+		climate_debug_mode = 0
 	if _geology_material:
 		_geology_material.set_shader_parameter("debug_mode", geology_debug_mode)
+	_refresh_chunk_materials()
+
+func set_climate_debug_mode(mode: int) -> void:
+	climate_debug_mode = posmod(mode, 6)
+	if climate_debug_mode > 0:
+		geology_debug_mode = 0
+		if _climate_textures.is_empty() and climate:
+			_climate_textures = climate.create_debug_textures()
+			_climate_material.set_shader_parameter("climate_fields", _climate_textures[0])
+			_climate_material.set_shader_parameter("climate_shadow", _climate_textures[1])
+	if _climate_material:
+		_climate_material.set_shader_parameter("debug_mode", climate_debug_mode)
+	_refresh_chunk_materials()
+
+func _active_material() -> Material:
+	if climate_debug_mode > 0:
+		return _climate_material
+	if geology_debug_mode > 0:
+		return _geology_material
+	return _runtime_material
+
+func _refresh_chunk_materials() -> void:
+	var active := _active_material()
 	for node: QuadtreeNode in _nodes.values():
 		if is_instance_valid(node.mesh_instance):
-			node.mesh_instance.material_override = _geology_material if geology_debug_mode > 0 else _runtime_material
+			node.mesh_instance.material_override = active
 
 
 func _exit_tree() -> void:
