@@ -1,0 +1,11 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+INTEGRATION boot
+INTEGRATION scene ready
+INTEGRATION warmup ready
+WAIT integration-edge global={ "visible": 207, "resident": 510, "queued": 235, "jobs": 1, "cached": 16, "depth": 8, "triangles": 132480, "generated": 290, "cache_hits": 0, "discarded": 0, "build_ms": 66.67, "upload_ms": 0.004, "revision": 1, "rebalances": 4 } mining jobs=1 pending=0 queue=0
+WAIT integration-second global={ "visible": 234, "resident": 510, "queued": 198, "jobs": 1, "cached": 96, "depth": 8, "triangles": 149760, "generated": 455, "cache_hits": 8, "discarded": 0, "build_ms": 37.563, "upload_ms": 0.007, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+WAIT integration-edge global={ "visible": 129, "resident": 510, "queued": 338, "jobs": 1, "cached": 96, "depth": 8, "triangles": 82560, "generated": 473, "cache_hits": 24, "discarded": 2, "build_ms": 79.092, "upload_ms": 0.005, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+MINING_INTEGRATION {"activation_frame_max_ms":31.567,"activation_frame_p50_ms":8.299,"activation_frame_p95_ms":8.331,"checks":58440,"collar_seam_max_m":0.00873464066535234,"collision_p95_ms":3.365,"commit_p95_ms":3.462,"discarded":2,"edit_frame_max_ms":11.492,"edit_frame_p50_ms":8.276,"edit_frame_p95_ms":8.349,"edit_including_stale_wall_ms":8304.084,"edit_wall_ms":8304.084,"failures":0,"first_chunk_commit_ms":1743.415,"four_chunk_edit_wall_ms":8075.184,"four_chunk_frame_max_ms":45.093,"four_chunk_frame_p50_ms":8.29,"four_chunk_frame_p95_ms":9.035,"gpu_p95_ms":0.0,"graphic":false,"job_p50_ms":1682.726,"job_p95_ms":3325.44,"local_update_max_ms":33.687,"local_update_p95_ms":1.312,"logical_processors":4,"max_collision_commit_ms":5.195,"max_commit_ms":5.227,"max_jobs":1,"max_pending":1,"max_queue":3,"physics_max_error_m":0.00552427163347602,"pool_max_threads_setting":-1,"workers":1,"zone_visible_ms":11709.52}

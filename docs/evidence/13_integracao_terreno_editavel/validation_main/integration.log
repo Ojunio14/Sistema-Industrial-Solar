@@ -1,0 +1,9 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+INTEGRATION boot
+INTEGRATION scene ready
+INTEGRATION warmup ready
+WAIT integration-edge global={ "visible": 180, "resident": 510, "queued": 269, "jobs": 1, "cached": 16, "depth": 8, "triangles": 115200, "generated": 256, "cache_hits": 0, "discarded": 0, "build_ms": 34.198, "upload_ms": 0.006, "revision": 1, "rebalances": 4 } mining jobs=1 pending=0 queue=0
+WAIT integration-second global={ "visible": 222, "resident": 510, "queued": 212, "jobs": 1, "cached": 96, "depth": 8, "triangles": 142080, "generated": 429, "cache_hits": 8, "discarded": 0, "build_ms": 61.653, "upload_ms": 0.002, "revision": 1, "rebalances": 35 } mining jobs=0 pending=0 queue=0
+WAIT integration-edge global={ "visible": 129, "resident": 510, "queued": 337, "jobs": 1, "cached": 96, "depth": 8, "triangles": 82560, "generated": 474, "cache_hits": 21, "discarded": 2, "build_ms": 71.948, "upload_ms": 0.007, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+MINING_INTEGRATION {"activation_frame_max_ms":137.017,"activation_frame_p50_ms":10.911,"activation_frame_p95_ms":16.035,"checks":59528,"collar_seam_max_m":0.00552446115761995,"collision_p95_ms":3.82,"commit_p95_ms":3.923,"discarded":2,"edit_frame_max_ms":162.916,"edit_frame_p50_ms":10.765,"edit_frame_p95_ms":15.999,"edit_including_stale_wall_ms":9492.237,"edit_wall_ms":9492.237,"failures":0,"first_chunk_commit_ms":2059.983,"four_chunk_edit_wall_ms":7808.729,"four_chunk_frame_max_ms":23.799,"four_chunk_frame_p50_ms":10.843,"four_chunk_frame_p95_ms":16.027,"gpu_p95_ms":0.0,"graphic":false,"job_p50_ms":1757.493,"job_p95_ms":3610.789,"local_update_max_ms":47.791,"local_update_p95_ms":1.218,"logical_processors":4,"max_collision_commit_ms":10.076,"max_commit_ms":47.281,"max_jobs":1,"max_pending":1,"max_queue":3,"physics_max_error_m":0.00552427163347602,"pool_max_threads_setting":-1,"workers":1,"zone_visible_ms":14191.054}

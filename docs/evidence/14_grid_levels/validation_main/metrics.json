@@ -1,0 +1,102 @@
+{
+  "checks": 18383,
+  "collision_p95_ms": 3.73,
+  "commit_p95_ms": 3.821,
+  "datum_origin_m": 91.0,
+  "demo_plans": 3,
+  "dev_apply_ms": 1.973,
+  "discarded": 0,
+  "evaluation_max_step_ms": 1.737,
+  "failures": 0,
+  "gpu_p95_ms": 0.0,
+  "graphic": false,
+  "job_intervals": [
+    {
+      "end_usec": 10776689,
+      "kind": "chunk",
+      "start_usec": 9221550
+    },
+    {
+      "end_usec": 12358390,
+      "kind": "chunk",
+      "start_usec": 10844782
+    },
+    {
+      "end_usec": 14080862,
+      "kind": "chunk",
+      "start_usec": 12419065
+    },
+    {
+      "end_usec": 15717107,
+      "kind": "chunk",
+      "start_usec": 14150264
+    },
+    {
+      "end_usec": 21802556,
+      "kind": "transition",
+      "start_usec": 18546377
+    },
+    {
+      "end_usec": 23792929,
+      "kind": "chunk",
+      "start_usec": 22195058
+    },
+    {
+      "end_usec": 25493293,
+      "kind": "chunk",
+      "start_usec": 23851520
+    },
+    {
+      "end_usec": 27263224,
+      "kind": "chunk",
+      "start_usec": 25565121
+    },
+    {
+      "end_usec": 29336082,
+      "kind": "chunk",
+      "start_usec": 27327040
+    }
+  ],
+  "job_p50_ms": 1641.773,
+  "job_p95_ms": 3256.179,
+  "job_times_ms": [
+    1555.139,
+    1513.608,
+    1661.797,
+    1566.844,
+    3256.179,
+    1597.871,
+    1641.773,
+    1698.103,
+    2009.042
+  ],
+  "local_update_max_ms": 25.866,
+  "local_update_p95_ms": 1.746,
+  "logical_processors": 4,
+  "max_collision_commit_ms": 4.168,
+  "max_commit_ms": 4.278,
+  "max_jobs": 1,
+  "max_pending": 1,
+  "max_queue": 3,
+  "overlay_build_max_step_ms": 2.072,
+  "overlay_build_wall_ms": 462.246,
+  "overlay_cells": 4168,
+  "overlay_glyphs": 8400,
+  "overlay_hidden": {
+    "frame_p50_ms": 8.327,
+    "frame_p95_ms": 8.43,
+    "gpu_p95_ms": 0.0
+  },
+  "overlay_multimesh_buffer_bytes": 537600,
+  "overlay_nodes": 2,
+  "overlay_visible": {
+    "frame_p50_ms": 8.304,
+    "frame_p95_ms": 8.405,
+    "gpu_p95_ms": 0.0
+  },
+  "pool_max_threads_setting": -1,
+  "raycast_max_error_m": 0.00390625,
+  "slow_frames": [],
+  "target_max_error_m": 0.00136997106437775,
+  "workers": 1
+}

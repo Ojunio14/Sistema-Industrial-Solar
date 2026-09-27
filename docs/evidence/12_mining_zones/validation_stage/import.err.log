@@ -1,0 +1,6 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+ERROR: Cannot save file 'C:/Users/aldea/AppData/Roaming/Godot/editor_settings-4.6.tres'.
+   at: save (scene/resources/resource_format_text.cpp:1756)
+ERROR: Error saving editor settings to C:/Users/aldea/AppData/Roaming/Godot/editor_settings-4.6.tres
+   at: save (editor/settings/editor_settings.cpp:1404)

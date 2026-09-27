@@ -1,0 +1,48 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+DESIGNATION_CONTRACT checks=3332 failures=0
+STAGE14_PASS designation_test
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+WARNING: CameraManager: camera 'Missing' is not registered.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] switch_to (res://systems/cameras/camera_manager.gd:61)
+       [1] _run_test (res://tests/cameras/camera_manager_test.gd:91)
+WARNING: CameraManager: duplicate camera ID 'FreeFly' was rejected.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] register_camera (res://systems/cameras/camera_manager.gd:27)
+       [1] _run_test (res://tests/cameras/camera_manager_test.gd:100)
+CAMERA_MANAGER_TEST_OK: 3 cameras, cyclic/direct/invalid/repeated switching
+STAGE14_PASS camera_manager_test
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+MINING_METRICS {"checks":484697,"chunks":[{"chunks":1,"create_ms":0.059,"delta_bytes":65536,"edit_ms":0.182,"query_delta_us":18.5879,"query_final_us":40.576,"update_cell_us":156.07},{"chunks":4,"create_ms":0.076,"delta_bytes":262144,"edit_ms":0.616,"query_delta_us":18.4721,"query_final_us":39.651,"update_cell_us":137.84},{"chunks":16,"create_ms":0.122,"delta_bytes":1048576,"edit_ms":2.135,"query_delta_us":17.8421,"query_final_us":40.554,"update_cell_us":141.91},{"chunks":64,"create_ms":0.489,"delta_bytes":4194304,"edit_ms":11.069,"query_delta_us":17.4287,"query_final_us":38.111,"update_cell_us":148.59}],"max_coordinate_error_m":0.00448930077254772}
+MINING fingerprint=6d20dd3c1a706da1583bd4dc9bb03eef9449b8664fdf6e496e7a4bbc27ad6d88
+MINING checks=484697 failures=0
+STAGE14_PASS mining_test
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+MINING_LOD_OWNERSHIP checks=4 failures=0
+STAGE14_PASS mining_lod_ownership_test
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+INTEGRATION boot
+INTEGRATION scene ready
+INTEGRATION warmup ready
+WAIT integration-edge global={ "visible": 207, "resident": 510, "queued": 235, "jobs": 1, "cached": 16, "depth": 8, "triangles": 132480, "generated": 290, "cache_hits": 0, "discarded": 0, "build_ms": 66.67, "upload_ms": 0.004, "revision": 1, "rebalances": 4 } mining jobs=1 pending=0 queue=0
+WAIT integration-second global={ "visible": 234, "resident": 510, "queued": 198, "jobs": 1, "cached": 96, "depth": 8, "triangles": 149760, "generated": 455, "cache_hits": 8, "discarded": 0, "build_ms": 37.563, "upload_ms": 0.007, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+WAIT integration-edge global={ "visible": 129, "resident": 510, "queued": 338, "jobs": 1, "cached": 96, "depth": 8, "triangles": 82560, "generated": 473, "cache_hits": 24, "discarded": 2, "build_ms": 79.092, "upload_ms": 0.005, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+MINING_INTEGRATION {"activation_frame_max_ms":31.567,"activation_frame_p50_ms":8.299,"activation_frame_p95_ms":8.331,"checks":58440,"collar_seam_max_m":0.00873464066535234,"collision_p95_ms":3.365,"commit_p95_ms":3.462,"discarded":2,"edit_frame_max_ms":11.492,"edit_frame_p50_ms":8.276,"edit_frame_p95_ms":8.349,"edit_including_stale_wall_ms":8304.084,"edit_wall_ms":8304.084,"failures":0,"first_chunk_commit_ms":1743.415,"four_chunk_edit_wall_ms":8075.184,"four_chunk_frame_max_ms":45.093,"four_chunk_frame_p50_ms":8.29,"four_chunk_frame_p95_ms":9.035,"gpu_p95_ms":0.0,"graphic":false,"job_p50_ms":1682.726,"job_p95_ms":3325.44,"local_update_max_ms":33.687,"local_update_p95_ms":1.312,"logical_processors":4,"max_collision_commit_ms":5.195,"max_commit_ms":5.227,"max_jobs":1,"max_pending":1,"max_queue":3,"physics_max_error_m":0.00552427163347602,"pool_max_threads_setting":-1,"workers":1,"zone_visible_ms":11709.52}
+STAGE14_PASS mining_integration_test

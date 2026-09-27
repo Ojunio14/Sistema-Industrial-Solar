@@ -1,0 +1,6 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+RELIEF_LOD_ERROR [44.2468223571777, 17.8510799407959, 5.77209186553955, 2.42080616950989]
+RELIEF fingerprint=76cf074016afb2b297f0c63641c84fd41b3f14c832c19f224e40aff38d6fd838
+RELIEF_METRICS {"changed_mask_range":"(inf, -inf)","changed_old_range":"(inf, -inf)","coastal_changes":0,"geological_changes":2450,"highest_m":644.827880859375,"land_after":4436,"land_before":4436,"max_delta_m":796.911628723145,"mountain_curvature_ratio":1.49798638713056,"mountain_samples":56,"peak":[-0.923451662063599,-0.1502685546875,0.353067070245743],"plain_max_step_20m":1.74928283691406,"plains":2237}
+RELIEF checks=65331 failures=0

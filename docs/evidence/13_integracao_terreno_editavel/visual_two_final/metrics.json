@@ -1,0 +1,144 @@
+{
+  "activation_frame_max_ms": 44.75,
+  "activation_frame_p50_ms": 30.473,
+  "activation_frame_p95_ms": 31.135,
+  "checks": 40859,
+  "collar_seam_max_m": 0.00873464066535234,
+  "collision_p95_ms": 3.598,
+  "commit_p95_ms": 3.665,
+  "discarded": 4,
+  "edit_frame_max_ms": 63.84,
+  "edit_frame_p50_ms": 30.229,
+  "edit_frame_p95_ms": 31.344,
+  "edit_including_stale_wall_ms": 10777.032,
+  "edit_wall_ms": 10777.032,
+  "failures": 0,
+  "first_chunk_commit_ms": 2147.53,
+  "four_chunk_edit_wall_ms": 7252.41,
+  "four_chunk_frame_max_ms": 37.932,
+  "four_chunk_frame_p50_ms": 30.4,
+  "four_chunk_frame_p95_ms": 31.547,
+  "gpu_p95_ms": 28.875,
+  "graphic": true,
+  "job_p50_ms": 1632.54,
+  "job_p95_ms": 3488.812,
+  "job_times_ms": [
+    1618.999,
+    1603.479,
+    1651.063,
+    1656.772,
+    3910.484,
+    1617.583,
+    1617.909,
+    1996.415,
+    1629.62,
+    1637.643,
+    1680.197,
+    1659.706,
+    1626.6,
+    1614.898,
+    969.222,
+    2584.719,
+    1603.778,
+    1632.54,
+    1638.803,
+    1595.917,
+    3488.812
+  ],
+  "local_update_max_ms": 29.42,
+  "local_update_p95_ms": 2.944,
+  "max_collision_commit_ms": 4.268,
+  "max_commit_ms": 5.254,
+  "max_jobs": 2,
+  "max_pending": 1,
+  "max_queue": 2,
+  "physics_max_error_m": 0.00552427163347602,
+  "slow_frames": [
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 44.75,
+      "global_upload_ms": 0.003,
+      "local_update_ms": 0.09,
+      "publish_ms": 0.004
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 63.84,
+      "global_upload_ms": 0.007,
+      "local_update_ms": 0.079,
+      "publish_ms": 0.007
+    },
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 45.193,
+      "global_upload_ms": 0.009,
+      "local_update_ms": 0.177,
+      "publish_ms": 0.016
+    },
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 59.336,
+      "global_upload_ms": 0.007,
+      "local_update_ms": 0.081,
+      "publish_ms": 0.019
+    },
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 40.73,
+      "global_upload_ms": 0.01,
+      "local_update_ms": 0.089,
+      "publish_ms": 0.022
+    },
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 50.691,
+      "global_upload_ms": 0.34,
+      "local_update_ms": 0.936,
+      "publish_ms": 0.057
+    },
+    {
+      "commit_ms": 0.234,
+      "frame_ms": 40.408,
+      "global_upload_ms": 0.006,
+      "local_update_ms": 0.342,
+      "publish_ms": 0.051
+    },
+    {
+      "commit_ms": 0.003,
+      "frame_ms": 41.162,
+      "global_upload_ms": 0.004,
+      "local_update_ms": 0.114,
+      "publish_ms": 0.006
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 212.447,
+      "global_upload_ms": 0.008,
+      "local_update_ms": 0.101,
+      "publish_ms": 0.004
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 46.303,
+      "global_upload_ms": 0.007,
+      "local_update_ms": 0.08,
+      "publish_ms": 0.003
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 45.487,
+      "global_upload_ms": 0.01,
+      "local_update_ms": 0.027,
+      "publish_ms": 0.003
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 89.486,
+      "global_upload_ms": 0.007,
+      "local_update_ms": 0.029,
+      "publish_ms": 0.002
+    }
+  ],
+  "workers": 2,
+  "zone_visible_ms": 14613.186
+}

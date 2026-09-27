@@ -1,0 +1,127 @@
+{
+  "activation_frame_max_ms": 82.842,
+  "activation_frame_p50_ms": 11.501,
+  "activation_frame_p95_ms": 15.941,
+  "checks": 64227,
+  "collar_seam_max_m": 0.00552446115761995,
+  "collision_p95_ms": 3.02,
+  "commit_p95_ms": 3.309,
+  "discarded": 4,
+  "edit_frame_max_ms": 86.441,
+  "edit_frame_p50_ms": 8.31,
+  "edit_frame_p95_ms": 15.283,
+  "edit_including_stale_wall_ms": 14129.897,
+  "edit_wall_ms": 14129.897,
+  "failures": 0,
+  "first_chunk_commit_ms": 2464.289,
+  "four_chunk_edit_wall_ms": 9002.576,
+  "four_chunk_frame_max_ms": 94.8,
+  "four_chunk_frame_p50_ms": 8.295,
+  "four_chunk_frame_p95_ms": 8.335,
+  "graphic": false,
+  "job_p50_ms": 2265.888,
+  "job_p95_ms": 2720.907,
+  "job_times_ms": [
+    2262.766,
+    2320.882,
+    2115.196,
+    2058.384,
+    2031.087,
+    2575.85,
+    2153.939,
+    2265.888,
+    2223.423,
+    2133.109,
+    2136.621,
+    2082.056,
+    2275.762,
+    2671.848,
+    1332.065,
+    2568.781,
+    2712.422,
+    2984.358,
+    2696.258,
+    2720.253,
+    2720.907
+  ],
+  "max_collision_commit_ms": 4.627,
+  "max_commit_ms": 8.909,
+  "max_jobs": 2,
+  "max_pending": 1,
+  "max_queue": 2,
+  "physics_max_error_m": 0.00552427163347602,
+  "slow_frames": [
+    {
+      "commit_ms": 5.592,
+      "frame_ms": 82.842,
+      "global_upload_ms": 0.002,
+      "local_update_ms": 82.172,
+      "publish_ms": 76.536
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 86.441,
+      "global_upload_ms": 0.008,
+      "local_update_ms": 0.128,
+      "publish_ms": 0.014
+    },
+    {
+      "commit_ms": 1.556,
+      "frame_ms": 74.807,
+      "global_upload_ms": 0.005,
+      "local_update_ms": 74.198,
+      "publish_ms": 72.603
+    },
+    {
+      "commit_ms": 1.762,
+      "frame_ms": 94.8,
+      "global_upload_ms": 0.006,
+      "local_update_ms": 94.03,
+      "publish_ms": 92.224
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 55.477,
+      "global_upload_ms": 0.005,
+      "local_update_ms": 0.113,
+      "publish_ms": 0.051
+    },
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 51.383,
+      "global_upload_ms": 0.007,
+      "local_update_ms": 0.092,
+      "publish_ms": 0.003
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 50.263,
+      "global_upload_ms": 0.006,
+      "local_update_ms": 0.093,
+      "publish_ms": 0.005
+    },
+    {
+      "commit_ms": 0.0,
+      "frame_ms": 55.322,
+      "global_upload_ms": 0.003,
+      "local_update_ms": 0.053,
+      "publish_ms": 0.003
+    },
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 45.0,
+      "global_upload_ms": 0.005,
+      "local_update_ms": 0.081,
+      "publish_ms": 0.004
+    },
+    {
+      "commit_ms": 8.909,
+      "frame_ms": 116.501,
+      "global_upload_ms": 0.181,
+      "local_update_ms": 112.58,
+      "publish_ms": 103.626
+    }
+  ],
+  "workers": 2,
+  "zone_visible_ms": 12978.271
+}

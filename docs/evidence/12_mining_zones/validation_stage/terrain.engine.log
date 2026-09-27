@@ -1,0 +1,6 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+TERRAIN min=-350.0 m max=541.3 m ocean=45.3% regions={ 3: 1857, 2: 344, 1: 930, 5: 33, 0: 857, 4: 75 } local_step=12.058 m peak=(-0.9184, -0.152588, 0.365046)
+Planet terrain: PASS (4096 amostras).

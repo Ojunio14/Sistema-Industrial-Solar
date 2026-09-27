@@ -1,0 +1,62 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (3 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | MiningZone[39m[0m
+[  25% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  50% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1m_update_scan_actions[22m | Started Scanning actions... (8 steps)[39m[0m
+[   0% ] [90m[1m_update_scan_actions[22m | 01_global_before.png[39m[0m
+[  11% ] [90m[1m_update_scan_actions[22m | 02_natural_local.png[39m[0m
+[  22% ] [90m[1m_update_scan_actions[22m | 03_natural_close.png[39m[0m
+[  33% ] [90m[1m_update_scan_actions[22m | 04_dirty.png[39m[0m
+[  44% ] [90m[1m_update_scan_actions[22m | 05_edited_close.png[39m[0m
+[  55% ] [90m[1m_update_scan_actions[22m | 06_edited_zone.png[39m[0m
+[  66% ] [90m[1m_update_scan_actions[22m | 07_restored.png[39m[0m
+[  77% ] [90m[1m_update_scan_actions[22m | 08_global_after.png[39m[0m
+[92m[ DONE ][39m [1m_update_scan_actions[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (8 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  11% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  22% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  33% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  44% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  55% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  66% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[  77% ] [90m[1mreimport[22m | Preparing files to reimport...[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing pre-reimport operations...[39m[0m
+[   0% ] [90m[1mreimport[22m | 01_global_before.png[39m[0m
+[  11% ] [90m[1mreimport[22m | 02_natural_local.png[39m[0m
+[  22% ] [90m[1mreimport[22m | 03_natural_close.png[39m[0m
+[  33% ] [90m[1mreimport[22m | 04_dirty.png[39m[0m
+[  44% ] [90m[1mreimport[22m | 05_edited_close.png[39m[0m
+[  55% ] [90m[1mreimport[22m | 06_edited_zone.png[39m[0m
+[  66% ] [90m[1mreimport[22m | 07_restored.png[39m[0m
+[  77% ] [90m[1mreimport[22m | 08_global_after.png[39m[0m
+[  88% ] [90m[1mreimport[22m | Finalizing Asset Import...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mreimport[22m | Started (Re)Importing Assets (8 steps)[39m[0m
+[   0% ] [90m[1mreimport[22m | Executing post-reimport operations...[39m[0m
+[92m[ DONE ][39m [1mreimport[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m

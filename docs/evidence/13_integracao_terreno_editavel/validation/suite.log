@@ -1,0 +1,169 @@
+import exit=0
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+ERROR: Cannot save file 'C:/Users/aldea/AppData/Roaming/Godot/editor_settings-4.6.tres'.
+   at: save (scene/resources/resource_format_text.cpp:1756)
+ERROR: Error saving editor settings to C:/Users/aldea/AppData/Roaming/Godot/editor_settings-4.6.tres
+   at: save (editor/settings/editor_settings.cpp:1404)
+main exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+cameras exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+CAMERA_MANAGER_TEST_OK: 3 cameras, cyclic/direct/invalid/repeated switching
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+WARNING: CameraManager: camera 'Missing' is not registered.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] switch_to (res://systems/cameras/camera_manager.gd:61)
+       [1] _run_test (res://tests/cameras/camera_manager_test.gd:91)
+WARNING: CameraManager: duplicate camera ID 'FreeFly' was rejected.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] register_camera (res://systems/cameras/camera_manager.gd:27)
+       [1] _run_test (res://tests/cameras/camera_manager_test.gd:100)
+foundation exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+Planet foundation: todos os testes passaram.
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+terrain exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+TERRAIN min=-350.0 m max=541.3 m ocean=45.3% regions={ 3: 1857, 2: 344, 1: 930, 5: 33, 0: 857, 4: 75 } local_step=12.058 m peak=(-0.9184, -0.152588, 0.365046)
+Planet terrain: PASS (4096 amostras).
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+contracts_a exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+SURFACE_CONTRACT 058df1f3008080072c646bed5e5b25611ee552e6af63d21917b1f36013ed74f5 checks=93388 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+contracts_b exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+SURFACE_CONTRACT 058df1f3008080072c646bed5e5b25611ee552e6af63d21917b1f36013ed74f5 checks=93388 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+lod exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+NEAR { "visible": 96, "resident": 126, "queued": 0, "jobs": 0, "cached": 0, "depth": 4, "triangles": 18432, "generated": 126, "cache_hits": 0, "discarded": 0, "build_ms": 11.097, "upload_ms": 0.003, "revision": 1, "rebalances": 0 }
+FINAL { "visible": 6, "resident": 6, "queued": 0, "jobs": 0, "cached": 0, "depth": 0, "triangles": 1152, "generated": 360, "cache_hits": 20, "discarded": 2, "build_ms": 13.334, "upload_ms": 0.005, "revision": 2, "rebalances": 10 }
+Planet LOD: PASS (6480 verificações).
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+geology_a exit=0
+
+GEOLOGY fingerprint=e0415a8debf88d8a4858dec87ae184e42ab3fefc6469fd52290d7b5a8fa783d1
+GEOLOGY descriptors=40 types=[3756, 987, 221, 638, 11, 351, 137, 88, 2003] land=2433 ocean=0 igneous=11 boundaries=113 edges=960 corners=192
+GEOLOGY construction_ms=764.816 mixed_8192_ms=776.395 pure_8192_ms=40.496 chunks_12_median_ms=786.578/35.549 chunks_12_p95_ms=822.162/41.712
+GEOLOGY checks=52416 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+geology_b exit=0
+
+GEOLOGY fingerprint=e0415a8debf88d8a4858dec87ae184e42ab3fefc6469fd52290d7b5a8fa783d1
+GEOLOGY descriptors=40 types=[3756, 987, 221, 638, 11, 351, 137, 88, 2003] land=2433 ocean=0 igneous=11 boundaries=113 edges=960 corners=192
+GEOLOGY construction_ms=769.167 mixed_8192_ms=773.167 pure_8192_ms=39.807 chunks_12_median_ms=769.289/34.867 chunks_12_p95_ms=800.183/39.724
+GEOLOGY checks=52416 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+climate_a exit=0
+CLIMATE_POLES north=(-23.43209, 0.293795, 0.145002, 0.220825) south=(-17.33506, 0.531944, 1.0, 0.399116)
+CLIMATE fingerprint=f8f4b792c85d10e9a5590d8eafa8f31821e9b1cc70bdeb96f710107fe1a5f948
+CLIMATE_GLOBAL {"altitude":[{"count":4159,"humidity_mean":0.515641550385417,"temperature_mean_c":4.47574806913722},{"count":271,"humidity_mean":0.547628499870632,"temperature_mean_c":-0.335595996989767},{"count":6,"humidity_mean":0.69736940366952,"temperature_mean_c":17.0497372953954}],"coastal_samples":758,"continentality_min_mean_max":[0.00201807387022945,0.483968448373456,0.95815828905126],"humidity_min_mean_max":[0.128209576064873,0.517841467073917,0.970815000523833],"interior_samples":1139,"land":4436,"latitude":[{"count":1009,"humidity_mean":0.73317897569969,"temperature_mean_c":23.2347860168296},{"count":1166,"humidity_mean":0.349386802962206,"temperature_mean_c":11.629504125849},{"count":1100,"humidity_mean":0.548366905549487,"temperature_mean_c":-1.15261006991104},{"count":1161,"humidity_mean":0.470954826098668,"temperature_mean_c":-14.7373313494307}],"max_shadow":0.498792905762314,"precipitation_min_mean_max":[0.0824213534028309,0.389801928214926,0.746092361375663],"shadow_pair":{"found":true,"lee":"(0.739675, 0.646956, -0.185279)","lee_altitude_m":32.3294982910156,"lee_precip":0.416396225134428,"lee_shadow":0.153287349882262,"windward":"(0.750728, 0.654913, -0.086587)","windward_altitude_m":256.624907886429,"windward_mountain_mask":0.622804375214258,"windward_precip":0.525195279150809,"windward_shadow":0.00124821825518908},"temperature_min_mean_max_c":[-24.0995656825237,4.19882509651258,29.4239394085735]}
+CLIMATE_PERFORMANCE construction_ms=1855.951 mixed_8192_ms=542.550 pure_8192_ms=79.508 direct_8192_ms=243.622 before_chunk_ms=41.493 after_chunk_ms=43.472
+CLIMATE checks=34883 failures=0 edges=960 corners=192
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+climate_b exit=0
+CLIMATE_POLES north=(-23.43209, 0.293795, 0.145002, 0.220825) south=(-17.33506, 0.531944, 1.0, 0.399116)
+CLIMATE fingerprint=f8f4b792c85d10e9a5590d8eafa8f31821e9b1cc70bdeb96f710107fe1a5f948
+CLIMATE_GLOBAL {"altitude":[{"count":4159,"humidity_mean":0.515641550385417,"temperature_mean_c":4.47574806913722},{"count":271,"humidity_mean":0.547628499870632,"temperature_mean_c":-0.335595996989767},{"count":6,"humidity_mean":0.69736940366952,"temperature_mean_c":17.0497372953954}],"coastal_samples":758,"continentality_min_mean_max":[0.00201807387022945,0.483968448373456,0.95815828905126],"humidity_min_mean_max":[0.128209576064873,0.517841467073917,0.970815000523833],"interior_samples":1139,"land":4436,"latitude":[{"count":1009,"humidity_mean":0.73317897569969,"temperature_mean_c":23.2347860168296},{"count":1166,"humidity_mean":0.349386802962206,"temperature_mean_c":11.629504125849},{"count":1100,"humidity_mean":0.548366905549487,"temperature_mean_c":-1.15261006991104},{"count":1161,"humidity_mean":0.470954826098668,"temperature_mean_c":-14.7373313494307}],"max_shadow":0.498792905762314,"precipitation_min_mean_max":[0.0824213534028309,0.389801928214926,0.746092361375663],"shadow_pair":{"found":true,"lee":"(0.739675, 0.646956, -0.185279)","lee_altitude_m":32.3294982910156,"lee_precip":0.416396225134428,"lee_shadow":0.153287349882262,"windward":"(0.750728, 0.654913, -0.086587)","windward_altitude_m":256.624907886429,"windward_mountain_mask":0.622804375214258,"windward_precip":0.525195279150809,"windward_shadow":0.00124821825518908},"temperature_min_mean_max_c":[-24.0995656825237,4.19882509651258,29.4239394085735]}
+CLIMATE_PERFORMANCE construction_ms=1765.418 mixed_8192_ms=586.012 pure_8192_ms=130.724 direct_8192_ms=283.240 before_chunk_ms=35.847 after_chunk_ms=48.685
+CLIMATE checks=34883 failures=0 edges=960 corners=192
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+biome_a exit=0
+
+BIOME fingerprint=479ebeba173e0588ffc8282930ebb41281def52394cd2965c95162a3afc1c5a4
+BIOME_GLOBAL {"altitude":[[493,44,675,0,1099,163,815,637,0,233],[40,6,7,0,35,0,90,68,0,14],[5,0,1,0,5,0,3,1,0,1],[1,0,0,0,0,0,0,0,0,0]],"counts":[539,50,683,0,1139,163,908,706,0,248],"humidity":[[0,0,278,0,0,0,0,0,0,0],[0,11,405,0,586,0,95,493,0,248],[224,39,0,0,553,21,806,213,0,0],[315,0,0,0,0,142,7,0,0,0]],"igneous_land_samples":11,"land":4436,"latitude":[[539,49,0,0,258,163,0,0,0,0],[0,1,619,0,546,0,0,0,0,0],[0,0,64,0,335,0,701,0,0,0],[0,0,0,0,0,0,207,706,0,248]],"max_regional_slope":0.193606232061416,"max_wetland_altitude_m":97.9405364990234,"max_wetland_slope":0.0556733323616366,"min_alpine_altitude_m":1e99999,"min_polar_abs_y":0.8631591796875,"names":["Tropical úmido","Savana","Deserto","Salar/deserto extremo","Temperado","Pântano/planície úmida","Taiga","Tundra","Alpino","Polar"],"ocean":3756,"percent":[12.1505861282349,1.12714159488678,15.3967542648315,0.0,25.6762847900391,3.67448163032532,20.4688911437988,15.9152393341064,0.0,5.59062194824219],"present":8,"salar_in_closed_basin":0,"temperature":[[0,0,0,0,0,0,0,339,0,248],[0,0,0,0,2,0,822,367,0,0],[0,0,677,0,609,0,86,0,0,0],[539,50,6,0,528,163,0,0,0,0]]}
+BIOME_PERFORMANCE construction_ms=0.755 mixed_8192_ms=1030.141 context_8192_ms=272.909 isolated_1024_ms=20.947 direct_1024_ms=56.888 chunk_before_ms=41.937 chunk_after_ms=37.470
+BIOME checks=75497 failures=0 edges=960 corners=192
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+biome_b exit=0
+
+BIOME fingerprint=479ebeba173e0588ffc8282930ebb41281def52394cd2965c95162a3afc1c5a4
+BIOME_GLOBAL {"altitude":[[493,44,675,0,1099,163,815,637,0,233],[40,6,7,0,35,0,90,68,0,14],[5,0,1,0,5,0,3,1,0,1],[1,0,0,0,0,0,0,0,0,0]],"counts":[539,50,683,0,1139,163,908,706,0,248],"humidity":[[0,0,278,0,0,0,0,0,0,0],[0,11,405,0,586,0,95,493,0,248],[224,39,0,0,553,21,806,213,0,0],[315,0,0,0,0,142,7,0,0,0]],"igneous_land_samples":11,"land":4436,"latitude":[[539,49,0,0,258,163,0,0,0,0],[0,1,619,0,546,0,0,0,0,0],[0,0,64,0,335,0,701,0,0,0],[0,0,0,0,0,0,207,706,0,248]],"max_regional_slope":0.193606232061416,"max_wetland_altitude_m":97.9405364990234,"max_wetland_slope":0.0556733323616366,"min_alpine_altitude_m":1e99999,"min_polar_abs_y":0.8631591796875,"names":["Tropical úmido","Savana","Deserto","Salar/deserto extremo","Temperado","Pântano/planície úmida","Taiga","Tundra","Alpino","Polar"],"ocean":3756,"percent":[12.1505861282349,1.12714159488678,15.3967542648315,0.0,25.6762847900391,3.67448163032532,20.4688911437988,15.9152393341064,0.0,5.59062194824219],"present":8,"salar_in_closed_basin":0,"temperature":[[0,0,0,0,0,0,0,339,0,248],[0,0,0,0,2,0,822,367,0,0],[0,0,677,0,609,0,86,0,0,0],[539,50,6,0,528,163,0,0,0,0]]}
+BIOME_PERFORMANCE construction_ms=0.852 mixed_8192_ms=988.225 context_8192_ms=247.194 isolated_1024_ms=16.761 direct_1024_ms=49.831 chunk_before_ms=53.735 chunk_after_ms=37.362
+BIOME checks=75497 failures=0 edges=960 corners=192
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+relief_a exit=0
+
+RELIEF_LOD_ERROR [44.2468223571777, 17.8510799407959, 5.77209186553955, 2.42080616950989]
+RELIEF fingerprint=76cf074016afb2b297f0c63641c84fd41b3f14c832c19f224e40aff38d6fd838
+RELIEF_METRICS {"changed_mask_range":"(inf, -inf)","changed_old_range":"(inf, -inf)","coastal_changes":0,"geological_changes":2450,"highest_m":644.827880859375,"land_after":4436,"land_before":4436,"max_delta_m":796.911628723145,"mountain_curvature_ratio":1.49798638713056,"mountain_samples":56,"peak":[-0.923451662063599,-0.1502685546875,0.353067070245743],"plain_max_step_20m":1.74928283691406,"plains":2237}
+RELIEF checks=65331 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+relief_b exit=0
+
+RELIEF_LOD_ERROR [44.2468223571777, 17.8510799407959, 5.77209186553955, 2.42080616950989]
+RELIEF fingerprint=76cf074016afb2b297f0c63641c84fd41b3f14c832c19f224e40aff38d6fd838
+RELIEF_METRICS {"changed_mask_range":"(inf, -inf)","changed_old_range":"(inf, -inf)","coastal_changes":0,"geological_changes":2450,"highest_m":644.827880859375,"land_after":4436,"land_before":4436,"max_delta_m":796.911628723145,"mountain_curvature_ratio":1.49798638713056,"mountain_samples":56,"peak":[-0.923451662063599,-0.1502685546875,0.353067070245743],"plain_max_step_20m":1.74928283691406,"plains":2237}
+RELIEF checks=65331 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+materials exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+MATERIALS land=2242 water=1854 top_pair=[23, 98, 23, 1812, 1289, 354, 861, 24] checks=41912 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+mining_a exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+MINING_METRICS {"checks":484697,"chunks":[{"chunks":1,"create_ms":0.08,"delta_bytes":65536,"edit_ms":0.303,"query_delta_us":20.7532,"query_final_us":48.186,"update_cell_us":155.4},{"chunks":4,"create_ms":0.07,"delta_bytes":262144,"edit_ms":0.675,"query_delta_us":19.1431,"query_final_us":85.501,"update_cell_us":144.01},{"chunks":16,"create_ms":0.132,"delta_bytes":1048576,"edit_ms":2.324,"query_delta_us":19.4822,"query_final_us":41.222,"update_cell_us":198.4},{"chunks":64,"create_ms":0.448,"delta_bytes":4194304,"edit_ms":14.14,"query_delta_us":23.8215,"query_final_us":59.407,"update_cell_us":210.1}],"max_coordinate_error_m":0.00448930077254772}
+MINING fingerprint=6d20dd3c1a706da1583bd4dc9bb03eef9449b8664fdf6e496e7a4bbc27ad6d88
+MINING checks=484697 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+mining_b exit=0
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+MINING_METRICS {"checks":484697,"chunks":[{"chunks":1,"create_ms":0.056,"delta_bytes":65536,"edit_ms":0.181,"query_delta_us":24.7848,"query_final_us":57.77,"update_cell_us":191.29},{"chunks":4,"create_ms":0.071,"delta_bytes":262144,"edit_ms":0.669,"query_delta_us":22.8939,"query_final_us":52.586,"update_cell_us":192.83},{"chunks":16,"create_ms":0.17,"delta_bytes":1048576,"edit_ms":3.314,"query_delta_us":21.0402,"query_final_us":41.352,"update_cell_us":164.07},{"chunks":64,"create_ms":0.514,"delta_bytes":4194304,"edit_ms":15.338,"query_delta_us":23.5373,"query_final_us":59.215,"update_cell_us":219.95}],"max_coordinate_error_m":0.00448930077254772}
+MINING fingerprint=6d20dd3c1a706da1583bd4dc9bb03eef9449b8664fdf6e496e7a4bbc27ad6d88
+MINING checks=484697 failures=0
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+mining_lab exit=0
+WAIT integration-edge global={ "visible": 174, "resident": 510, "queued": 274, "jobs": 1, "cached": 8, "depth": 8, "triangles": 111360, "generated": 243, "cache_hits": 8, "discarded": 0, "build_ms": 89.676, "upload_ms": 0.004, "revision": 1, "rebalances": 4 } mining jobs=1 pending=0 queue=1
+WAIT integration-second global={ "visible": 201, "resident": 510, "queued": 242, "jobs": 1, "cached": 96, "depth": 8, "triangles": 128640, "generated": 371, "cache_hits": 8, "discarded": 0, "build_ms": 121.482, "upload_ms": 0.157, "revision": 1, "rebalances": 28 } mining jobs=0 pending=0 queue=0
+WAIT integration-second global={ "visible": 234, "resident": 510, "queued": 199, "jobs": 1, "cached": 96, "depth": 8, "triangles": 149760, "generated": 454, "cache_hits": 8, "discarded": 0, "build_ms": 65.053, "upload_ms": 0.002, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+WAIT integration-edge global={ "visible": 129, "resident": 510, "queued": 338, "jobs": 1, "cached": 96, "depth": 8, "triangles": 82560, "generated": 472, "cache_hits": 20, "discarded": 2, "build_ms": 77.206, "upload_ms": 0.003, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+MINING_INTEGRATION {"activation_frame_max_ms":99.763,"activation_frame_p50_ms":8.294,"activation_frame_p95_ms":13.693,"checks":64839,"collar_seam_max_m":0.00873464066535234,"collision_p95_ms":4.953,"commit_p95_ms":5.164,"discarded":2,"edit_frame_max_ms":178.053,"edit_frame_p50_ms":8.353,"edit_frame_p95_ms":18.146,"edit_including_stale_wall_ms":13210.003,"edit_wall_ms":13210.003,"failures":0,"first_chunk_commit_ms":3702.384,"four_chunk_edit_wall_ms":7278.183,"four_chunk_frame_max_ms":35.148,"four_chunk_frame_p50_ms":11.161,"four_chunk_frame_p95_ms":15.881,"gpu_p95_ms":0.0,"graphic":false,"job_p50_ms":2223.255,"job_p95_ms":3754.862,"local_update_max_ms":52.44,"local_update_p95_ms":1.339,"logical_processors":4,"max_collision_commit_ms":23.139,"max_commit_ms":23.171,"max_jobs":1,"max_pending":1,"max_queue":3,"physics_max_error_m":0.00552427163347602,"pool_max_threads_setting":-1,"workers":1,"zone_visible_ms":16303.191}
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+mining_async_two exit=0
+WAIT integration-edge global={ "visible": 162, "resident": 510, "queued": 294, "jobs": 1, "cached": 8, "depth": 8, "triangles": 103680, "generated": 223, "cache_hits": 8, "discarded": 0, "build_ms": 64.956, "upload_ms": 0.006, "revision": 1, "rebalances": 4 } mining jobs=1 pending=0 queue=0
+WAIT integration-second global={ "visible": 186, "resident": 510, "queued": 261, "jobs": 1, "cached": 88, "depth": 8, "triangles": 119040, "generated": 336, "cache_hits": 8, "discarded": 0, "build_ms": 37.664, "upload_ms": 0.007, "revision": 1, "rebalances": 24 } mining jobs=0 pending=0 queue=0
+WAIT integration-second global={ "visible": 231, "resident": 510, "queued": 200, "jobs": 1, "cached": 96, "depth": 8, "triangles": 147840, "generated": 453, "cache_hits": 8, "discarded": 0, "build_ms": 61.266, "upload_ms": 0.006, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+WAIT integration-edge global={ "visible": 123, "resident": 510, "queued": 343, "jobs": 1, "cached": 96, "depth": 8, "triangles": 78720, "generated": 474, "cache_hits": 8, "discarded": 0, "build_ms": 135.756, "upload_ms": 0.006, "revision": 1, "rebalances": 38 } mining jobs=1 pending=0 queue=0
+MINING_INTEGRATION {"activation_frame_max_ms":113.923,"activation_frame_p50_ms":8.315,"activation_frame_p95_ms":15.699,"checks":65324,"collar_seam_max_m":0.00552446115761995,"collision_p95_ms":8.103,"commit_p95_ms":8.291,"discarded":4,"edit_frame_max_ms":208.965,"edit_frame_p50_ms":8.31,"edit_frame_p95_ms":16.111,"edit_including_stale_wall_ms":12919.981,"edit_wall_ms":12919.981,"failures":0,"first_chunk_commit_ms":2389.539,"four_chunk_edit_wall_ms":9907.933,"four_chunk_frame_max_ms":125.304,"four_chunk_frame_p50_ms":10.183,"four_chunk_frame_p95_ms":18.329,"gpu_p95_ms":0.0,"graphic":false,"job_p50_ms":2010.713,"job_p95_ms":3698.526,"local_update_max_ms":104.905,"local_update_p95_ms":1.124,"logical_processors":4,"max_collision_commit_ms":72.979,"max_commit_ms":104.534,"max_jobs":2,"max_pending":1,"max_queue":2,"physics_max_error_m":0.00552427163347602,"pool_max_threads_setting":-1,"workers":2,"zone_visible_ms":34653.311}
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+Logs: C:\Users\aldea\AppData\Local\Temp\planet-stage13-88ae64b4501344948da759f3097a70c7

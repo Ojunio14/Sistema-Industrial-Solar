@@ -49,6 +49,8 @@ func _input(event: InputEvent) -> void:
 
 	# 3. Liberação e Captura do Mouse
 	elif event.is_action_pressed("ui_cancel"):
+		if get_tree().get_first_node_in_group("terrain_designation") != null:
+			return # Esc cancels the designation preview while the tool owns the pointer.
 		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		else:

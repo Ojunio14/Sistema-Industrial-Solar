@@ -15,6 +15,7 @@ var priority: float = 0.0
 var is_split := false
 var pending := false
 var alive := true
+var mining_region_hits: Dictionary = {}
 
 
 func _init(face_id: int = 0, level: int = 0, address: Vector2i = Vector2i.ZERO) -> void:

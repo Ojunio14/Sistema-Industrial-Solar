@@ -1,0 +1,7 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+MINING_METRICS {"checks":484697,"chunks":[{"chunks":1,"create_ms":0.059,"delta_bytes":65536,"edit_ms":0.182,"query_delta_us":18.5879,"query_final_us":40.576,"update_cell_us":156.07},{"chunks":4,"create_ms":0.076,"delta_bytes":262144,"edit_ms":0.616,"query_delta_us":18.4721,"query_final_us":39.651,"update_cell_us":137.84},{"chunks":16,"create_ms":0.122,"delta_bytes":1048576,"edit_ms":2.135,"query_delta_us":17.8421,"query_final_us":40.554,"update_cell_us":141.91},{"chunks":64,"create_ms":0.489,"delta_bytes":4194304,"edit_ms":11.069,"query_delta_us":17.4287,"query_final_us":38.111,"update_cell_us":148.59}],"max_coordinate_error_m":0.00448930077254772}
+MINING fingerprint=6d20dd3c1a706da1583bd4dc9bb03eef9449b8664fdf6e496e7a4bbc27ad6d88
+MINING checks=484697 failures=0

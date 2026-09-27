@@ -30,6 +30,8 @@ var climate: PlanetClimate
 var climate_debug_mode := 0
 var biomes: PlanetBiomes
 var biome_debug_mode := 0
+var material_debug_mode := 0
+var use_technical_material := false
 var roots: Array[QuadtreeNode] = []
 var revision: int = 0
 var cache_hits: int = 0
@@ -57,11 +59,17 @@ var _split_candidates: Array[QuadtreeNode] = []
 var _merge_candidates: Array[QuadtreeNode] = []
 var budget_rebalances := 0
 var _uploads_this_frame := 0
+var mining_regions: Dictionary = {}
+var mining_pins: Dictionary = {}
+var mining_protected: Dictionary = {}
 
 
 func configure(source: PlanetDefinition) -> void:
 	# A revisão invalida tarefas em voo sem esperar por elas durante o frame.
 	revision += 1
+	mining_regions.clear()
+	mining_pins.clear()
+	mining_protected.clear()
 	for root in roots:
 		_remove_subtree(root, false)
 	roots.clear()
@@ -81,10 +89,16 @@ func configure(source: PlanetDefinition) -> void:
 		_debug_material = ShaderMaterial.new()
 		_debug_material.shader = preload("res://systems/planet/surface/materials/planet_lod_debug.gdshader")
 		_debug_material.set_shader_parameter("show_lod", debug_lod_colors)
-	_runtime_material = terrain_material.duplicate(true) if terrain_material else _debug_material
+	_runtime_material = terrain_material.duplicate(true) if terrain_material else _create_terrain_material()
 	var shader_material := _runtime_material as ShaderMaterial
-	shader_material.set_shader_parameter("show_lod", debug_lod_colors)
-	shader_material.set_shader_parameter("sea_normalized",
+	if shader_material:
+		shader_material.set_shader_parameter("show_lod", debug_lod_colors)
+		shader_material.set_shader_parameter("sea_normalized",
+			_definition.ocean_depth_m / maxf(_definition.ocean_depth_m + _definition.max_terrain_height_m, 0.01))
+		shader_material.set_shader_parameter("height_range_m",
+			_definition.ocean_depth_m + _definition.max_terrain_height_m)
+		shader_material.set_shader_parameter("material_debug_mode", material_debug_mode)
+	_debug_material.set_shader_parameter("sea_normalized",
 		_definition.ocean_depth_m / maxf(_definition.ocean_depth_m + _definition.max_terrain_height_m, 0.01))
 	_geology_material = ShaderMaterial.new()
 	_geology_material.shader = preload("res://systems/planet/geology/geology_debug.gdshader")
@@ -140,6 +154,8 @@ func select_lod(local_eye: Vector3, focal_pixels: float, ortho_pixels_per_m: flo
 			for victim in _merge_candidates:
 				if not victim.alive or not victim.is_split:
 					continue
+				if _mining_locked_subtree(victim):
+					continue
 				if candidate.priority <= victim.priority * 2.0:
 					break
 				if _contains(victim, candidate):
@@ -155,6 +171,8 @@ func select_lod(local_eye: Vector3, focal_pixels: float, ortho_pixels_per_m: flo
 
 
 func _select(node: QuadtreeNode, eye: Vector3, focal: float, ortho: float) -> void:
+	if mining_pins.has(node.key):
+		return
 	if not node.mesh_instance:
 		_request(node, 1.0e12 / float(node.depth + 1))
 		return
@@ -166,9 +184,12 @@ func _select(node: QuadtreeNode, eye: Vector3, focal: float, ortho: float) -> vo
 	error = maxf(error, sample_pixels * split_error_pixels / maxf(max_quad_pixels, 1.0))
 	if ortho == 0.0 and _behind_horizon(node, eye):
 		error = 0.0
+	for zone: MiningZone in mining_regions.values():
+		if mining_intersects(node, zone) and node.depth < mini(8, max_depth):
+			error = maxf(error, 1000000.0 / (node.depth + 1))
 	node.priority = error
 	if node.is_split:
-		if error < split_error_pixels * merge_ratio:
+		if error < split_error_pixels * merge_ratio and not _mining_locked_subtree(node):
 			_merge(node)
 		else:
 			for child in node.children:
@@ -260,7 +281,8 @@ func _dispatch_jobs() -> void:
 			cache_hits += 1
 			_uploads_this_frame += 1
 			continue
-		var builder := PlanetChunkBuilder.new(_definition, node.face, node.depth, node.cell, _sample_resolution, geology)
+		var builder := PlanetChunkBuilder.new(_definition, node.face, node.depth, node.cell,
+			_sample_resolution, geology, climate, biomes)
 		var task := WorkerThreadPool.add_task(builder.build, false, "Planet " + node.key)
 		_jobs.append({"task": task, "builder": builder, "node": node, "revision": revision})
 
@@ -324,6 +346,8 @@ func _activate_ready(node: QuadtreeNode) -> void:
 
 
 func _try_activate(node: QuadtreeNode) -> void:
+	if mining_pins.has(node.key):
+		return
 	if node.children.size() != 4 or node.is_split:
 		return
 	for child in node.children:
@@ -337,6 +361,8 @@ func _try_activate(node: QuadtreeNode) -> void:
 
 
 func _merge(node: QuadtreeNode) -> void:
+	if _mining_locked_subtree(node):
+		return
 	node.mesh_instance.visible = true
 	for child in node.children:
 		_remove_subtree(child, true)
@@ -383,6 +409,7 @@ func set_geology_debug_mode(mode: int) -> void:
 	if geology_debug_mode > 0:
 		climate_debug_mode = 0
 		biome_debug_mode = 0
+		set_material_debug_mode(0)
 	if _geology_material:
 		_geology_material.set_shader_parameter("debug_mode", geology_debug_mode)
 	_refresh_chunk_materials()
@@ -392,6 +419,7 @@ func set_climate_debug_mode(mode: int) -> void:
 	if climate_debug_mode > 0:
 		geology_debug_mode = 0
 		biome_debug_mode = 0
+		set_material_debug_mode(0)
 		if _climate_textures.is_empty() and climate:
 			_climate_textures = climate.create_debug_textures()
 			_climate_material.set_shader_parameter("climate_fields", _climate_textures[0])
@@ -405,6 +433,7 @@ func set_biome_debug_mode(mode: int) -> void:
 	if biome_debug_mode > 0:
 		geology_debug_mode = 0
 		climate_debug_mode = 0
+		set_material_debug_mode(0)
 		if _biome_textures.is_empty() and biomes:
 			var started := Time.get_ticks_usec()
 			_biome_textures = biomes.create_debug_textures()
@@ -415,6 +444,32 @@ func set_biome_debug_mode(mode: int) -> void:
 		_biome_material.set_shader_parameter("debug_mode", biome_debug_mode)
 	_refresh_chunk_materials()
 
+func set_material_debug_mode(mode: int) -> void:
+	material_debug_mode = posmod(mode, 7)
+	if material_debug_mode > 0:
+		geology_debug_mode = 0
+		climate_debug_mode = 0
+		biome_debug_mode = 0
+		debug_lod_colors = false
+	if _runtime_material is ShaderMaterial:
+		(_runtime_material as ShaderMaterial).set_shader_parameter("material_debug_mode", material_debug_mode)
+	_refresh_chunk_materials()
+
+func set_technical_material_enabled(enabled: bool) -> void:
+	use_technical_material = enabled
+	_refresh_chunk_materials()
+
+func _create_terrain_material() -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://systems/planet/surface/materials/planet_terrain_pbr.gdshader")
+	for family in PlanetMaterialWeights.NAMES:
+		for map_name in ["albedo", "normal", "roughness"]:
+			var path := "res://assets/textures/terrain/%s/%s_%s.png" % [family, family, map_name]
+			var texture := load(path) as Texture2D
+			assert(texture != null, "Mapa essencial ausente: " + path)
+			material.set_shader_parameter("%s_%s" % [family, map_name], texture)
+	return material
+
 func _active_material() -> Material:
 	if biome_debug_mode > 0:
 		return _biome_material
@@ -422,6 +477,8 @@ func _active_material() -> Material:
 		return _climate_material
 	if geology_debug_mode > 0:
 		return _geology_material
+	if use_technical_material:
+		return _debug_material
 	return _runtime_material
 
 func _refresh_chunk_materials() -> void:
@@ -436,3 +493,56 @@ func _exit_tree() -> void:
 	for job in _jobs:
 		WorkerThreadPool.wait_for_task_completion(job.task)
 	_jobs.clear()
+
+func mining_intersects(node: QuadtreeNode, zone: MiningZone) -> bool:
+	if node.mining_region_hits.has(zone.id):
+		return node.mining_region_hits[zone.id]
+	var size := 1.0 / float(1 << node.depth)
+	var centre := CubeSphereMapping.face_uv_to_direction(node.face, (Vector2(node.cell) + Vector2(0.5, 0.5)) * size)
+	var angle := 0.0
+	for offset in [Vector2.ZERO, Vector2.RIGHT, Vector2.ONE, Vector2.DOWN]:
+		angle = maxf(angle, centre.angle_to(CubeSphereMapping.face_uv_to_direction(node.face, (Vector2(node.cell) + offset) * size)))
+	var bounds := Rect2(Vector2(zone.chunk_bounds.position) * 256, Vector2(zone.chunk_bounds.size) * 256).grow(MiningTransitionJob.COLLAR_M + 4.0)
+	var reach := maxf(bounds.position.length(), maxf(bounds.end.length(), maxf(Vector2(bounds.position.x, bounds.end.y).length(), Vector2(bounds.end.x, bounds.position.y).length())))
+	var intersects := centre.angle_to(zone.up) <= angle + atan(reach / zone.radius_m) + 0.00001
+	node.mining_region_hits[zone.id] = intersects
+	return intersects
+
+func _mining_locked_subtree(node: QuadtreeNode) -> bool:
+	return mining_protected.has(node.key)
+
+func capture_mining_patches(zone: MiningZone) -> Array:
+	var selected: Array[QuadtreeNode] = []
+	for node: QuadtreeNode in _nodes.values():
+		if not node.mesh_instance or not node.mesh_instance.visible or not mining_intersects(node, zone):
+			continue
+		if node.depth < mini(8, max_depth) or (mining_pins.has(node.key) and mining_pins[node.key] != zone.id):
+			return []
+		selected.append(node)
+	if selected.is_empty():
+		return []
+	var sources := []
+	for node in selected:
+		mining_pins[node.key] = zone.id
+		for depth in range(node.depth + 1):
+			var shift := node.depth - depth
+			mining_protected["%d/%d/%d/%d" % [node.face, depth, node.cell.x >> shift, node.cell.y >> shift]] = true
+		sources.append({"key": node.key, "mesh": node.mesh_instance.mesh,
+			"face": node.face, "depth": node.depth, "cell": node.cell, "resolution": _sample_resolution,
+			"surface_indices": 6 * (_sample_resolution - 1) * (_sample_resolution - 1)})
+	return sources
+
+func release_mining_pins(zone_id: String) -> void:
+	mining_regions.erase(zone_id)
+	for key in mining_pins.keys():
+		if mining_pins[key] == zone_id:
+			mining_pins.erase(key)
+	mining_protected.clear()
+	for key: String in mining_pins:
+		var node: QuadtreeNode = _nodes[key]
+		for depth in range(node.depth + 1):
+			var shift := node.depth - depth
+			mining_protected["%d/%d/%d/%d" % [node.face, depth, node.cell.x >> shift, node.cell.y >> shift]] = true
+	for node: QuadtreeNode in _nodes.values():
+		node.mining_region_hits.erase(zone_id)
+	_force_selection = true

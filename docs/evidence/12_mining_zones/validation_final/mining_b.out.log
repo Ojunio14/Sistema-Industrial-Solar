@@ -1,0 +1,5 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+MINING_METRICS {"checks":484697,"chunks":[{"chunks":1,"create_ms":0.152,"delta_bytes":65536,"edit_ms":1.068,"query_delta_us":21.2032,"query_final_us":46.38,"update_cell_us":193.38},{"chunks":4,"create_ms":0.116,"delta_bytes":262144,"edit_ms":0.845,"query_delta_us":21.8824,"query_final_us":42.341,"update_cell_us":187.48},{"chunks":16,"create_ms":0.143,"delta_bytes":1048576,"edit_ms":2.613,"query_delta_us":21.3416,"query_final_us":48.889,"update_cell_us":171.56},{"chunks":64,"create_ms":0.361,"delta_bytes":4194304,"edit_ms":12.839,"query_delta_us":21.027,"query_final_us":155.185,"update_cell_us":214.36}],"max_coordinate_error_m":0.00448930077254772}
+MINING fingerprint=6d20dd3c1a706da1583bd4dc9bb03eef9449b8664fdf6e496e7a4bbc27ad6d88
+MINING checks=484697 failures=0

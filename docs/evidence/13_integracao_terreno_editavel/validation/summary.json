@@ -1,0 +1,112 @@
+{
+  "cases": [
+    {
+      "name": "import",
+      "exit_code": 0
+    },
+    {
+      "name": "main",
+      "exit_code": 0
+    },
+    {
+      "name": "cameras",
+      "exit_code": 0
+    },
+    {
+      "name": "foundation",
+      "exit_code": 0
+    },
+    {
+      "name": "terrain",
+      "exit_code": 0
+    },
+    {
+      "name": "contracts_a",
+      "exit_code": 0
+    },
+    {
+      "name": "contracts_b",
+      "exit_code": 0
+    },
+    {
+      "name": "lod",
+      "exit_code": 0
+    },
+    {
+      "name": "geology_a",
+      "exit_code": 0
+    },
+    {
+      "name": "geology_b",
+      "exit_code": 0
+    },
+    {
+      "name": "climate_a",
+      "exit_code": 0
+    },
+    {
+      "name": "climate_b",
+      "exit_code": 0
+    },
+    {
+      "name": "biome_a",
+      "exit_code": 0
+    },
+    {
+      "name": "biome_b",
+      "exit_code": 0
+    },
+    {
+      "name": "relief_a",
+      "exit_code": 0
+    },
+    {
+      "name": "relief_b",
+      "exit_code": 0
+    },
+    {
+      "name": "materials",
+      "exit_code": 0
+    },
+    {
+      "name": "mining_a",
+      "exit_code": 0
+    },
+    {
+      "name": "mining_b",
+      "exit_code": 0
+    },
+    {
+      "name": "mining_lab",
+      "exit_code": 0
+    },
+    {
+      "name": "mining_async_two",
+      "exit_code": 0
+    }
+  ],
+  "failures": 0,
+  "integration_one_checks": 64839,
+  "integration_two_checks": 65324,
+  "max_observed_local_execution_overlap_with_two_slots": 1,
+  "fingerprints": {
+    "GEOLOGY": "e0415a8debf88d8a4858dec87ae184e42ab3fefc6469fd52290d7b5a8fa783d1",
+    "CLIMATE": "f8f4b792c85d10e9a5590d8eafa8f31821e9b1cc70bdeb96f710107fe1a5f948",
+    "BIOME": "479ebeba173e0588ffc8282930ebb41281def52394cd2965c95162a3afc1c5a4",
+    "RELIEF": "76cf074016afb2b297f0c63641c84fd41b3f14c832c19f224e40aff38d6fd838",
+    "MINING": "6d20dd3c1a706da1583bd4dc9bb03eef9449b8664fdf6e496e7a4bbc27ad6d88"
+  },
+  "surface_fingerprint": "058df1f3008080072c646bed5e5b25611ee552e6af63d21917b1f36013ed74f5",
+  "additional_targeted_cases": [
+    {
+      "name": "mining_lod_ownership",
+      "checks": 4,
+      "exit_code": 0
+    },
+    {
+      "name": "lod_followup",
+      "checks": 8394,
+      "exit_code": 0
+    }
+  ]
+}

@@ -10,16 +10,21 @@ var cell: Vector2i
 var resolution: int
 var result: Dictionary
 var geology: PlanetGeology
+var climate: PlanetClimate
+var biomes: PlanetBiomes
 
 
 func _init(source: PlanetDefinition, face_id: int, level: int, address: Vector2i, samples: int,
-		geology_source: PlanetGeology = null) -> void:
+		geology_source: PlanetGeology = null, climate_source: PlanetClimate = null,
+		biome_source: PlanetBiomes = null) -> void:
 	definition = source.duplicate(true) as PlanetDefinition
 	face = face_id as CubeSphereMapping.Face
 	depth = level
 	cell = address
 	resolution = samples
 	geology = geology_source
+	climate = climate_source
+	biomes = biome_source
 
 
 func build() -> void:
@@ -34,6 +39,19 @@ func build() -> void:
 	var colors := PackedColorArray()
 	var indices := PackedInt32Array()
 	var geology_debug := PackedFloat32Array()
+	var material_a := PackedFloat32Array()
+	var material_b := PackedFloat32Array()
+	var material_selector: PlanetMaterialWeights = null
+	var climate_sample: PlanetClimateSample = null
+	var biome_sample: PlanetBiomeSample = null
+	var material_weights := PackedFloat32Array()
+	if climate and biomes and geology:
+		material_selector = PlanetMaterialWeights.new(definition, geology)
+		climate_sample = PlanetClimateSample.new()
+		biome_sample = PlanetBiomeSample.new()
+		material_weights.resize(8)
+		material_a.resize(count * 4)
+		material_b.resize(count * 4)
 	vertices.resize(count)
 	normals.resize(count)
 	uvs.resize(count)
@@ -63,6 +81,14 @@ func build() -> void:
 				geology_debug[i * 4 + 1] = context.y
 				geology_debug[i * 4 + 2] = context.z
 				geology_debug[i * 4 + 3] = context.w
+			if material_selector:
+				climate.sample_with_surface_into(direction, terrain, climate_sample)
+				biomes.sample_with_context_into(direction, terrain, climate_sample, biome_sample)
+				material_selector.sample_into(direction, terrain, normals[i], climate_sample,
+					biome_sample, material_weights)
+				for channel in range(4):
+					material_a[i * 4 + channel] = material_weights[channel]
+					material_b[i * 4 + channel] = material_weights[channel + 4]
 			min_height = minf(min_height, terrain.x)
 			max_height = maxf(max_height, terrain.x)
 			land_samples += 1 if terrain.y >= 0.5 else 0
@@ -115,6 +141,10 @@ func build() -> void:
 			if geology:
 				for channel in range(4):
 					geology_debug.append(geology_debug[index * 4 + channel])
+			if material_selector:
+				for channel in range(4):
+					material_a.append(material_a[index * 4 + channel])
+					material_b.append(material_b[index * 4 + channel])
 		for j in range(resolution - 1):
 			indices.append_array(PackedInt32Array([edge[j], edge[j + 1], start + j,
 				edge[j + 1], start + j + 1, start + j]))
@@ -126,9 +156,16 @@ func build() -> void:
 	arrays[Mesh.ARRAY_COLOR] = colors
 	if geology:
 		arrays[Mesh.ARRAY_CUSTOM0] = geology_debug
+	if material_selector:
+		arrays[Mesh.ARRAY_CUSTOM1] = material_a
+		arrays[Mesh.ARRAY_CUSTOM2] = material_b
 	arrays[Mesh.ARRAY_INDEX] = indices
+	var custom_format := (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) if geology else 0
+	if material_selector:
+		custom_format |= Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM1_SHIFT
+		custom_format |= Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM2_SHIFT
 	# Float32 AABB position + size can lose a few ULPs at 50 km.
-	result = {"arrays": arrays, "format": (Mesh.ARRAY_CUSTOM_RGBA_FLOAT << Mesh.ARRAY_FORMAT_CUSTOM0_SHIFT) if geology else 0,
+	result = {"arrays": arrays, "format": custom_format,
 		"bounds": bounds.grow(0.05 + (TerrainRelief.unresolved_error(spacing) if definition.relief_enabled else 0.0)), "error_m": error_m * 1.5,
 		"skirt_m": skirt_m, "build_ms": (Time.get_ticks_usec() - started) / 1000.0,
 		"min_height_m": min_height, "max_height_m": max_height,

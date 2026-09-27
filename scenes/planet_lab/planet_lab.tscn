@@ -1,9 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://cxdt6otnraofs"]
 
 [ext_resource type="PackedScene" path="res://systems/cameras/free_fly_camera.tscn" id="1_free_fly"]
 [ext_resource type="PackedScene" path="res://systems/cameras/rts_camera.tscn" id="2_rts"]
 [ext_resource type="PackedScene" path="res://systems/cameras/orbital_camera.tscn" id="3_orbital"]
-[ext_resource type="Script" path="res://scenes/planet_lab/camera_debug_overlay.gd" id="4_debug"]
+[ext_resource type="Script" uid="uid://cixn5jn8iwqtm" path="res://scenes/planet_lab/camera_debug_overlay.gd" id="4_debug"]
 [ext_resource type="PackedScene" path="res://systems/planet/planet.tscn" id="5_planet"]
 
 [sub_resource type="Environment" id="Environment_technical"]
@@ -11,53 +11,51 @@ background_mode = 1
 background_color = Color(0.012, 0.017, 0.029, 1)
 ambient_light_source = 2
 ambient_light_color = Color(0.64, 0.71, 0.85, 1)
-ambient_light_energy = 0.25
 ambient_light_sky_contribution = 0.0
+ambient_light_energy = 0.25
 reflected_light_source = 1
 
-[node name="PlanetLab" type="Node3D"]
+[node name="PlanetLab" type="Node3D" unique_id=2028499147]
 
-[node name="Planet" parent="." instance=ExtResource("5_planet")]
+[node name="Planet" parent="." unique_id=2133992683 instance=ExtResource("5_planet")]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1951911064]
 environment = SubResource("Environment_technical")
 
-[node name="Sun" type="DirectionalLight3D" parent="."]
-rotation_degrees = Vector3(-35, -30, 0)
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1703934714]
+transform = Transform3D(0.8660254, 0.28678823, -0.40957603, 0, 0.81915206, 0.57357645, 0.5, -0.49673176, 0.7094065, 0, 0, 0)
 light_energy = 1.5
-shadow_enabled = false
 
-[node name="Cameras" type="Node3D" parent="."]
+[node name="Cameras" type="Node3D" parent="." unique_id=685717925]
 
-[node name="FreeFlyCamera" parent="Cameras" instance=ExtResource("1_free_fly")]
+[node name="FreeFlyCamera" parent="Cameras" unique_id=433429781 instance=ExtResource("1_free_fly")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 140000)
-base_speed = 15000.0
 near = 0.5
 far = 500000.0
+base_speed = 50.0
 
-[node name="RTSCamera" parent="Cameras" instance=ExtResource("2_rts")]
-position = Vector3(0, 50000, 0)
-min_zoom = 20000.0
-max_zoom = 150000.0
-zoom_speed = 5000.0
+[node name="RTSCamera" parent="Cameras" unique_id=1491338993 instance=ExtResource("2_rts")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50005, 0)
 pan_speed = 2.0
+zoom_speed = 25.0
+min_zoom = 50.0
+max_zoom = 500.0
 
-[node name="OrbitalCamera" parent="Cameras" node_paths=PackedStringArray("target") instance=ExtResource("3_orbital")]
+[node name="OrbitalCamera" parent="Cameras" unique_id=1955884935 node_paths=PackedStringArray("target") instance=ExtResource("3_orbital")]
 target = NodePath("../../Planet")
+zoom_step = 5000.0
 orbit_radius = 140000.0
 minimum_orbit_distance = 51000.0
 maximum_orbit_distance = 350000.0
-zoom_step = 5000.0
 
-[node name="Debug" type="CanvasLayer" parent="."]
+[node name="Debug" type="CanvasLayer" parent="." unique_id=2117839405]
 script = ExtResource("4_debug")
 
-[node name="ActiveCameraLabel" type="Label" parent="Debug"]
+[node name="ActiveCameraLabel" type="Label" parent="Debug" unique_id=2075484999]
 offset_left = 12.0
 offset_top = 10.0
 offset_right = 220.0
 offset_bottom = 36.0
-mouse_filter = 2
 theme_override_colors/font_color = Color(1, 1, 1, 0.75)
 theme_override_font_sizes/font_size = 14
 text = "Camera: None"

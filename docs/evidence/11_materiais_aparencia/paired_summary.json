@@ -1,0 +1,96 @@
+{
+  "technical": {
+    "frames": 840,
+    "renderer": "forward_plus",
+    "resolution": 17,
+    "max_depth": 9,
+    "failed": false,
+    "frame_ms": {
+      "p50": 16.6515,
+      "p95": 19.0823,
+      "max": 33.007
+    },
+    "update_ms": {
+      "p50": 0.5805,
+      "p95": 5.904949999999995,
+      "max": 12.725
+    },
+    "render_cpu_ms": {
+      "p50": 0.3275000005960465,
+      "p95": 0.4800499901175499,
+      "max": 0.890999972820282
+    },
+    "render_gpu_ms": {
+      "p50": 4.97749996185303,
+      "p95": 6.558100080490115,
+      "max": 7.37200021743774
+    },
+    "upload_ms": {
+      "p50": 0.013,
+      "p95": 0.398,
+      "max": 0.847
+    },
+    "last_chunk_build_ms": {
+      "p50": 88.984,
+      "p95": 154.62,
+      "max": 193.289
+    },
+    "frames_over_50_ms": 0,
+    "max_jobs": 2,
+    "max_queue": 356,
+    "max_uploads_per_frame": 2,
+    "max_resident": 510,
+    "max_cached": 96,
+    "max_active_vertices": 137088,
+    "max_mesh_payload_mib": 24.2451782226563,
+    "max_static_mib": 53.8257751464844,
+    "max_video_mib": 175.711013793945
+  },
+  "pbr": {
+    "frames": 840,
+    "renderer": "forward_plus",
+    "resolution": 17,
+    "max_depth": 9,
+    "failed": false,
+    "frame_ms": {
+      "p50": 29.403,
+      "p95": 31.080399999999997,
+      "max": 34.893
+    },
+    "update_ms": {
+      "p50": 0.674,
+      "p95": 6.049849999999999,
+      "max": 11.025
+    },
+    "render_cpu_ms": {
+      "p50": 0.33500000834465,
+      "p95": 0.513999998569489,
+      "max": 0.899999976158142
+    },
+    "render_gpu_ms": {
+      "p50": 6.40299987792969,
+      "p95": 14.71429977416994,
+      "max": 16.1639995574951
+    },
+    "upload_ms": {
+      "p50": 0.013,
+      "p95": 0.39304999999999995,
+      "max": 0.825
+    },
+    "last_chunk_build_ms": {
+      "p50": 71.504,
+      "p95": 114.19194999999988,
+      "max": 232.59
+    },
+    "frames_over_50_ms": 0,
+    "max_jobs": 2,
+    "max_queue": 339,
+    "max_uploads_per_frame": 2,
+    "max_resident": 510,
+    "max_cached": 96,
+    "max_active_vertices": 137088,
+    "max_mesh_payload_mib": 24.2451782226563,
+    "max_static_mib": 53.9803657531738,
+    "max_video_mib": 175.711013793945
+  }
+}

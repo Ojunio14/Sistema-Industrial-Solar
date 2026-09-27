@@ -9,7 +9,9 @@ o terreno e acrescenta LOD9 próximo. Clima/biomas consomem a nova altura. Detal
 [07_reintegracao_geologia.md](stages/07_reintegracao_geologia.md) e
 [08_reintegracao_clima.md](stages/08_reintegracao_clima.md) e
 [09_reintegracao_biomas.md](stages/09_reintegracao_biomas.md) e
-[10_refinamento_relevo.md](stages/10_refinamento_relevo.md).
+[10_refinamento_relevo.md](stages/10_refinamento_relevo.md). A Etapa 11 deriva
+pesos de aparência desses serviços e usa um material PBR triplanar compartilhado:
+[11_materiais_aparencia.md](stages/11_materiais_aparencia.md).
 
 ## Autoridade e escala
 
@@ -41,11 +43,13 @@ O quadro UV mudou para o doador: IDs antigos não são diretamente intercambiáv
 
 Seis quadtrees; 17×17 amostras; LOD9; erro projetado/tamanho aparente de quad,
 histerese, troca pai/quatro filhos e saias. Não há antigo stitching 2:1/morph.
-Até 510 residentes, 96 em cache, dois workers/uploads e budget flexível de 2 ms.
+Até 510 residentes, 96 em cache, dois workers/uploads e budget flexível de 2 ms
+sem zona local ativa. A Etapa 13 reserva um slot global durante geração local.
 Workers produzem arrays locais. ArrayMesh/Nodes/SceneTree permanecem na main
 thread; revisão/alive invalidam jobs; shutdown recolhe tarefas pendentes.
-Normais usam stencil físico de 2 m, sem dependência de LOD/face.
-Agora amostram a função refinada. Erro/AABB incluem envelope do detalhe ainda
+Normais geométricas usam stencil físico de 2 m, sem dependência de LOD/face.
+Agora amostram a função refinada. O normal map da Etapa 11 altera apenas a
+iluminação do material, não a geometria. Erro/AABB incluem envelope do detalhe ainda
 não resolvido. A seleção interrompe a busca ordenada quando nenhuma vítima
 restante pode ceder orçamento ao split. Não há sampler diferente por LOD,
 nem aumento global de densidade para 33×33. Configure reconstrói todos os
@@ -69,7 +73,24 @@ PlanetClimate e PlanetBiomes. O sampler direto não exige renderer ou SceneTree.
 
 Uma cópia efêmera da classificação por vértice alimenta apenas o shader técnico
 de F5; a autoridade permanece no serviço consultável por direção/posição. Com
-F5 desligado, o material natural do doador permanece ativo. F4 mantém LOD.
+F5 desligado, o material PBR derivado fica ativo. F4 mantém LOD.
+
+## Aparência derivada (Etapa 11)
+
+`PlanetMaterialWeights` recebe superfície, normal física, clima e bioma da
+mesma amostra do builder e consulta falloffs geológicos contínuos. Produz oito
+pesos normalizados, zero na água, sem alterar os serviços ou a altura. A mesh
+guarda os pesos em CUSTOM1/2; CUSTOM0 geológico permanece para F5. O shader
+seleciona as duas famílias mais fortes por fragment, interpola seus pesos e
+amostra mapas albedo/normal/roughness 2K em triplanar no referencial local
+planetário (1 unidade = 1 m), independente da UV de face. A cor-base contínua
+considera as oito famílias; o detalhe principal usa tiles de 3–8 m, uma
+segunda escala rotacionada e offsets suavemente interpolados em células de 16 m quebram
+repetições, e a macrovariação modula as transições costeiras no fragment sem
+recalcular clima ou geologia. Uma única instância
+`ShaderMaterial` é usada por todos os chunks. A tecla 1 expõe a seleção e os campos
+materiais. F5/F6/F7 continuam sendo diagnósticos dos serviços, sem transferir
+autoridade à mesh. O chão submarino é opaco e técnico até a etapa de oceano.
 
 ## Clima superficial
 
@@ -104,7 +125,7 @@ F7 alterna dominante, blend de todos os pesos e intensidade do dominante.
 Texturas globais de debug são criadas sob demanda; a mesh natural não recebe
 atributos de bioma. Materiais finais poderão misturar bioma, geologia,
 inclinação, altitude e costa, sem tratar bioma como textura. Mining Zones
-futuras poderão consultar os dados, sem torná-los autoridade geométrica.
+podem consultar os dados, sem torná-los autoridade geométrica.
 
 ## Sistemas suspensos
 
@@ -113,22 +134,74 @@ preservando a implementação histórica de geologia, clima, dez biomas e materi
 O código antigo não roda; Etapas 7–9 reimplementaram suas camadas de dados
 sobre PlanetShape. Materiais finais/recursos seguem desconectados.
 
-## Mineração e deformação futuras
+## Mining Zones e superfície integrada — Etapas 12–13
 
-Planet → Cube Face → Quadtree Patch/Chunk → Mining Zone → Mining Chunk → Cell.
-base_height(direction) + terrain_edit_delta(position_m) = final_height.
-Mining Zones ativarão dados detalhados sem segunda superfície; chunks ~256×256 m
-e células ~2 m. A mesh global não precisa dessa resolução. Deltas serão aplicados
-antes de gerar vértices/normais/colisão; snapshots/revisões invalidarão chunks
-afetados e seus caches/jobs. Persistir somente alterações não reconstruíveis.
-Configure hoje reconstrói globalmente; edição, volume, invalidação regional,
-colisão e persistência são futuros. Heightfield radial sem voxel global;
-overhangs/cavernas continuam fora do escopo inicial.
+PlanetEditableTerrain compõe `natural_height + terrain_edit_delta`, sem alterar
+PlanetShape. Charts gnomônicos independem das cube faces; chunks de 256 m,
+cells de 2 m e 129×129 vértices. Dados vivos pertencem à main thread; buffers
+float32 são alocados somente ao editar. Nós compartilhados têm um proprietário.
+
+MiningSurfaceManager agenda jobs destacados, prioriza a câmera e edições,
+limita filas/commits e rejeita resultados por revisão/epoch/sessão/atividade.
+MiningBuildJob prepara a superfície final, normais centrais com halo, índices,
+atributos PBR e faces de colisão. Geologia/clima/biomas continuam serviços.
+O padrão usa um worker local e reserva um global; limites globais são restaurados
+ao desativar a última zona. Upload/Nodes/PhysicsServer ficam na main thread.
+
+Ownership no World3D principal: recorte geométrico retira os triângulos globais
+sob a zona e sua faixa externa de 16 m. MiningTransitionJob reconstrói as folhas
+capturadas usando PlanetChunkBuilder determinístico e recorta em worker, sem
+readback da GPU. A borda local é a superfície natural de 2 m; a borda externa
+coincide com os triângulos globais reais. Zipper costura ambas. Patches envolvidos
+são refinados até pelo menos LOD8 e fixados enquanto a zona estiver ativa.
+Fora dessa vizinhança o LOD continua operando. Não há overlay nem offset de altura.
+
+Dados históricos na faixa externa de 4 m impedem ativação visual; não são
+apagados. A faixa passa a ser protegida, incluindo o stencil das normais.
+Bordas internas permitem edição normal. Geração e uploads progridem por chunk,
+mas publicação inicial ocorre por zona; atualizações dirty mantêm o conjunto
+anterior coerente até seus vizinhos estarem prontos. O chão global permanece
+cobrindo a zona durante o preparo inicial. Revisões publicadas de render e
+colisão mudam juntas, sem esperar workers no frame principal.
+
+Colisão técnica usa os mesmos triângulos finais, divididos em 16 shapes por
+chunk para distribuir criação/inserção física entre frames. Recursos/corpos
+novos ficam ocultos e sem collision_layer até a troca. Desativar libera meshes,
+collision e pins, restaura as malhas globais originais e preserva edit data.
+API suporta múltiplas zonas separadas, até 64 chunks visuais no total. Nesta
+versão há margem conservadora de 1.024 m entre calotas, evitando compartilhar
+um patch entre collars independentes. Não há streaming parcial dentro da zona.
+
+F9 é diagnóstico no mundo: limites, status das filas, revisions e deltas.
+Não existe mais visor isolado nem controles de escavação. O teste programático
+gera depressões/aterro suaves na cena real, cruza quatro chunks e cube face,
+testa duas zonas, física e órbita. Contratos, custo e limitações:
+[Etapa 12](stages/12_mining_zones.md),
+[Etapa 13](stages/13_integracao_terreno_editavel.md).
 
 ## Planet Lab
 
 FreeFly, RTS, Orbital e CameraManager preservados. F4: LOD; F5: geologia;
 F6: temperatura, umidade, oceanicidade, precipitação e sombra de chuva;
-F7: biomas. Luz/ambiente
+F7: biomas; 1: materiais; F9: Mining Zone integrada e diagnóstico no mundo. Luz/ambiente
 constantes, fundo sólido e material técnico do doador. Sem nuvens, atmosfera,
-sky artístico, pós-processamento, oceano avançado ou colisão planetária.
+sky artístico, pós-processamento, oceano avançado ou colisão planetária global; a colisão local de Mining Zones é técnica.
+
+
+## Designação técnica — Etapa 14
+
+TerrainLevelDatum é compartilhado por TerrainDesignationStore para todas as
+zonas. TerrainDesignation descreve células, níveis de extremidade e operação.
+Plataformas usam nível único; rampas são campos contínuos de target, derivados
+de anchors inteiros e posição na grid. Não existe autoridade geométrica RampMesh.
+
+TerrainDesignationTool (F10) mantém preview separado de ordens confirmadas.
+Avaliação incremental consulta os vértices finais e deriva estados/volumes.
+TerrainDesignationOverlay renderiza quadrados e números com ArrayMesh/MultiMesh,
+dois nós de desenho para milhares de células. Nenhum overlay participa da física.
+
+DEV APPLY valida revisões, limites e todos os vértices antes de uma transação
+de deltas. A geração/material/recorte/colisão existentes continuam inalterados.
+Plano atingido e revisão visual/física publicada são estados distintos no HUD.
+O passo finito da API prepara execução gradual futura, sem implementar máquinas.
+Detalhes e limitações: [Etapa 14](stages/14_grid_levels.md).

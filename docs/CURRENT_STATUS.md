@@ -1,61 +1,113 @@
-# Estado atual — Planet v0.1
+# Estado atual — Planet Mining Prototype
 
 ## Etapa atual
 
-Etapa 10: continentes separados do relevo, geologia estrutural e resolução
-próxima 17×17/LOD9 implementada e validada. Detalhes em
-[10_refinamento_relevo.md](stages/10_refinamento_relevo.md).
+Etapa 14: designação técnica por **GRID + LEVELS**, com datum planetário único,
+plataformas, rampas entre dois níveis e targets contínuos. F10 oferece seleção
+por arrasto, preview, confirmação e DEV APPLY separado. Estados de corte,
+aterro, alvo e execução são calculados por célula; grid e números são batch.
+Planos não modificam terreno até aplicação. O caminho continua sendo targets
+→ deltas → FinalTerrain → mesh/colisão assíncronas da Etapa 13.
+
+Não existem máquinas, inventário, conservação de massa ou transporte.
+Origem padrão 0 m / passo 1 m, configuráveis antes dos planos; limites de grade,
+tolerância, seleção e apresentação são técnicos. Não há salvamento de planos.
+Veja [Etapa 14](stages/14_grid_levels.md) e
+[evidências](evidence/14_grid_levels/results.md).
+
+## Base integrada preservada — Etapa 13
+
+Etapa 13: superfície editável integrada ao planeta real. Recorte geométrico
+retira a cobertura global, uma faixa de transição une tesselações e a Mining
+Zone assume altura natural + delta. Resolução 256 m / 128² cells / 129² vértices
+preservada; material PBR da Etapa 11 e serviços naturais compartilhados.
+
+Geração em WorkerThreadPool, snapshots destacados, rejeição de revisão antiga,
+fila limitada, uploads progressivos e publicação conjunta de vizinhos dirty.
+Colisão técnica por chunk usa exatamente os triângulos finais, divididos em
+16 shapes com commits distribuídos entre frames. Desativar restaura o terreno
+global e preserva deltas; reativar recupera a edição. F9 agora mostra diagnóstico
+no World3D principal, sem visor/câmera local separados e sem ferramenta jogável.
+
+Limites explícitos: publicação inicial por zona; faixa externa protegida de 4 m;
+collar de 16 m e pins locais de LOD; zonas visuais conservadoramente separadas;
+64 chunks visuais totais; budget temporal flexível. A geração deixa o frame
+principal, mas a latência de preparo e o custo gráfico/da física continuam
+mensuráveis. Sem promessa de tempo máximo universal por frame.
+
+Detalhes, testes, comparação com 2,44 s síncronos e evidências visuais:
+[Etapa 13](stages/13_integracao_terreno_editavel.md) e
+[resultados](evidence/13_integracao_terreno_editavel/results.md).
+Não foram iniciados escavadeira, mouse brush jogável, inventário ou mineração.
+
+## Fundação visual preservada — Etapa 11
+
+Etapa 11: material PBR triplanar de terreno, oito famílias 2K, pesos contínuos
+de aparência implementados; a tecla 1 alterna o debug de materiais. Detalhes em
+[11_materiais_aparencia.md](stages/11_materiais_aparencia.md). A geometria da
+Etapa 10 continua: ContinentalShape → geologia estrutural → TerrainRelief →
+PlanetShape. Clima e biomas continuam dados derivados.
 
 ## Arquitetura implementada
 
-- ContinentalShape preserva máscara e contorno terra/água do doador. A faixa
-  costeira compatível é separada do relevo interior, substituído por completo.
-- PlanetShape compõe a única altura natural com TerrainRelief. Geologia v3
-  orienta cadeias, maturidade, planaltos, bacias e formas ígneas. Não há ciclo:
-  continentes → geologia estrutural → relevo → clima → biomas.
-- Clima/biomas são reconstruídos da nova altura, sem recalibração de percentuais.
-- Cube-sphere, quadtree, chunks e budgets preservados: 17×17/LOD9, 510 residentes,
-  96 cache, dois workers/uploads. ~12,2 m no centro da face, menor nas bordas.
-- Normais físicas a 2 m; bounds, SSE e culling consideram relevo final.
-  Troca conjunta dos filhos e saias; busca ordenada de vítimas de LOD corrigida.
-- Planet Lab mantém FreeFly/RTS/Orbital e F4/F5/F6/F7. Material técnico preservado.
+- PlanetShape compõe a única altura natural. Cube-sphere/quadtree/budgets
+  permanecem em 17×17/LOD9, 510 residentes, 96 cache, dois workers/uploads;
+  raio 50 km.
+- Geologia, clima e biomas são consultados uma vez por vértice, reutilizando a
+  mesma amostra de superfície. PlanetMaterialWeights gera oito pesos contínuos
+  em CUSTOM1/2, sem devolver material ao terreno. CUSTOM0 geológico permanece.
+- Um ShaderMaterial PBR compartilhado por todos os chunks escolhe top-2 por
+  fragment e amostra albedo, Normal GL e roughness em triplanar local métrico.
+  Escalas finais por família: rocha genérica/vulcânica 6 m, sedimentar 8 m,
+  solo 4,5 m, cascalho 3 m, areia/árido 6 m e neve/gelo 8 m. Uma segunda escala
+  rotacionada do material dominante, warp planetário contínuo e macro/meso
+  reduzem a repetição; a base cromática das oito famílias suaviza trocas top-2.
+  Micro normal map desvanece à distância. Metalness 0.
+- F4–F7 permanecem; a tecla 1 mostra família, blend, slope, rocha, neve e índices.
+  O fundo submarino continua opaco e técnico, sem oceano avançado.
 
-## Resultados desta execução
+## Resultados e evidência
 
-- 8.192 direções: máscara e sinal terra/água iguais à Etapa 9; 4.436 terrestres.
-- Curvatura regional nas novas cadeias ~49,8% maior; planícies selecionadas
-  variam no máximo 1,75 m em 20 m. Relevo máximo amostrado 644,83 m.
-- Espaçamento sob a câmera próxima: 21,13→10,56 m; planície ~12,20 m.
-  Alternativa 33×33 requer ~469 mil vértices contra ~137 mil com 17×17.
-- Clima médio terrestre 4,20 °C; umidade 0,51784. Biomas: tropical 12,15%,
-  savana 1,13%, deserto 15,40%, temperado 25,68%, pântano 3,67%, taiga 20,47%,
-  tundra 15,92%, polar 5,59%. Salar/alpino: nenhuma dominância nas amostras;
-  as dez famílias continuam cobertas por casos controlados, sem quotas.
-- Suíte principal: zero falhas. Por processo: 93.388 contratos de superfície,
-  52.416 geologia, 34.883 clima, 75.497 biomas e 65.331 relevo; fingerprints
-  iguais em dois processos. Câmeras/fundação/terreno/LOD também passaram.
-- Planet Lab abriu graficamente no projeto principal. Comparação em dez poses,
-  mais solo a 30 m e sequência de transições. Performance e condições de
-  medição detalhadas na etapa. Repetição comparável: p95 23,43→16,97 ms;
-  custo por chunk ~23,70→51,75 ms (mediana observada). Houve variação de
-  apresentação em outra rodada; não se promete FPS constante entre execuções.
+- Inventário: oito diretórios oficiais, cada um com albedo/normal/roughness
+  2048×2048; importação VRAM com mipmaps. Arquivos AO/displacement preservados.
+  Não foi encontrado documento de licença/atribuição em assets.
+- Contratos de superfície/geologia/clima/biomas/relevo mantêm os fingerprints
+  da Etapa 10. materials_test.gd verifica assets, normalização, oceano, top-3,
+  slope, costa, frio, província ígnea, borda e vértices/normais geométricas.
+- Rota idêntica de 840 frames em 1100×760, Godot 4.6.1/Vulkan Forward+/Vega 3,
+  par sem VSync: técnico vs PBR frame p95 **5,59 → 10,95 ms**; render GPU p95
+  **3,12 → 8,75 ms**; zero frames >50 ms. Update CPU p95 **3,36 → 4,38 ms**.
+  Ambos compartilham a mesma seleção CPU, isolando o shader. Com VSync normal,
+  nas medições pré-correção houve variabilidade de apresentação: p95
+  **19,08 → 31,08 ms** em outra dupla,
+  inclusive ~31 ms na órbita PBR com GPU ~1,5 ms. Não atribuir todo o intervalo
+  ao shader; manter os dois registros brutos.
+- O último chunk observado passou de ~51,75 ms na Etapa 10 a 83,48/83,24 ms
+  p50 no par técnico/PBR recente; essa métrica varia entre execuções e pode
+  refletir contenção da GPU integrada. O payload de
+  malha/cache alcançou 24,25 MiB contra 17,64 MiB na Etapa 10; memória de
+  vídeo ~175,71 MiB com os mapas carregados, contra ~43,71 MiB na Etapa 10.
+  last_build_ms não é amostragem independente de todos os jobs. A apresentação
+  com VSync é variável entre execuções; os dados brutos ficam em
+  docs/evidence/11_materiais_aparencia.
+- Frente ao PBR anterior com tiles de 12–18 m, o anti-tiling elevou o frame
+  p95 sem VSync de 9,00 a 10,95 ms e o GPU p95 de 6,59 a 8,75 ms; VRAM e
+  quantidade de vértices permaneceram iguais.
 
-## Histórico e testes
+## Histórico e próximos limites
 
-Etapas 6–9 são histórico; sua geometria/hash não é exigência do terreno atual.
-A fixture da Etapa 9 fica somente nos testes, conferida contra o oráculo original.
-`relief_enabled=false` retorna substrato continental, não o relevo da Etapa 9.
-`tests/planet/run_validation.ps1` cobre regressões e determinismo entre processos.
-Evidências comparáveis: `docs/evidence/10_refinamento_relevo`.
-
-## Limites e próximo escopo
+Etapas 6–10 continuam documentadas em docs/stages; seus contratos naturais
+seguem validados. A fixture da Etapa 9 é apenas teste. O material técnico
+anterior fica disponível para comparação; não é o visual padrão.
 
 - **CONFIRMADO:** algumas escarpas costeiras e depressões rasas pertencem ao
-  contorno preservado. Material técnico/seabed opaco não representa água/PBR.
-- **RISCO:** orçamento cheio ou viagens rápidas podem atrasar LOD9; saias e
-  troca discreta não equivalem a morph. Construção geológica/climática síncrona.
-- **DÍVIDA TÉCNICA:** modelo geomorfológico aproximado, sem erosão física;
-  grade climática regional, colisão/navegação RTS esférica e edição regional futuras.
-- Nenhum material final, vegetação, recurso ou mineração iniciados. Aguardar
-  instrução. Natural height + terrain edit delta = final height; células ~2 m
-  somente nas futuras Mining Zones, com chunks ~256×256 m.
+  contorno preservado. Fundo do mar ainda é chão opaco, não água.
+- **CONFIRMADO:** VRAM e custo de geração cresceram com os 24 mapas e oito pesos
+  por vértice; não houve redução de LOD ou resolução para compensar.
+- **RISCO:** a troca top-2 pode revelar uma transição onde três famílias têm
+  pesos semelhantes. A procedência/licença dos assets carece de documentação.
+- **DÍVIDA TÉCNICA:** ausência de oceano, vegetação, objetos rochosos,
+  morph de LOD e erosão física. Mining Zones agora têm fundação técnica descrita acima.
+
+Contrato de edição implementado: natural_height + terrain_edit_delta = final_height;
+células de 2 m apenas em Mining Chunks de 256×256 m, sem mudar o grid global.

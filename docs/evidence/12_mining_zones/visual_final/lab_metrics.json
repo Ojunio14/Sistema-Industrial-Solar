@@ -1,0 +1,9 @@
+{
+  "failures": true,
+  "four_chunk_rebuild_wall_ms": 2547.993,
+  "global_different_channels": 1033,
+  "global_max_channel_difference": 189,
+  "global_revision_unchanged": true,
+  "graphic": true,
+  "programmatic_edit_ms": 84.029
+}

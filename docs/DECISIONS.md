@@ -82,3 +82,60 @@
   em testes; runtime não requer projeto doador. Não há morph novo nem malha
   global de 2 m. Natural height + terrain edit delta continua o contrato futuro.
 - **Evidências e limites:** [Etapa 10](stages/10_refinamento_relevo.md).
+
+## Terreno editável separado do natural — Etapa 12
+
+- **Status:** implementado conforme o escopo da Etapa 12, sem gameplay.
+- **Decisão:** PlanetEditableTerrain é a autoridade da composição natural+delta.
+  Zonas usam chart tangente gnomônico, IDs próprios e chunks 256 m/células 2 m;
+  cube face não determina identidade ou orientação local. Heightfield radial
+  de uma altura por coordenada, sem cavernas/overhangs.
+- **Fronteiras:** amostras pertencem a um único chunk via floor(index/128),
+  inclusive negativos. Perímetro externo zero, sobreposição de charts rejeitada
+  por caps conservadoras. Interpolação por triângulo coincide com a malha técnica.
+- **Ownership:** dados vivos na main thread, snapshots copiados para builders;
+  revisões/epoch/atividade protegem a aceitação. Desativar nunca apaga deltas.
+  Invalidação é regional, inclui halo de normais; collision terá consumidor próprio.
+- **Renderização inicial:** inspeção técnica em World3D separado. O mundo principal
+  continua exclusivamente global e natural. Não há superfície sobreposta nem
+  mudança do shader PBR. Handoff global/local integrado continua futuro e deve
+  manter cobertura exclusiva, com transição atômica e fronteira compatível.
+- **Consequências:** preview pode pausar porque ainda é síncrono; não representa
+  escavação jogável. Save, collision, jobs de produção e ferramentas ficam para
+  depois. [Contrato completo](stages/12_mining_zones.md).
+
+## Ownership integrado da superfície local — Etapa 13
+
+- **Status:** implementação técnica conforme o escopo solicitado, sem gameplay.
+- **Decisão:** recortar geometricamente os patches globais em worker e costurar
+  o contorno cortado à borda natural de 2 m usando collar externo de 16 m.
+  A captura registra folhas visíveis; o mesmo PlanetChunkBuilder reconstrói
+  seus arrays deterministicamente, evitando bloqueio por readback da GPU.
+- **Motivo:** máscara no shader sozinha não fecha diferenças entre tesselações
+  nem resolve colisão; suprimir patches inteiros criaria lacunas fora do chart.
+- **Consequências:** refinamento mínimo local LOD8, pins de folhas/ancestrais,
+  faixa protegida de 4 m, separação conservadora de zonas e publicação inicial
+  por zona após uploads progressivos. Nenhuma mudança de PlanetShape.
+- **Async/física:** snapshots/revisões/sessão, fila limitada, um worker local
+  por padrão, commits com budget flexível. Colisão final dividida em 16 shapes
+  por chunk para distribuir criação/inserção. Render e física publicados
+  mudam juntos; desativação conserva dados e restaura meshes globais originais.
+- **Detalhes e limitações:** [Etapa 13](stages/13_integracao_terreno_editavel.md).
+
+
+## Etapa 14 — GRID + LEVELS e rampas entre níveis
+
+A correção de mecânica aprovada pelo usuário torna nível planejado a autoridade
+conceitual da célula. Target height permanece derivado internamente. Datum é
+planetário, estável e comum às zonas; origem 0 m e LEVEL_STEP 1 m são defaults
+técnicos. Não há origem relativa a cada seleção.
+
+Ramp conecta dois níveis: anchors detectados em plataformas adjacentes ou
+informados manualmente. Targets de vértices são interpolados continuamente,
+evitando degraus ao aplicar. Números fracionários nos centros são apresentação
+do plano, nunca altura atual. Bordas de planos incompatíveis são rejeitadas.
+
+Confirmar designação não altera terreno. Somente DEV APPLY escreve deltas;
+FinalTerrain e a geração assíncrona da Etapa 13 continuam sendo a autoridade.
+Grid/números usam batch, e os estados não dependem de cores no modelo de dados.
+Implementação técnica com limites configuráveis, sem máquinas ou logística.
