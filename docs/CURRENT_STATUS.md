@@ -2,6 +2,22 @@
 
 ## Etapa atual
 
+Etapa 15: **Current Level separado de Target Level**, grid 3D sobre a superfície
+publicada e contorno de Target independente. F10 tem snap/histerese, início de
+arraste fixo, ownership de input e cache incremental. Avaliações grandes e
+preparação de deltas usam workers destacados. DEV APPLY enfileira uma transação
+por chunks; mesh e colisão continuam publicadas juntas pela Etapa 13.
+
+F9 agora é alternância de visibilidade de um diagnóstico persistente; não ativa
+nem descarrega zonas. Rótulos próximos mostram Current, com densidade limitada.
+Os contratos antigos de datum, plataforma e rampa contínua são preservados.
+Veja [Etapa 15](stages/15_ux_performance_designacao.md),
+[testes e métricas](evidence/15_ux_performance_designacao/results.md) e o roteiro
+manual A–D no documento da etapa. A cena PBR ainda pode ser limitada pela GPU;
+Apply assíncrono não implica publicação instantânea. Sem máquinas ou gameplay.
+
+## Base de designação — Etapa 14
+
 Etapa 14: designação técnica por **GRID + LEVELS**, com datum planetário único,
 plataformas, rampas entre dois níveis e targets contínuos. F10 oferece seleção
 por arrasto, preview, confirmação e DEV APPLY separado. Estados de corte,

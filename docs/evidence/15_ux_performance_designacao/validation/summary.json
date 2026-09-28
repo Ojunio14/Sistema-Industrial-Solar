@@ -1,0 +1,72 @@
+[
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "cameras",
+    "exit": 0,
+    "elapsed_s": 8.3165275
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "designation_contracts",
+    "exit": 0,
+    "elapsed_s": 2.1875085
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "designation_transactions",
+    "exit": 0,
+    "elapsed_s": 2.0600453
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "natural_surface",
+    "exit": 0,
+    "elapsed_s": 30.014889
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "mining",
+    "exit": 0,
+    "elapsed_s": 7.7482656
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "mining_lod_ownership",
+    "exit": 0,
+    "elapsed_s": 1.2220125
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "integration_two_workers",
+    "exit": 0,
+    "elapsed_s": 79.9759985
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "designation_demo",
+    "exit": 0,
+    "elapsed_s": 35.6972407
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "designation_ux",
+    "exit": 0,
+    "elapsed_s": 35.5695267
+  },
+  {
+    "timeout": false,
+    "error_count": 0,
+    "name": "main",
+    "exit": 0,
+    "elapsed_s": 7.4570069
+  }
+]

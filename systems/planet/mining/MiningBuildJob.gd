@@ -57,6 +57,10 @@ func build() -> void:
 	var normals := PackedVector3Array()
 	var colors := PackedColorArray()
 	var uv := PackedVector2Array()
+	var natural_heights := PackedFloat32Array()
+	var final_heights := PackedFloat32Array()
+	natural_heights.resize(129 * 129)
+	final_heights.resize(129 * 129)
 	vertices.resize(129 * 129)
 	normals.resize(129 * 129)
 	colors.resize(129 * 129)
@@ -75,6 +79,8 @@ func build() -> void:
 			var d: Vector3 = (s.up + s.tangent_x * (xy.x / s.radius_m) + s.tangent_y * (xy.y / s.radius_m)).normalized()
 			var hi := (y + 1) * 131 + x + 1
 			var surface := surfaces[hi]
+			natural_heights[i] = surface.x
+			final_heights[i] = surface.x + s.deltas[hi]
 			vertices[i] = halo[hi]
 			normals[i] = (halo[hi + 1] - halo[hi - 1]).cross(halo[hi + 131] - halo[hi - 131]).normalized()
 			uv[i] = xy
@@ -101,8 +107,12 @@ func build() -> void:
 				indices[cursor] = vertex
 				cursor += 1
 	arrays[Mesh.ARRAY_INDEX] = indices
+	var mesh_end := Time.get_ticks_usec()
 	var faces := collision_faces(arrays)
-	result = {"arrays": arrays, "faces": split_collision(faces), "format": FORMAT,
+	var parts := split_collision(faces)
+	result = {"arrays": arrays, "faces": parts, "format": FORMAT,
+		"mesh_prepare_ms": (mesh_end - start) / 1000.0, "collision_prepare_ms": (Time.get_ticks_usec() - mesh_end) / 1000.0,
+		"natural_heights": natural_heights, "final_heights": final_heights,
 		"started_usec": start, "ended_usec": Time.get_ticks_usec(),
 		"build_ms": (Time.get_ticks_usec() - start) / 1000.0}
 

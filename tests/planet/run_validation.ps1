@@ -26,6 +26,8 @@ $cases = [ordered]@{
     mining_lab = '--script res://tests/planet/mining_lab_test.gd'
     mining_lod_ownership = '--script res://tests/planet/mining_lod_ownership_test.gd'
     designation_contracts = '--script res://tests/planet/designation_test.gd'
+    designation_transactions = '--script res://tests/planet/designation_transaction_test.gd'
+    designation_ux = '--script res://tests/planet/designation_ux_test.gd'
     designation_demo = '--script res://tests/planet/designation_demo.gd'
     mining_async_two = '--script res://tests/planet/mining_integration_test.gd -- res://docs/evidence/13_integracao_terreno_editavel/validation_two --two-workers'
 }

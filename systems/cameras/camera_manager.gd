@@ -1,5 +1,8 @@
 extends Node
 
+# The designation tool owns pointer and camera movement for the entire drag.
+var designation_dragging := false
+
 signal camera_changed(camera_id: StringName, camera: Camera3D)
 
 const DEFAULT_CAMERA_ID: StringName = &"FreeFly"
@@ -116,6 +119,8 @@ func _notify_controller(camera_id: StringName, method_name: StringName) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if designation_dragging:
+		return
 	if event.is_action_pressed("change_cam_view"):
 		if switch_to_next():
 			get_viewport().set_input_as_handled()

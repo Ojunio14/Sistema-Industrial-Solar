@@ -365,7 +365,7 @@ func _run() -> void:
 	expect(is_instance_valid(planet.mining_debug), "F9 creates in-world diagnostics")
 	expect(planet.mining_debug.get_world_3d() == planet.get_world_3d(), "F9 has no isolated World3D")
 	planet.toggle_mining_debug()
-	expect(planet.mining_debug == null and manager.zones.is_empty(), "F9 closes diagnostics and representation")
+	expect(is_instance_valid(planet.mining_debug) and not planet.mining_debug.visible and manager.zones.is_empty(), "F9 hides cached diagnostics without changing terrain activity")
 	finish()
 
 func finish() -> void:

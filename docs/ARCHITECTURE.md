@@ -205,3 +205,27 @@ de deltas. A geração/material/recorte/colisão existentes continuam inalterado
 Plano atingido e revisão visual/física publicada são estados distintos no HUD.
 O passo finito da API prepara execução gradual futura, sem implementar máquinas.
 Detalhes e limitações: [Etapa 14](stages/14_grid_levels.md).
+
+## Superfície publicada e consumidores de designação — Etapa 15
+
+O contrato transversal passa a distinguir revisão dos dados e revisão publicada.
+MiningBuildJob fornece buffers CPU de altura natural, altura final e vértices;
+MiningSurfaceManager publica esses buffers junto da mesh e colisão correspondentes.
+PlanetEditableTerrain.published_node é uma consulta à representação publicada,
+sem readback GPU ou nova consulta natural. A autoridade de composição permanece
+natural + delta. Durante rebuild, Current visual continua na publicação antiga;
+os novos dados são explicitamente pendentes.
+
+TerrainDesignationStore cacheia Current por chunk/revisão. Avaliação grande e
+preparação de transação usam snapshots destacados e workers limitados; workers
+nunca acessam nós vivos, GPU ou PhysicsServer. Revisão/epoch/publicação antiga
+invalida o resultado. Apply troca buffers validados por chunk na main thread e
+publica revisões coerentes, incluindo o halo; geração e commit existentes seguem.
+PlanetRoot mantém/polla esses trabalhos mesmo se a interface F10 for fechada.
+
+A apresentação da Etapa 14 foi substituída: grid de linhas segue Current,
+números próximos mostram Current arredondado e um contorno distinto mostra Target.
+F9 observa e alterna visibilidade, sem alterar atividade da zona. O único contrato
+novo de câmera é CameraManager.designation_dragging: todos os controladores e a
+troca por input cedem o movimento durante a seleção e retomam depois da soltura.
+Detalhes e evidências: [Etapa 15](stages/15_ux_performance_designacao.md).

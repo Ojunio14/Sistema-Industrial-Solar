@@ -115,7 +115,26 @@ func _run_test() -> void:
 			if not _expect(_has_exactly_one_active_controller(lab), "Repeated switch activated competing controllers."):
 				return
 
-	print("CAMERA_MANAGER_TEST_OK: 3 cameras, cyclic/direct/invalid/repeated switching")
+	for camera_id in EXPECTED_CAMERA_IDS:
+		manager.switch_to(camera_id)
+		var controller: Node3D = manager._controllers[camera_id]
+		var before := controller.transform
+		manager.designation_dragging = true
+		var motion := InputEventMouseMotion.new()
+		motion.relative = Vector2(80, 40)
+		if camera_id == &"RTS":
+			controller._unhandled_input(motion)
+		else:
+			controller._input(motion)
+		controller._process(0.2)
+		_send_action(manager, &"change_cam_view")
+		if not _expect(controller.transform == before and manager.get_active_camera_id() == camera_id, "Designation drag must lock motion and camera switching for all controllers."):
+			return
+		manager.designation_dragging = false
+		_send_action(manager, &"change_cam_view")
+		if not _expect(manager.get_active_camera_id() != camera_id, "Camera switching must resume after drag."):
+			return
+	print("CAMERA_MANAGER_TEST_OK: 3 cameras, cyclic/direct/invalid/repeated switching, designation input ownership")
 	quit(0)
 
 

@@ -1,0 +1,5 @@
+Godot Engine v4.6.1.stable.official.14d19694e - https://godotengine.org
+
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+STAGE15_BASELINE {"apply_4096_ms":177.747,"apply_ok":true,"f9_toggle_ms":[65.87,13.409,23.869,0.06,21.791],"selections":{"1024":{"evaluation_wall_ms":313.32,"event_to_ready_ms":448.564,"glyphs":4096,"overlay_step_max_ms":2.055},"16":{"evaluation_wall_ms":2.866,"event_to_ready_ms":50.037,"glyphs":64,"overlay_step_max_ms":16.185},"256":{"evaluation_wall_ms":86.128,"event_to_ready_ms":120.643,"glyphs":1024,"overlay_step_max_ms":2.031},"4096":{"evaluation_wall_ms":1447.737,"event_to_ready_ms":2061.558,"glyphs":16384,"overlay_step_max_ms":4.185}}}

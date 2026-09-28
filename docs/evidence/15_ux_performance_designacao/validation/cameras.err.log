@@ -1,0 +1,12 @@
+ERROR: Failed to read the root certificate store.
+   at: get_system_ca_certificates (platform/windows/os_windows.cpp:2570)
+WARNING: CameraManager: camera 'Missing' is not registered.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] switch_to (res://systems/cameras/camera_manager.gd:64)
+       [1] _run_test (res://tests/cameras/camera_manager_test.gd:91)
+WARNING: CameraManager: duplicate camera ID 'FreeFly' was rejected.
+   at: push_warning (core/variant/variant_utility.cpp:1034)
+   GDScript backtrace (most recent call first):
+       [0] register_camera (res://systems/cameras/camera_manager.gd:30)
+       [1] _run_test (res://tests/cameras/camera_manager_test.gd:100)

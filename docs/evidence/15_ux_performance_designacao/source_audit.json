@@ -1,0 +1,754 @@
+{
+  "baseline_files": 200,
+  "line_ending_reconciliation": {
+    "systems/planet/planet_root.gd": {
+      "initial_sha256": "54cad2adc471a8f9f26bad453cc9db0435b7b86fd94d1244221794e409cdf02a",
+      "observed_sha256": "861d0121c07a5f149f9e86e1b132ff3fdcc87a1675d0ea49a380ff907625f0dc",
+      "change": "Only CRLF/LF normalization; text identical to baseline"
+    }
+  },
+  "changed_runtime_tests_docs": [
+    "docs/ARCHITECTURE.md",
+    "docs/CURRENT_STATUS.md",
+    "docs/DECISIONS.md",
+    "docs/stages/15_ux_performance_designacao.md",
+    "systems/cameras/camera_manager.gd",
+    "systems/cameras/free_fly_camera.gd",
+    "systems/cameras/orbital_camera.gd",
+    "systems/cameras/rts_camera.gd",
+    "systems/planet/designation/DesignationTransaction.gd",
+    "systems/planet/designation/DesignationTransaction.gd.uid",
+    "systems/planet/designation/TerrainDesignationOverlay.gd",
+    "systems/planet/designation/TerrainDesignationStore.gd",
+    "systems/planet/designation/TerrainDesignationTool.gd",
+    "systems/planet/designation/TerrainLevelDatum.gd",
+    "systems/planet/designation/designation_grid.gdshader",
+    "systems/planet/designation/designation_numbers.gdshader",
+    "systems/planet/mining/MiningBuildJob.gd",
+    "systems/planet/mining/MiningDebugView.gd",
+    "systems/planet/mining/MiningSurfaceManager.gd",
+    "systems/planet/mining/PlanetEditableTerrain.gd",
+    "systems/planet/planet_root.gd",
+    "tests/cameras/camera_manager_test.gd",
+    "tests/planet/designation_benchmark.gd",
+    "tests/planet/designation_demo.gd",
+    "tests/planet/designation_transaction_test.gd",
+    "tests/planet/designation_ux_test.gd",
+    "tests/planet/mining_integration_test.gd",
+    "tests/planet/run_validation.ps1"
+  ],
+  "preserved": [
+    {
+      "path": "systems/cameras/camera_manager.gd.uid",
+      "sha256": "d8b4e4143266111b823f300a2ea146d35fa186dbe44b7f4b3dbf8228184768ec"
+    },
+    {
+      "path": "systems/cameras/free_fly_camera.gd.uid",
+      "sha256": "9881f412fd2e509436bafcbc6479f64959dcd830139f6d2fbd70bce01c917f2e"
+    },
+    {
+      "path": "systems/cameras/free_fly_camera.tscn",
+      "sha256": "b380241c79bc2901cf8c610489b6da9ce7bf7af487485ac4e7c804ac085a290a"
+    },
+    {
+      "path": "systems/cameras/orbital_camera.gd.uid",
+      "sha256": "59abde3161d7d1b80d882032e035cc4233e10fd96f951bf4f479a8718e9a6d5e"
+    },
+    {
+      "path": "systems/cameras/orbital_camera.tscn",
+      "sha256": "4826ff595e962f8fcfb7fe10bd894b1fc550f68214b42a640ebfdad5142577dc"
+    },
+    {
+      "path": "systems/cameras/rts_camera.gd.uid",
+      "sha256": "1d34003c5a60f6ff5c18bc7d78de24763e56e1f2ce9c96a6720c5afe3ef9f4d1"
+    },
+    {
+      "path": "systems/cameras/rts_camera.tscn",
+      "sha256": "0d724362310fc51b8fca159d389fca32f610a7320b22f9ab97ac8e2cbf208eda"
+    },
+    {
+      "path": "systems/planet/planet.tscn",
+      "sha256": "27852922c52c3a07f3170d6a14a3746f53bd6b62fa0b62f043b8234129e9c507"
+    },
+    {
+      "path": "systems/planet/planet_root.gd.uid",
+      "sha256": "05a3fa2417268aef718ece3df38b62faa24305959c32a374fc81f10b7cb29508"
+    },
+    {
+      "path": "systems/planet/biomes/biome_debug.gdshader",
+      "sha256": "f98d4e8131c2fd6a5c4ea70efbfc35535a3661da2203b9200a5218c8d9782d57"
+    },
+    {
+      "path": "systems/planet/biomes/biome_debug.gdshader.uid",
+      "sha256": "498dbbe1be59a91dbf2ef4a93bbe4a00dc168f3011060cfd1a49fd8cc6718fb0"
+    },
+    {
+      "path": "systems/planet/biomes/planet_biomes.gd",
+      "sha256": "e412768c3bcd99972cd1dc954361f4bb6299dbf352bf430f6cef4422458f058b"
+    },
+    {
+      "path": "systems/planet/biomes/planet_biomes.gd.uid",
+      "sha256": "1de7a5367abf7f4dc8ff80dd1c20388634efe8d3727e3da9323408636c89ba38"
+    },
+    {
+      "path": "systems/planet/biomes/planet_biome_sample.gd",
+      "sha256": "509cefc766464423e2d424a72643a8c59850217c1142f8157500308c0e28aee6"
+    },
+    {
+      "path": "systems/planet/biomes/planet_biome_sample.gd.uid",
+      "sha256": "2581772465a61b892ad646c3203e8ce3a953817c0f093de5f19399d282c3c75f"
+    },
+    {
+      "path": "systems/planet/climate/climate_debug.gdshader",
+      "sha256": "d6a2a3ac3b06e9af477744e90fb5d2e4e7e0148820aeb996e1d1188e484ddce9"
+    },
+    {
+      "path": "systems/planet/climate/climate_debug.gdshader.uid",
+      "sha256": "72976c1a6bdda3521bd1e906ace9b2c60c5ac8a4aa81569f33fda697c7b9e830"
+    },
+    {
+      "path": "systems/planet/climate/planet_climate.gd",
+      "sha256": "96a6428f3179346461ae9550d1911eefc497553757cb8ae4f94743adaed110f3"
+    },
+    {
+      "path": "systems/planet/climate/planet_climate.gd.uid",
+      "sha256": "1325afb039a65c54d09ac4f77833d787f489615296d316018f748ddd84beeed4"
+    },
+    {
+      "path": "systems/planet/climate/planet_climate_sample.gd",
+      "sha256": "32727e84353649893a21e2d0a90dbd82cc34c4987b15000e5f29c7b82bf6f73b"
+    },
+    {
+      "path": "systems/planet/climate/planet_climate_sample.gd.uid",
+      "sha256": "bb31325dc894c38fc7f5a9beb8b594c86c9d3130d18bd007cb7ec9e7244e0e6e"
+    },
+    {
+      "path": "systems/planet/designation/designation_grid.gdshader.uid",
+      "sha256": "a7540c9e034ed23bd63bcda32ab6479c55b1836ff737af0a0a4e5935f2d977fc"
+    },
+    {
+      "path": "systems/planet/designation/designation_numbers.gdshader.uid",
+      "sha256": "a58c93dd258b5c8e181ba208345c1563c700d663a9a161fde3c8dc9ea079eaf6"
+    },
+    {
+      "path": "systems/planet/designation/TerrainDesignation.gd",
+      "sha256": "223f889a18c35e0514fd4d4640db5c0a5c21b6b59e827f82d9c0559ef0e217b6"
+    },
+    {
+      "path": "systems/planet/designation/TerrainDesignation.gd.uid",
+      "sha256": "7a159531e1bcee2b8255a9b793705f2c30f79a808ed3831cf5f7f6c72115ef9c"
+    },
+    {
+      "path": "systems/planet/designation/TerrainDesignationOverlay.gd.uid",
+      "sha256": "a3f48df18990c3fe2cd51230c0f347e880c8806691cd02dc4303762a296a5b78"
+    },
+    {
+      "path": "systems/planet/designation/TerrainDesignationStore.gd.uid",
+      "sha256": "af12023be9080b3fd7c6c60903c245a9e28d8b7b10c9c75258445ad039cb08d2"
+    },
+    {
+      "path": "systems/planet/designation/TerrainDesignationTool.gd.uid",
+      "sha256": "313fffa36360c4a7f7c3858d19e8b365acd11244046fc6c097cdb890ad449776"
+    },
+    {
+      "path": "systems/planet/designation/TerrainLevelDatum.gd.uid",
+      "sha256": "0846041f56b2127e5759e3778905b3e9f6582bb4014c776e2d6f6c4673211643"
+    },
+    {
+      "path": "systems/planet/geology/geology_debug.gdshader",
+      "sha256": "3bc052e808ee49b255f5ef3d736e29ff51e3210214df0f352b350c4b65aba743"
+    },
+    {
+      "path": "systems/planet/geology/geology_debug.gdshader.uid",
+      "sha256": "4c2e8b3e88a1a68034aac3f6fb146a4e21a077ccb6117ec7080fcacc5e4e354d"
+    },
+    {
+      "path": "systems/planet/geology/planet_geology.gd",
+      "sha256": "f79ad8ae3d848e9d8034810eb7e40373517b69a6d0ec23a646022786b0a2b9e1"
+    },
+    {
+      "path": "systems/planet/geology/planet_geology.gd.uid",
+      "sha256": "039e949003925e91962ec49aa92a41f6b601304af7648d7810c34f9ff1c59f74"
+    },
+    {
+      "path": "systems/planet/mining/MiningAppearance.gd",
+      "sha256": "470fe73e930dc950cf7cc96477cded9044d974984b43bd5ac75d5648436deca5"
+    },
+    {
+      "path": "systems/planet/mining/MiningAppearance.gd.uid",
+      "sha256": "477dba8dddc4e4355cc5979d369a7aab50b073a5853d8ad36eb1d7ed8eba48a7"
+    },
+    {
+      "path": "systems/planet/mining/MiningBuildJob.gd.uid",
+      "sha256": "b587800e3f5c55b366a645b5bc6673719c4497f1823bded0942706ba42d5b1e1"
+    },
+    {
+      "path": "systems/planet/mining/MiningChunk.gd",
+      "sha256": "0a6f9f239b959786862bedd7c6b48b060139089468f849f973fbbc8dc1079a3f"
+    },
+    {
+      "path": "systems/planet/mining/MiningChunk.gd.uid",
+      "sha256": "95afe50f0abbc8fbd7a66b972bbb0c5c03c8daf3eb2006e61025d7959839c7ca"
+    },
+    {
+      "path": "systems/planet/mining/MiningDebugView.gd.uid",
+      "sha256": "0c859c0aba22d04c12f83af6099fd5508bb39254f23b9af95ad1de37d6c9c8b9"
+    },
+    {
+      "path": "systems/planet/mining/MiningMeshBuilder.gd",
+      "sha256": "440fafa86a14896f47583236f528dbc42a77c29728796e9d41a6b08f771f168a"
+    },
+    {
+      "path": "systems/planet/mining/MiningMeshBuilder.gd.uid",
+      "sha256": "7fc63aa25e93e3b932afd6ab285e54e04cd0fe17c876d47b7ca713885d81b5f9"
+    },
+    {
+      "path": "systems/planet/mining/MiningSurfaceManager.gd.uid",
+      "sha256": "28dd3ae6c0f4408ee5038c589c94da76e07fbe4ecd4468ab299a9abe2ca41f25"
+    },
+    {
+      "path": "systems/planet/mining/MiningTransitionJob.gd",
+      "sha256": "313e7d2b51ca9a066d8830c51e6f4f2df2e94342d1609848ac1fff98e04863df"
+    },
+    {
+      "path": "systems/planet/mining/MiningTransitionJob.gd.uid",
+      "sha256": "47f736e41c1008fb6667c5fd0a0dca7091ca551046481ca74d869265c5a4d0c2"
+    },
+    {
+      "path": "systems/planet/mining/MiningZone.gd",
+      "sha256": "dc22d75fd66d48fb55a671822ce237d1eb94a9ff9484913ab3c432ee9af9d453"
+    },
+    {
+      "path": "systems/planet/mining/MiningZone.gd.uid",
+      "sha256": "6cb05820612f6331582f4cd0f082c651870dafb12a12c023cc72e641298e2725"
+    },
+    {
+      "path": "systems/planet/mining/mining_debug.gdshader",
+      "sha256": "feca46a761c169c05444ba7ede2033c947da86c4394e880c8d31c1413e2c3fc0"
+    },
+    {
+      "path": "systems/planet/mining/mining_debug.gdshader.uid",
+      "sha256": "ebe51fa2cddead9ba56a9ce93e531c7f250344b59fa93d31bd88104edd7f9e4f"
+    },
+    {
+      "path": "systems/planet/mining/PlanetEditableTerrain.gd.uid",
+      "sha256": "8f0a86393c24cda05d690c223463e62d6c284f7e7b84415895ae655d7f98698f"
+    },
+    {
+      "path": "systems/planet/surface/data/test_planet_100km.tres",
+      "sha256": "11acb08a87d88a4ac9fd1c2629f26ff517b8de112fe634e0907602b5fbf9050f"
+    },
+    {
+      "path": "systems/planet/surface/materials/planet_lod_debug.gdshader",
+      "sha256": "37bcf9f0952db8fe7a5bd4595fe33445f51293ef8c7414a92ee79d83e8834212"
+    },
+    {
+      "path": "systems/planet/surface/materials/planet_lod_debug.gdshader.uid",
+      "sha256": "8497472e9d2b740897ff219553583fa2f6a20fc47ac24ce95932ed7ba1a0d552"
+    },
+    {
+      "path": "systems/planet/surface/materials/planet_terrain_pbr.gdshader",
+      "sha256": "fe099c4032ab1abb59dfcd6d65b0cc9844c3c639a1cd8e3605dd843b5d395bcd"
+    },
+    {
+      "path": "systems/planet/surface/materials/planet_terrain_pbr.gdshader.uid",
+      "sha256": "e413d6f3f573dea2e4fb68aeea99e18d97a3bd8e02de1c227f3ac7e95dfbaf9c"
+    },
+    {
+      "path": "systems/planet/surface/scripts/ContinentalShape.gd",
+      "sha256": "643b78c9bb1c346174706a0d76de33c015a65592c4b1c7babc82ef023b066417"
+    },
+    {
+      "path": "systems/planet/surface/scripts/ContinentalShape.gd.uid",
+      "sha256": "2968471b1a7f398f74410aa6f583a8cba1fe440ed6073e4e675d94daaa13c99c"
+    },
+    {
+      "path": "systems/planet/surface/scripts/CubeSphereMapping.gd",
+      "sha256": "7dbfffccc8bfd04725b7b809994c62fe9eabe1ddac3c44953908822932045c14"
+    },
+    {
+      "path": "systems/planet/surface/scripts/CubeSphereMapping.gd.uid",
+      "sha256": "1079f2e1a6b08c05acd98e1e47a189f270b7519cc26f7c0f3aea6f91762650e1"
+    },
+    {
+      "path": "systems/planet/surface/scripts/PlanetDefinition.gd",
+      "sha256": "cf8f4c4c30785f849d2fea0867bba160f9c71ba7578e0b5693da2267ed088316"
+    },
+    {
+      "path": "systems/planet/surface/scripts/PlanetDefinition.gd.uid",
+      "sha256": "ed27bde9c9f7758943e6b5692737ef8d350afbd486332e8534af40a250baccad"
+    },
+    {
+      "path": "systems/planet/surface/scripts/PlanetMaterialWeights.gd",
+      "sha256": "4addcdd33126170a450a345c00d73e3c0c01023f02e7f3297a6dfbaf137d0cb4"
+    },
+    {
+      "path": "systems/planet/surface/scripts/PlanetMaterialWeights.gd.uid",
+      "sha256": "43a8c3a19956a58bc7e2faac404be45c03217ba9418636d62953ac91c97cecb9"
+    },
+    {
+      "path": "systems/planet/surface/scripts/PlanetShape.gd",
+      "sha256": "3e017e880c4f804fbcedd748a40c0543e812718b29e195ef819fc4666d51843e"
+    },
+    {
+      "path": "systems/planet/surface/scripts/PlanetShape.gd.uid",
+      "sha256": "15d675872699d72d390824fe5d4a8ac246d3f85ab2e73198fbe1c21a68f0d166"
+    },
+    {
+      "path": "systems/planet/surface/scripts/TerrainRelief.gd",
+      "sha256": "90dbd5d5a53e357c9a85cef7f312a9707a5ab03e40dacdeed19f12b007763e0a"
+    },
+    {
+      "path": "systems/planet/surface/scripts/TerrainRelief.gd.uid",
+      "sha256": "9dde34f06581fead0550c01429870a0d81472450c3a6afc0c16937da32e11290"
+    },
+    {
+      "path": "systems/planet/surface/scripts/lod/PlanetChunkBuilder.gd",
+      "sha256": "cbc254731c5f3efbf71ca33051792498584984c6e9cd2574e9c22e046996e5d2"
+    },
+    {
+      "path": "systems/planet/surface/scripts/lod/PlanetChunkBuilder.gd.uid",
+      "sha256": "3bdac1b4e69126920f317d95b3ede10269286c19d7a05035cf2264f330950aae"
+    },
+    {
+      "path": "systems/planet/surface/scripts/lod/PlanetLODManager.gd",
+      "sha256": "fad3167592ded79f04d9d08b1f94c70b35bcc5aed98e1e057211e56d04056394"
+    },
+    {
+      "path": "systems/planet/surface/scripts/lod/PlanetLODManager.gd.uid",
+      "sha256": "c873d14e8531bc0c73cce489a413dab130f6d19481302aff1691cb7f53755a2a"
+    },
+    {
+      "path": "systems/planet/surface/scripts/lod/QuadtreeNode.gd",
+      "sha256": "7b22c71b514395b28fce77efe8e9d289f3c1648994efed37046e3f8711909118"
+    },
+    {
+      "path": "systems/planet/surface/scripts/lod/QuadtreeNode.gd.uid",
+      "sha256": "b2f8a08cc1068c1e2b87872b696f4c7c7dbd767adf11b5971fc1fce409ac8eb9"
+    },
+    {
+      "path": "scenes/planet_lab/camera_debug_overlay.gd",
+      "sha256": "4b046f88c50cc3c114fe7970b32c98e75b8f64ee46d9b95063075987a16638dd"
+    },
+    {
+      "path": "scenes/planet_lab/camera_debug_overlay.gd.uid",
+      "sha256": "f9740bf0e7ebc8b0145fd774e468cf29c365568d210a106bc70ea64955ee48af"
+    },
+    {
+      "path": "scenes/planet_lab/planet_lab.tscn",
+      "sha256": "d935373f077390c6ee09233868d76e497df33c5d3bcf873e067b355f5f244687"
+    },
+    {
+      "path": "tests/cameras/camera_manager_test.gd.uid",
+      "sha256": "a917de481eb1f676236edc71b248e3bfd6670505aa7289a4a89b899a6c314d87"
+    },
+    {
+      "path": "tests/cameras/README.md",
+      "sha256": "f935816d75ea5e5bbc4e4229f40314eef148723ece89b84c0e1eee69de708e71"
+    },
+    {
+      "path": "tests/planet/analyze_materials_profile.py",
+      "sha256": "4669ff53ef7be34800cd4c568c4b18eab391e90b6dea6832dfc368a2f4957599"
+    },
+    {
+      "path": "tests/planet/biome_test.gd",
+      "sha256": "80263fdd8bfd0fb98fc6762bdf4876952378f67ddaa903bc3bcd09766329e3e8"
+    },
+    {
+      "path": "tests/planet/biome_test.gd.uid",
+      "sha256": "301e83ba01e86efca4febbbec7762f2b005feb31a066e5b47d33c3b95b557a50"
+    },
+    {
+      "path": "tests/planet/climate_test.gd",
+      "sha256": "5cc622ccbcfb95c9432404a98f35ea1841198a4a5df54b2bacc801515d8e0853"
+    },
+    {
+      "path": "tests/planet/climate_test.gd.uid",
+      "sha256": "d09a38a1186416c887ca22bc04c2476893a846d440ed0d667c985b7e48fafd75"
+    },
+    {
+      "path": "tests/planet/designation_demo.gd.uid",
+      "sha256": "cc34e11df80eaeb31d64e151a1525862c627fdd2bd5a826b856bf635938ae8c3"
+    },
+    {
+      "path": "tests/planet/designation_test.gd",
+      "sha256": "841263373cb0bde191ed590f73e4e37e00a158c6f6f185a2f8d2b0b7cbcf00a6"
+    },
+    {
+      "path": "tests/planet/designation_test.gd.uid",
+      "sha256": "9dd4d1eafe5ce59404edb2186708c89e5595161e6373cbaf4e760ee8204587e2"
+    },
+    {
+      "path": "tests/planet/donor_contracts.json",
+      "sha256": "4006bce45995caa110c2c651f500c504af44edab545dbde63c940d9e896fed0d"
+    },
+    {
+      "path": "tests/planet/geology_test.gd",
+      "sha256": "84ed536bc38ebef7b07039cae00ac910c4f60dc6fa580bcc8986b328271444b5"
+    },
+    {
+      "path": "tests/planet/geology_test.gd.uid",
+      "sha256": "9b9b48ebac4770d657d22b927cfd354a3fd6d57ba2823f8e864a4be2c1324382"
+    },
+    {
+      "path": "tests/planet/materials_profile.gd",
+      "sha256": "e8389b3f847ebbf6b60563a392c7e77a362ad86713520653d1c7f09cf83ebffe"
+    },
+    {
+      "path": "tests/planet/materials_profile.gd.uid",
+      "sha256": "34c279be32e8f12db3f58836d14abf049f51efc31da243c6b54705283eaec42d"
+    },
+    {
+      "path": "tests/planet/materials_test.gd",
+      "sha256": "b36a80b4682148e683a6b14d4e80319a7ebd082ce3a4d52311ad8d806c9414a5"
+    },
+    {
+      "path": "tests/planet/materials_test.gd.uid",
+      "sha256": "50d371e5d1a6ffe67d340c90fc7425e2653abea210eaff45a805cfb356b9d185"
+    },
+    {
+      "path": "tests/planet/mining_integration_test.gd.uid",
+      "sha256": "b1ebf58d9bd0addfeb0bb5b68c1ef7da5627da2884a42d93de703e2c10b6b00f"
+    },
+    {
+      "path": "tests/planet/mining_lab_test.gd",
+      "sha256": "6cddb0f6da5f5ed951c90738040d32d5fc11c01375acdacde7c865cb289d383b"
+    },
+    {
+      "path": "tests/planet/mining_lab_test.gd.uid",
+      "sha256": "1166b9f573f0c3d5f6a8e7f768bf34d721b90cf1b89c0e071a1a446d67113ef3"
+    },
+    {
+      "path": "tests/planet/mining_lod_ownership_test.gd",
+      "sha256": "09cf8f093d25ff927d777a7a8da35b4ff21616c6f746e00fb183f567aab083f0"
+    },
+    {
+      "path": "tests/planet/mining_lod_ownership_test.gd.uid",
+      "sha256": "ea84fb0b49b2e482d5cf4553ad10951668e4535e73e2cb0eeb8afb8c92e958f2"
+    },
+    {
+      "path": "tests/planet/mining_test.gd",
+      "sha256": "248e90c2fe69861eb98c1ee0d9a3c2e56f8ccb74ce603433e65bbd0a02d6f124"
+    },
+    {
+      "path": "tests/planet/mining_test.gd.uid",
+      "sha256": "302d900f97fda2d6004157f86b1b7dc1636e084bf208daa1b9ffd2216674b881"
+    },
+    {
+      "path": "tests/planet/planet_foundation_test.gd",
+      "sha256": "5ed8dc85b8a622add92a5cb18b16773469313a9b2f0a640e3e8ecf0dae5f2766"
+    },
+    {
+      "path": "tests/planet/planet_foundation_test.gd.uid",
+      "sha256": "1753546817488a1af289c2fd45ca882253cf3eb0489bdc33721a481b0cb749b9"
+    },
+    {
+      "path": "tests/planet/planet_lod_test.gd",
+      "sha256": "28e41515e2dd96b359fe91bccd630fda6498b0d60aa5bb6a03ec5a16e4c9fcb5"
+    },
+    {
+      "path": "tests/planet/planet_lod_test.gd.uid",
+      "sha256": "a52684f063938fd27aa592104a9fbd54d36413d0a732c344b2488d3612e1d76e"
+    },
+    {
+      "path": "tests/planet/planet_terrain_test.gd",
+      "sha256": "b8cd723be45f97e2601bb4cddd5ac5da233a02631fe904bd7ed697e78fa3485f"
+    },
+    {
+      "path": "tests/planet/planet_terrain_test.gd.uid",
+      "sha256": "ceef7796b32d52eefc9707c2dda64a1006da68c142c4530f0e0709baf3220514"
+    },
+    {
+      "path": "tests/planet/README.md",
+      "sha256": "eb264ea7aa564d5101cd81fd4cafa5536b83469be86d719d6289d31187d6a94c"
+    },
+    {
+      "path": "tests/planet/relief_profile.gd",
+      "sha256": "19cd5aaf7ab47ab12481d36a3e10edad999c1719cf1013ba40888a1af69357b7"
+    },
+    {
+      "path": "tests/planet/relief_profile.gd.uid",
+      "sha256": "5f69125552f5c3d2a113a08f08a063250856381ad73d8c80f4e135482e27850a"
+    },
+    {
+      "path": "tests/planet/relief_test.gd",
+      "sha256": "23e9b69dce6d24f903b72c5b61086aa56c8273c24e501734803c5966801b2675"
+    },
+    {
+      "path": "tests/planet/relief_test.gd.uid",
+      "sha256": "1896f9971c2d190e82e83b24b9edd33239d1378c91fa7e6f387ca2306ec990b4"
+    },
+    {
+      "path": "tests/planet/summarize_relief.ps1",
+      "sha256": "b56140f4fab30e913c877796bb01399d2891c3d4c0fb73e163332db1ef6b6e7d"
+    },
+    {
+      "path": "tests/planet/surface_contract_test.gd",
+      "sha256": "187dd28c9cf54c54d687482ab7d117731d1ae7a3ba052145734181a70090b73a"
+    },
+    {
+      "path": "tests/planet/surface_contract_test.gd.uid",
+      "sha256": "632a00e047f45ef3df1c58a9fed36597d853464405a129044e17554775b93040"
+    },
+    {
+      "path": "tests/planet/surface_visual_test.gd",
+      "sha256": "1969bc31e966ea86e4598a3b0b1a9fb5b175e386ad470d564b1c972b1cb34c68"
+    },
+    {
+      "path": "tests/planet/surface_visual_test.gd.uid",
+      "sha256": "eebd8023c9942b194ef2c64b376cd36f334fa64cb1d45d92f0332806007ce4d3"
+    },
+    {
+      "path": "tests/planet/fixtures/stage9_shape.gd",
+      "sha256": "b285f9794dc66a58a61c4581466fd50cbe28d4a18810671f340bb08308a60240"
+    },
+    {
+      "path": "tests/planet/fixtures/stage9_shape.gd.uid",
+      "sha256": "bd9e62afd53ff258f0765e621b0d514137ecd7e00b670909d7e8114cac3a5ca8"
+    },
+    {
+      "path": "assets/textures/terrain/arid_ground/arid_ground_albedo.png",
+      "sha256": "e8c273851a153e751a3664891ba5cbb28713f0cf98aca442291ab7b27b79900e"
+    },
+    {
+      "path": "assets/textures/terrain/arid_ground/arid_ground_ao.png",
+      "sha256": "ee36790202e5328a0dfe0627f0c86a2b6ac5996cbca7cb9d3f85127855b04d1e"
+    },
+    {
+      "path": "assets/textures/terrain/arid_ground/arid_ground_displacement.png",
+      "sha256": "013c03f6f0cb1b6c7fbcf1ce950bc09e93285dad0c1d953714a36b8dc1c93c3b"
+    },
+    {
+      "path": "assets/textures/terrain/arid_ground/arid_ground_normal.png",
+      "sha256": "c0a6d53d29a88a1afb31964d08a32e228db615ebef0f90ff7af0d69d1f46a06c"
+    },
+    {
+      "path": "assets/textures/terrain/arid_ground/arid_ground_roughness.png",
+      "sha256": "1ea792fe7232bffbb002f863bf1048af15125730dba1d1a8564b10733abf9f71"
+    },
+    {
+      "path": "assets/textures/terrain/gravel/gravel_albedo.png",
+      "sha256": "5728a9eb68b6ec18ef02ccb9eb8793a529f952a3aba3a13a936cfe3c4aa2f937"
+    },
+    {
+      "path": "assets/textures/terrain/gravel/gravel_ao.png",
+      "sha256": "a7a2a2026e8177c1e3ae9d25125a9a6aa564efef3a91766bd7a71094bee6dcff"
+    },
+    {
+      "path": "assets/textures/terrain/gravel/gravel_displacement.png",
+      "sha256": "fdbb9d22cf6eaa573598c28b08a90d25a43cf23d363192a29a5fa91fd7a3fe1e"
+    },
+    {
+      "path": "assets/textures/terrain/gravel/gravel_normal.png",
+      "sha256": "00e14f0fc3d02927a6c3dd8f670f321bdca57474953799e0608ec4f928f33b7b"
+    },
+    {
+      "path": "assets/textures/terrain/gravel/gravel_roughness.png",
+      "sha256": "8d1067690650150df15eba73e0a9e8fd6e0cef7a463d1bca9bb7827f4e637727"
+    },
+    {
+      "path": "assets/textures/terrain/rock_generic/rock_generic_albedo.png",
+      "sha256": "e62a007d68b8dad9b852be44e93be34f7c37b737fc2ddb9cde0d33a20bed983d"
+    },
+    {
+      "path": "assets/textures/terrain/rock_generic/rock_generic_ao.png",
+      "sha256": "5b8ed80cd9bdb7d779fbd517405d865162b80e97792653ad63287088bb483248"
+    },
+    {
+      "path": "assets/textures/terrain/rock_generic/rock_generic_displacement.png",
+      "sha256": "063421a8a8bea1d6c2fe5e19f6ad0742b1be764c8202abbb104d55ea73d08fc7"
+    },
+    {
+      "path": "assets/textures/terrain/rock_generic/rock_generic_normal.png",
+      "sha256": "ca2a00f7d56c30203353b97709e6dad3e6f835a1b4602b243424e6d8291e43e8"
+    },
+    {
+      "path": "assets/textures/terrain/rock_generic/rock_generic_roughness.png",
+      "sha256": "a94afa44b5b998f507debffeb8ba55ac71536829e36cfd0cc40fdb1fcc5bcffa"
+    },
+    {
+      "path": "assets/textures/terrain/rock_sedimentary/rock_sedimentary_albedo.png",
+      "sha256": "d5db7a73c2d0737ac68fc9ab105498d2ac747fefb4f5f112514c69f2fad489e7"
+    },
+    {
+      "path": "assets/textures/terrain/rock_sedimentary/rock_sedimentary_ao.png",
+      "sha256": "1d33f17e0c9a7ca1ce141bdc6146a73c81639fa8a69a1f8ac5a0f0f7b69f3d45"
+    },
+    {
+      "path": "assets/textures/terrain/rock_sedimentary/rock_sedimentary_displacement.png",
+      "sha256": "7b0aab233dd12aca5789f2325a0e1f74e990cf841740840e9bbef3688d8b0fbe"
+    },
+    {
+      "path": "assets/textures/terrain/rock_sedimentary/rock_sedimentary_normal.png",
+      "sha256": "e5755b06c4d7cfee57931e055a87b47f5a1d4ff1bc7d78b6cc79f4eabe7e9550"
+    },
+    {
+      "path": "assets/textures/terrain/rock_sedimentary/rock_sedimentary_roughness.png",
+      "sha256": "818c9aec87c735c022bed2ffab421563653c30ef1a9d1166ff84f95298fe77c4"
+    },
+    {
+      "path": "assets/textures/terrain/rock_volcanic/rock_volcanic_albedo.png",
+      "sha256": "3cd64260db2a1797e683cd9eacc2c5568e1706e07fbe43488294e3241de83e4e"
+    },
+    {
+      "path": "assets/textures/terrain/rock_volcanic/rock_volcanic_ao.png",
+      "sha256": "954161407da3086cd433c9132d7401077c1b2634ae0d90c850dbaa29b5e0a8d6"
+    },
+    {
+      "path": "assets/textures/terrain/rock_volcanic/rock_volcanic_displacement.png",
+      "sha256": "ddb30285cf411f4840d46d5c0040e23085bded545108c1d80101343be3c69def"
+    },
+    {
+      "path": "assets/textures/terrain/rock_volcanic/rock_volcanic_normal.png",
+      "sha256": "b183f3e6a591149f947f2e9dc517414d96d49ee3a562d132b4c80ea3814c9c90"
+    },
+    {
+      "path": "assets/textures/terrain/rock_volcanic/rock_volcanic_roughness.png",
+      "sha256": "b5795bd4cda64c4c9d6db32bdc1540172392312072aee379a4173887133bba73"
+    },
+    {
+      "path": "assets/textures/terrain/sand/sand_albedo.png",
+      "sha256": "f4e2f4954631e1df052ac7b6f7890f06978ece650dc300e83008289cee91ef79"
+    },
+    {
+      "path": "assets/textures/terrain/sand/sand_ao.png",
+      "sha256": "a663e20793ba83349be580317ad4c354320a098ae7a19c5417f97620adc5dfcc"
+    },
+    {
+      "path": "assets/textures/terrain/sand/sand_displacement.png",
+      "sha256": "b99c1d0b4c645954ddbc10db6bd4bf25fc9f8d9acc5b93ad82cff76c1cfc75ed"
+    },
+    {
+      "path": "assets/textures/terrain/sand/sand_normal.png",
+      "sha256": "a412b4969ee12895470f24e299597e4549d45a7780234a8b9b83c165f6dde404"
+    },
+    {
+      "path": "assets/textures/terrain/sand/sand_roughness.png",
+      "sha256": "ad6b571cc73fce6a4b67905a7c28daf05bb2147ca2d175fff94611612f0faae0"
+    },
+    {
+      "path": "assets/textures/terrain/snow_ice/snow_ice_albedo.png",
+      "sha256": "9abe413e1740fa91564ce8111eb9cf11ae52b8de2914b884dda39c162e598289"
+    },
+    {
+      "path": "assets/textures/terrain/snow_ice/snow_ice_ao.png",
+      "sha256": "39c00e5887054682ca00e711f8ed02f6841ab8c350909a09225a329c74887e02"
+    },
+    {
+      "path": "assets/textures/terrain/snow_ice/snow_ice_bump.exr",
+      "sha256": "fd6dcb83f0c3e578e8e6dbda227e877b677a94299100d6329959d39c67df451d"
+    },
+    {
+      "path": "assets/textures/terrain/snow_ice/snow_ice_displacement.png",
+      "sha256": "f2b979bc78989333ebfffb2063ba9ca72edc3ffc929f6a6d94ba39d80eb0358a"
+    },
+    {
+      "path": "assets/textures/terrain/snow_ice/snow_ice_normal.png",
+      "sha256": "719e5acd81ee61cf19506a8e0069ea297ed00d2eb71a40101c4002cf35ac2e19"
+    },
+    {
+      "path": "assets/textures/terrain/snow_ice/snow_ice_roughness.png",
+      "sha256": "0dcb2775b1220cee03dae5b92b57cc3e55bcece6a7e9fa0ac7a22b56dbbb6863"
+    },
+    {
+      "path": "assets/textures/terrain/soil/soil_albedo.png",
+      "sha256": "2c60338dd2c83276b7b6b93abb637c6fe88660d7fe034ce26ce1bbce79466071"
+    },
+    {
+      "path": "assets/textures/terrain/soil/soil_ao.png",
+      "sha256": "244b086e90529d36a0c3af003cd117c1749b49ea490783d5d87f756f78212568"
+    },
+    {
+      "path": "assets/textures/terrain/soil/soil_displacement.png",
+      "sha256": "a6d41eee4c01717b7b0b71e6fbd9a46b903312ee440c3ada3d3c013cafc65263"
+    },
+    {
+      "path": "assets/textures/terrain/soil/soil_normal.png",
+      "sha256": "1737073d6e4af451ed7f818c12644d7eb197bfadec14ba6ea00d17c9e043db49"
+    },
+    {
+      "path": "assets/textures/terrain/soil/soil_roughness.png",
+      "sha256": "2814ae484902295dd2b0be31662aada136350874862ec387a7b8aeb2f0454ef2"
+    },
+    {
+      "path": "docs/PLAN.md",
+      "sha256": "48ea03c126b94356fa78702da541b81b5b6852c54a4142d14e4baaf23daa34ae"
+    },
+    {
+      "path": "docs/stages/00_auditoria.md",
+      "sha256": "64faaa8781822d2f8399c9130e86f0bcfee50853fd202752dd9e87628d518b80"
+    },
+    {
+      "path": "docs/stages/01_fundacao_planetaria.md",
+      "sha256": "e610051317016eb31e19c97bdbdc42fa2e5ba9201f3e66c5c675c8286dd11455"
+    },
+    {
+      "path": "docs/stages/02_quadtree.md",
+      "sha256": "05acafc3957fd5049cae9bb8a56dc0b717eaa6de3f549a71b1901304cdd5ec57"
+    },
+    {
+      "path": "docs/stages/03_relevo_macro.md",
+      "sha256": "4c2a4be7ce48c9e8a01df363716b174d341ac39c511c7502d14eb57124f07a14"
+    },
+    {
+      "path": "docs/stages/04_geologia_estrutural.md",
+      "sha256": "a30ded77c532e9f7508fa55a1909b7f6b793c516c566a8c93ac2aea51a8831a1"
+    },
+    {
+      "path": "docs/stages/05_clima_biomas.md",
+      "sha256": "4c95c447e9bcc545397656a98f17a65ddf1c04cea1f8e001ff5e5f922290ce18"
+    },
+    {
+      "path": "docs/stages/06_materiais_aparencia.md",
+      "sha256": "d2ca62a81214af46a7d78dc55724c0af118642af4dfd7ae20c2ac26e66a74f05"
+    },
+    {
+      "path": "docs/stages/06_substituicao_planeta.md",
+      "sha256": "001e346ee1ed1adee3ec7c3a6b59f5a52bc46f1bebde053d741643d17c061271"
+    },
+    {
+      "path": "docs/stages/07_reintegracao_geologia.md",
+      "sha256": "90990882f980cbe1869012518cb474a7b27db1978e55fd508519cf911b065f3d"
+    },
+    {
+      "path": "docs/stages/08_reintegracao_clima.md",
+      "sha256": "9286329ea996442b1d6d036eb12d8f102b203eeedb440d246e3f557ce89f6d69"
+    },
+    {
+      "path": "docs/stages/09_reintegracao_biomas.md",
+      "sha256": "4d42ef1b1b0d6a2773ad10ccf73b1740daf38030629b548c6e741e349930ca22"
+    },
+    {
+      "path": "docs/stages/10_refinamento_relevo.md",
+      "sha256": "4693f4fd9be719716921636edf76f56a186e7253a05d24b51753176eeca4e0e2"
+    },
+    {
+      "path": "docs/stages/11_materiais_aparencia.md",
+      "sha256": "2172b0600f7fa6db5aa1e7b639ecaa340659c364f7e46921f9cec7cfa11688e2"
+    },
+    {
+      "path": "docs/stages/12_mining_zones.md",
+      "sha256": "3747c7f8bfe2ec52335972d86fcdac466e93e605f6783d6684501109cd24d16c"
+    },
+    {
+      "path": "docs/stages/13_integracao_terreno_editavel.md",
+      "sha256": "fa777cd3dc49a5db5e60e4a6b234cf19f396604eea315c33b5802c1915791cec"
+    },
+    {
+      "path": "docs/stages/14_grid_levels.md",
+      "sha256": "4d23d4a7a314b606f74652331892cbcaf199c7a9684061486995cadaead5d37f"
+    },
+    {
+      "path": "project.godot",
+      "sha256": "6aec37a4ce6fee3a34d5579207f1e96b867a80a8c79881f39c14a21a163f213a"
+    },
+    {
+      "path": "icon.svg",
+      "sha256": "6c80384360a5b269d1054bfb27241258154e2cc8167c522016fdc1820e84e0f8"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "04b9fc621272c430676cad99f56ab3f85a61965f57149c5bfc5360699beda9b4"
+    }
+  ]
+}

@@ -40,6 +40,7 @@ pan_speed = 2.0
 zoom_speed = 25.0
 min_zoom = 50.0
 max_zoom = 500.0
+smooth_speed = 22.62
 
 [node name="OrbitalCamera" parent="Cameras" unique_id=1955884935 node_paths=PackedStringArray("target") instance=ExtResource("3_orbital")]
 target = NodePath("../../Planet")

@@ -19,3 +19,6 @@ func height(level: float) -> float:
 
 func nearest_level(altitude: float) -> int:
 	return roundi((altitude - origin_height) / level_step)
+
+func height_to_level(altitude: float) -> float:
+	return (altitude - origin_height) / level_step

@@ -1,0 +1,232 @@
+{
+  "activation_frame_max_ms": 44.424,
+  "activation_frame_p50_ms": 8.296,
+  "activation_frame_p95_ms": 8.343,
+  "checks": 59243,
+  "collar_seam_max_m": 0.00873464066535234,
+  "collision_p95_ms": 3.929,
+  "commit_p95_ms": 3.978,
+  "discarded": 4,
+  "edit_frame_max_ms": 14.279,
+  "edit_frame_p50_ms": 8.289,
+  "edit_frame_p95_ms": 8.324,
+  "edit_including_stale_wall_ms": 10070.149,
+  "edit_wall_ms": 10070.149,
+  "failures": 0,
+  "first_chunk_commit_ms": 2340.632,
+  "four_chunk_edit_wall_ms": 6801.605,
+  "four_chunk_frame_max_ms": 13.354,
+  "four_chunk_frame_p50_ms": 8.291,
+  "four_chunk_frame_p95_ms": 8.538,
+  "gpu_p95_ms": 0.0,
+  "graphic": false,
+  "job_intervals": [
+    {
+      "collision_prepare_ms": 6.975,
+      "end_usec": 23335912,
+      "kind": "chunk",
+      "mesh_prepare_ms": 2172.229,
+      "start_usec": 21156708
+    },
+    {
+      "collision_prepare_ms": 5.779,
+      "end_usec": 24959704,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1617.818,
+      "start_usec": 23336107
+    },
+    {
+      "collision_prepare_ms": 5.668,
+      "end_usec": 26879339,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1840.306,
+      "start_usec": 25033365
+    },
+    {
+      "collision_prepare_ms": 7.202,
+      "end_usec": 28479031,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1592.31,
+      "start_usec": 26879519
+    },
+    {
+      "collision_prepare_ms": 0,
+      "end_usec": 33946005,
+      "kind": "transition",
+      "mesh_prepare_ms": 0,
+      "start_usec": 30568559
+    },
+    {
+      "collision_prepare_ms": 5.359,
+      "end_usec": 39477522,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1641.891,
+      "start_usec": 37830272
+    },
+    {
+      "collision_prepare_ms": 6.246,
+      "end_usec": 41082549,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1598.541,
+      "start_usec": 39477762
+    },
+    {
+      "collision_prepare_ms": 7.57,
+      "end_usec": 42805849,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1648.811,
+      "start_usec": 41149468
+    },
+    {
+      "collision_prepare_ms": 6.217,
+      "end_usec": 44449626,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1637.354,
+      "start_usec": 42806055
+    },
+    {
+      "collision_prepare_ms": 5.962,
+      "end_usec": 46377169,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1599.354,
+      "start_usec": 44771853
+    },
+    {
+      "collision_prepare_ms": 7.136,
+      "end_usec": 47968580,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1584.08,
+      "start_usec": 46377364
+    },
+    {
+      "collision_prepare_ms": 7.54,
+      "end_usec": 49684908,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1639.743,
+      "start_usec": 48037624
+    },
+    {
+      "collision_prepare_ms": 6.772,
+      "end_usec": 51353698,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1661.76,
+      "start_usec": 49685166
+    },
+    {
+      "collision_prepare_ms": 8.144,
+      "end_usec": 53508639,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1622.928,
+      "start_usec": 51877567
+    },
+    {
+      "collision_prepare_ms": 11.62,
+      "end_usec": 55086203,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1352.242,
+      "start_usec": 53722341
+    },
+    {
+      "collision_prepare_ms": 0,
+      "end_usec": 65091018,
+      "kind": "transition",
+      "mesh_prepare_ms": 0,
+      "start_usec": 62638597
+    },
+    {
+      "collision_prepare_ms": 6.638,
+      "end_usec": 67649350,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1565.607,
+      "start_usec": 66077105
+    },
+    {
+      "collision_prepare_ms": 5.625,
+      "end_usec": 69270595,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1615.29,
+      "start_usec": 67649679
+    },
+    {
+      "collision_prepare_ms": 6.269,
+      "end_usec": 70968478,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1626.395,
+      "start_usec": 69335814
+    },
+    {
+      "collision_prepare_ms": 6.481,
+      "end_usec": 72583884,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1608.687,
+      "start_usec": 70968716
+    },
+    {
+      "collision_prepare_ms": 0,
+      "end_usec": 76076981,
+      "kind": "transition",
+      "mesh_prepare_ms": 0,
+      "start_usec": 72653386
+    }
+  ],
+  "job_p50_ms": 1632.664,
+  "job_p95_ms": 3377.446,
+  "job_times_ms": [
+    2179.204,
+    1623.597,
+    1845.974,
+    1599.512,
+    3377.446,
+    1647.25,
+    1604.787,
+    1656.381,
+    1643.571,
+    1605.316,
+    1591.216,
+    1647.284,
+    1668.532,
+    1631.073,
+    1363.862,
+    2452.421,
+    1572.245,
+    1620.916,
+    1632.664,
+    1615.168,
+    3423.595
+  ],
+  "local_update_max_ms": 31.723,
+  "local_update_p95_ms": 1.155,
+  "logical_processors": 4,
+  "max_collision_commit_ms": 10.809,
+  "max_commit_ms": 10.856,
+  "max_jobs": 2,
+  "max_pending": 1,
+  "max_queue": 2,
+  "physics_max_error_m": 0.00552427163347602,
+  "pool_max_threads_setting": -1,
+  "slow_frames": [
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 44.424,
+      "global_upload_ms": 0.01,
+      "local_update_ms": 0.103,
+      "publish_ms": 0.004
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 43.2,
+      "global_upload_ms": 0.004,
+      "local_update_ms": 0.081,
+      "publish_ms": 0.003
+    },
+    {
+      "commit_ms": 0.001,
+      "frame_ms": 46.027,
+      "global_upload_ms": 0.005,
+      "local_update_ms": 0.087,
+      "publish_ms": 0.04
+    }
+  ],
+  "workers": 2,
+  "zone_visible_ms": 12994.483
+}

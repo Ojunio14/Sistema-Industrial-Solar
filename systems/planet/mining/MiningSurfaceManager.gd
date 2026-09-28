@@ -27,6 +27,9 @@ var _global_workers := 2
 var last_update_ms := 0.0
 var last_publish_ms := 0.0
 var last_activation_error := ""
+var last_enqueue_ms := 0.0
+var last_gpu_commit_ms := 0.0
+var publication_serial := 0
 
 func configure(source: PlanetEditableTerrain, renderer: PlanetLODManager) -> void:
 	terrain = source
@@ -98,6 +101,7 @@ func deactivate(key: String) -> void:
 		entry.ring.instance.queue_free()
 		entry.ring.body.queue_free()
 	entry.zone.deactivate()
+	terrain.published_chunks.erase(key)
 	global_terrain.release_mining_pins(key)
 	zones.erase(key)
 	for p: Dictionary in pending:
@@ -123,7 +127,9 @@ func _process(_delta: float) -> void:
 	var publish_start := Time.get_ticks_usec()
 	_publish()
 	last_publish_ms = (Time.get_ticks_usec() - publish_start) / 1000.0
+	var enqueue_start := Time.get_ticks_usec()
 	_schedule()
+	last_enqueue_ms = (Time.get_ticks_usec() - enqueue_start) / 1000.0
 	last_update_ms = (Time.get_ticks_usec() - update_start) / 1000.0
 
 func current(item: Dictionary) -> bool:
@@ -146,7 +152,8 @@ func _poll() -> void:
 			discarded += 1
 			continue
 		job.data = job.builder.result
-		job_intervals.append({"kind": job.kind, "start_usec": job.data.started_usec, "end_usec": job.data.ended_usec})
+		job_intervals.append({"kind": job.kind, "start_usec": job.data.started_usec, "end_usec": job.data.ended_usec,
+			"mesh_prepare_ms": job.data.get("mesh_prepare_ms", 0), "collision_prepare_ms": job.data.get("collision_prepare_ms", 0)})
 		if job_intervals.size() > 256:
 			job_intervals.pop_front()
 		job_times.append(job.data.build_ms)
@@ -158,6 +165,7 @@ func _poll() -> void:
 func _commit() -> void:
 	commits_this_frame = 0
 	last_collision_ms = 0
+	last_gpu_commit_ms = 0
 	var start := Time.get_ticks_usec()
 	while not pending.is_empty() and commits_this_frame < max_commits_per_frame:
 		if commits_this_frame > 0 and (Time.get_ticks_usec() - start) / 1000.0 >= commit_budget_ms:
@@ -188,8 +196,14 @@ func _commit() -> void:
 				pending.pop_front()
 		else:
 			if not item.has("mesh"):
+				var gpu_start := Time.get_ticks_usec()
 				item.mesh = make_mesh(item.data.arrays)
+				last_gpu_commit_ms += (Time.get_ticks_usec() - gpu_start) / 1000.0
 				item.prepared = make_instance(item.zone_id + "_" + str(item.snapshot.coordinate))
+				item.prepared.body.set_meta("mining_zone", item.zone_id)
+				item.prepared.body.set_meta("mining_chunk", item.snapshot.coordinate)
+				item.prepared.cpu = {"revision": item.snapshot.revision, "natural": item.data.natural_heights,
+					"heights": item.data.final_heights, "vertices": item.data.arrays[Mesh.ARRAY_VERTEX]}
 				item.prepared.instance.mesh = item.mesh
 				item.cursor = 0
 			else:
@@ -260,6 +274,10 @@ func _publish() -> void:
 			item.instance.visible = true
 			terrain.accept_mesh(staged.snapshot)
 			zone.chunk_at(coord).collision_revision = staged.snapshot.revision
+			if not terrain.published_chunks.has(zone.id):
+				terrain.published_chunks[zone.id] = {}
+			terrain.published_chunks[zone.id][coord] = item.cpu
+			publication_serial += 1
 		entry.staged.clear()
 		if not entry.published:
 			entry.ring = make_instance(zone.id + "_transition")

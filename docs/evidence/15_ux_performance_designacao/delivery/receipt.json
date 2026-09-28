@@ -1,0 +1,23 @@
+{
+  "completed_utc": "2026-09-28T15:38:19.4390043Z",
+  "all_hashes_verified": true,
+  "delivered_files": 93,
+  "preserved_files": 178,
+  "checks": [
+    {
+      "name": "import",
+      "project_errors": 0,
+      "exit": 0
+    },
+    {
+      "name": "transactions",
+      "project_errors": 0,
+      "exit": 0
+    },
+    {
+      "name": "main",
+      "project_errors": 0,
+      "exit": 0
+    }
+  ]
+}

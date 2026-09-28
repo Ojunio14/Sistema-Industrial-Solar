@@ -1,0 +1,128 @@
+{
+  "checks": 17891,
+  "collision_p95_ms": 3.369,
+  "commit_p95_ms": 3.408,
+  "datum_origin_m": 91.0,
+  "demo_plans": 3,
+  "dev_apply_ms": 0.178,
+  "discarded": 0,
+  "evaluation_max_step_ms": 236.769,
+  "failures": 0,
+  "gpu_p95_ms": 0.0,
+  "graphic": false,
+  "job_intervals": [
+    {
+      "collision_prepare_ms": 6.006,
+      "end_usec": 13533552,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1588.912,
+      "start_usec": 11938634
+    },
+    {
+      "collision_prepare_ms": 6.348,
+      "end_usec": 15181325,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1579.758,
+      "start_usec": 13595219
+    },
+    {
+      "collision_prepare_ms": 9.049,
+      "end_usec": 16850255,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1593.932,
+      "start_usec": 15247273
+    },
+    {
+      "collision_prepare_ms": 5.988,
+      "end_usec": 18548500,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1627.786,
+      "start_usec": 16914726
+    },
+    {
+      "collision_prepare_ms": 0,
+      "end_usec": 25527182,
+      "kind": "transition",
+      "mesh_prepare_ms": 0,
+      "start_usec": 21366201
+    },
+    {
+      "collision_prepare_ms": 5.924,
+      "end_usec": 27566043,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1652.368,
+      "start_usec": 25907751
+    },
+    {
+      "collision_prepare_ms": 5.564,
+      "end_usec": 29550257,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1915.17,
+      "start_usec": 27629523
+    },
+    {
+      "collision_prepare_ms": 5.77,
+      "end_usec": 31243116,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1626.892,
+      "start_usec": 29610454
+    },
+    {
+      "collision_prepare_ms": 10.422,
+      "end_usec": 32980971,
+      "kind": "chunk",
+      "mesh_prepare_ms": 1663.815,
+      "start_usec": 31306733
+    }
+  ],
+  "job_p50_ms": 1633.774,
+  "job_p95_ms": 4160.982,
+  "job_times_ms": [
+    1594.918,
+    1586.106,
+    1602.982,
+    1633.774,
+    4160.982,
+    1658.292,
+    1920.734,
+    1632.662,
+    1674.238
+  ],
+  "local_update_max_ms": 24.735,
+  "local_update_p95_ms": 1.899,
+  "logical_processors": 4,
+  "max_collision_commit_ms": 5.412,
+  "max_commit_ms": 5.454,
+  "max_jobs": 1,
+  "max_pending": 1,
+  "max_queue": 3,
+  "overlay_build_max_step_ms": 4.433,
+  "overlay_build_wall_ms": 195.739,
+  "overlay_cells": 4168,
+  "overlay_glyphs": 128,
+  "overlay_hidden": {
+    "frame_p50_ms": 8.341,
+    "frame_p95_ms": 8.426,
+    "gpu_p95_ms": 0.0
+  },
+  "overlay_multimesh_buffer_bytes": 8192,
+  "overlay_nodes": 3,
+  "overlay_visible": {
+    "frame_p50_ms": 8.304,
+    "frame_p95_ms": 8.432,
+    "gpu_p95_ms": 0.0
+  },
+  "pool_max_threads_setting": -1,
+  "raycast_max_error_m": 0.00390625,
+  "slow_frames": [
+    {
+      "commit_ms": 0.002,
+      "frame_ms": 46.092,
+      "global_upload_ms": 0.003,
+      "local_update_ms": 0.066,
+      "publish_ms": 0.008
+    }
+  ],
+  "target_max_error_m": 0.00136997106437775,
+  "workers": 1
+}

@@ -45,7 +45,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if not _controller_active:
+	if not _controller_active or CameraManager.designation_dragging:
 		return
 
 	_handle_keyboard_rotation(delta)
@@ -56,7 +56,7 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not _controller_active:
+	if not _controller_active or CameraManager.designation_dragging:
 		return
 
 	if event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):

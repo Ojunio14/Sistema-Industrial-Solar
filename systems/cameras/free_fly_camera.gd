@@ -32,9 +32,11 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not _controller_active:
+	if not _controller_active or CameraManager.designation_dragging:
 		return
 
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and get_tree().get_first_node_in_group("terrain_designation"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED if event.pressed else Input.MOUSE_MODE_VISIBLE)
 	# 1. Rotação Local nos eixos da lente (sem atrelar ao Yaw global)
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
 		rotate_object_local(Vector3.UP, -event.relative.x * mouse_sensitivity)
@@ -58,7 +60,7 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
-	if not _controller_active or Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+	if not _controller_active or CameraManager.designation_dragging or Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
 		return
 
 	# --- 1. MOVIMENTAÇÃO LOCAL ---

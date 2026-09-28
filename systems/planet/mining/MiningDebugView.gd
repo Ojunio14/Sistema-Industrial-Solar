@@ -1,17 +1,23 @@
 class_name MiningDebugView
 extends Node3D
-## In-world diagnostics only; no second viewport or digging input.
+## F9 observes terrain. Visibility never activates, unloads or mutates a zone.
 var surface: MiningSurfaceManager
 var zone: MiningZone
 var labels: Dictionary = {}
 var borders: Dictionary = {}
+var stamps: Dictionary = {}
+var ranges: Dictionary = {}
 var caption: Label
-var _elapsed := 0.0
+var canvas: CanvasLayer
+var last_toggle_ms := 0.0
+var rebuilt_chunks := 0
+var metrics := {"data_ms": 0.0, "data_refreshes": 0, "nodes_ms": 0.0, "geometry_ms": 0.0, "frame_work_ms": 0.0}
+var material: StandardMaterial3D
 
 func configure(manager: MiningSurfaceManager, selected: MiningZone) -> void:
 	surface = manager
 	zone = selected
-	var canvas := CanvasLayer.new()
+	canvas = CanvasLayer.new()
 	add_child(canvas)
 	caption = Label.new()
 	caption.position = Vector2(20, 180)
@@ -19,59 +25,91 @@ func configure(manager: MiningSurfaceManager, selected: MiningZone) -> void:
 	caption.add_theme_constant_override("shadow_offset_x", 2)
 	caption.add_theme_constant_override("shadow_offset_y", 2)
 	canvas.add_child(caption)
-	for chunk: MiningChunk in zone._chunks.values():
+	material = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.no_depth_test = true
+	material.albedo_color = Color(0.5, 0.85, 1)
+
+func set_enabled(enabled: bool) -> void:
+	visible = enabled
+	canvas.visible = enabled
+	set_process(enabled)
+
+func _process(_delta: float) -> void:
+	if surface == null or not visible:
+		return
+	var start := Time.get_ticks_usec()
+	caption.text = "F9 · Diagnóstico · %d zonas · F10 abre designação\nFila %d · workers %d · resultados %d · commit %.2f ms · colisão %.2f ms\nAlternância %.3f ms · geometria atualizada %d chunks" % [surface.zones.size(), surface.queue.size(), surface.jobs.size(), surface.pending.size(), surface.last_commit_ms, surface.last_collision_ms, last_toggle_ms, rebuilt_chunks]
+	var live := {}
+	var updated := false
+	for entry: Dictionary in surface.zones.values():
+		var selected: MiningZone = entry.zone
+		zone = selected
+		for chunk: MiningChunk in selected._chunks.values():
+			var key := "%s/%s" % [selected.id, chunk.coordinate]
+			live[key] = true
+			var stamp := [chunk.revision, chunk.mesh_revision, chunk.collision_revision, surface.chunk_status(selected.id, chunk.coordinate)]
+			if not updated and stamps.get(key, []) != stamp:
+				_update_chunk(selected, chunk, key, stamp)
+				updated = true
+	for key in labels.keys():
+		if not live.has(key):
+			labels[key].queue_free()
+			borders[key].queue_free()
+			labels.erase(key)
+			borders.erase(key)
+			stamps.erase(key)
+			ranges.erase(key)
+	metrics.frame_work_ms = maxf(metrics.frame_work_ms, (Time.get_ticks_usec() - start) / 1000.0)
+
+func _update_chunk(selected: MiningZone, chunk: MiningChunk, key: String, stamp: Array) -> void:
+	var start := Time.get_ticks_usec()
+	var cached: Dictionary = ranges.get(key, {})
+	if cached.get("revision", -1) != chunk.revision:
+		var low := 0.0
+		var high := 0.0
+		for value in chunk._deltas:
+			low = minf(low, value)
+			high = maxf(high, value)
+		cached = {"revision": chunk.revision, "low": low, "high": high}
+		ranges[key] = cached
+		metrics.data_refreshes += 1
+	metrics.data_ms += (Time.get_ticks_usec() - start) / 1000.0
+	start = Time.get_ticks_usec()
+	if not labels.has(key):
 		var label := Label3D.new()
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		label.no_depth_test = true
-		label.font_size = 40
-		label.pixel_size = 0.3
-		var local := (Vector2(chunk.coordinate) + Vector2(0.5, 0.5)) * 256
-		var d := zone.local_to_direction(local)
-		label.position = d * (zone.radius_m + surface.terrain.sample_final_height(d) + 12)
+		label.font_size = 32
+		label.pixel_size = 0.15
 		add_child(label)
-		labels[chunk.coordinate] = label
+		labels[key] = label
 		var border := MeshInstance3D.new()
-		var material := StandardMaterial3D.new()
-		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		material.no_depth_test = true
 		border.material_override = material
+		border.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		border.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 		add_child(border)
-		borders[chunk.coordinate] = border
-		border.mesh = border_mesh(chunk.coordinate)
-
-func border_mesh(coord: Vector2i) -> ImmediateMesh:
-	var mesh := ImmediateMesh.new()
-	mesh.surface_begin(Mesh.PRIMITIVE_LINES)
-	var corners := [Vector2.ZERO, Vector2(256, 0), Vector2(256, 256), Vector2(0, 256)]
-	for side in range(4):
-		for step in range(16):
-			for t in [step / 16.0, (step + 1) / 16.0]:
-				var d := zone.local_to_direction(Vector2(coord) * 256 + corners[side].lerp(corners[(side + 1) % 4], t))
-				mesh.surface_add_vertex(d * (zone.radius_m + surface.terrain.sample_final_height(d)))
-	mesh.surface_end()
-	return mesh
-
-func _process(delta: float) -> void:
-	_elapsed += delta
-	if surface == null or _elapsed < 0.2 or not surface.zones.has(zone.id):
-		return
-	_elapsed = 0
-	var entry: Dictionary = surface.zones[zone.id]
-	caption.text = "F9 · Mining Zone %s · no planeta · %s\nFila %d · workers %d · resultados %d · commits %d · %.2f ms (colisão %.2f ms)\nDelta %.0f KiB · obsoletos %d · %s" % [zone.id,
-		"ativa" if entry.published else "preparando / global visível", surface.queue.size(), surface.jobs.size(), surface.pending.size(), surface.commits_this_frame,
-		surface.last_commit_ms, surface.last_collision_ms, zone.delta_bytes() / 1024.0, surface.discarded, entry.error]
-	for coord in labels:
-		var chunk := zone.chunk_at(coord)
-		if chunk == null:
-			continue
-		var status := surface.chunk_status(zone.id, coord)
-		var color := Color.GREEN if status == "carregado" else (Color.CYAN if status == "worker" else (Color.YELLOW if status == "upload" else Color.ORANGE_RED))
-		labels[coord].modulate = color
-		borders[coord].material_override.albedo_color = color
-		var low := 0.0
-		var high := 0.0
-		if chunk.delta_bytes() > 0:
-			for value in chunk._deltas:
-				low = minf(low, value)
-				high = maxf(high, value)
-		labels[coord].text = "%d,%d · %s\nrev %d / mesh %d / col %d\nΔ %.1f…%.1f m" % [coord.x, coord.y, status, chunk.revision, chunk.mesh_revision, chunk.collision_revision, low, high]
+		borders[key] = border
+	metrics.nodes_ms += (Time.get_ticks_usec() - start) / 1000.0
+	start = Time.get_ticks_usec()
+	var data: Dictionary = surface.terrain.published_chunks.get(selected.id, {}).get(chunk.coordinate, {})
+	if not data.is_empty() and (not stamps.has(key) or stamps[key][1] != stamp[1]):
+		var vertices := PackedVector3Array()
+		var corners := [Vector2i.ZERO, Vector2i(128, 0), Vector2i(128, 128), Vector2i(0, 128)]
+		for side in range(4):
+			for step in range(16):
+				for t in [step / 16.0, (step + 1) / 16.0]:
+					var node := Vector2i(Vector2(corners[side]).lerp(Vector2(corners[(side + 1) % 4]), t))
+					vertices.append(data.vertices[node.y * 129 + node.x] + selected.up * 0.1)
+		var arrays := []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = vertices
+		var mesh := ArrayMesh.new()
+		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
+		borders[key].mesh = mesh
+		labels[key].position = data.vertices[64 * 129 + 64] + selected.up * 12
+		rebuilt_chunks += 1
+	labels[key].text = "%s %s · %s\nrev %d / mesh %d / colisão %d\nΔ %.1f…%.1f m" % [selected.id, chunk.coordinate, stamp[3], chunk.revision, chunk.mesh_revision, chunk.collision_revision, cached.low, cached.high]
+	labels[key].visible = not data.is_empty()
+	stamps[key] = stamp
+	metrics.geometry_ms += (Time.get_ticks_usec() - start) / 1000.0

@@ -1,13 +1,9 @@
 shader_type spatial;
-render_mode unshaded, cull_disabled, depth_draw_never;
+render_mode unshaded, cull_disabled, shadows_disabled;
+uniform vec4 selection;
+uniform vec3 target_plane;
 void fragment() {
-	vec2 edge = min(UV, vec2(1.0) - UV);
-	float line = 1.0 - smoothstep(0.015, 0.03, min(edge.x, edge.y));
-	if (COLOR.a < 0.25) {
-		line *= mix(0.3, 1.0, step(0.5, fract((UV.x + UV.y) * 10.0)));
-	}
-	float complete_mark = step(0.75, COLOR.a) * step(UV.x, 0.14) * step(UV.y, 0.14);
-	ALBEDO = mix(COLOR.rgb, vec3(0.94), line * 0.85);
-	ALBEDO = mix(ALBEDO, vec3(1.0), complete_mark);
-	ALPHA = max(mix(0.24, 0.9, line), complete_mark);
+ if (UV.x < selection.x - 0.01 || UV.y < selection.y - 0.01 || UV.x > selection.z + 0.01 || UV.y > selection.w + 0.01) { discard; }
+ float diff = UV2.x - (dot(UV, target_plane.xy) + target_plane.z);
+ ALBEDO = abs(diff) < 0.05 ? vec3(0.15, 1.0, 0.5) : (diff > 0.0 ? vec3(1.0, 0.45, 0.12) : vec3(0.15, 0.6, 1.0));
 }

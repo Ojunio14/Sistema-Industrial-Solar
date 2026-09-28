@@ -139,3 +139,17 @@ Confirmar designação não altera terreno. Somente DEV APPLY escreve deltas;
 FinalTerrain e a geração assíncrona da Etapa 13 continuam sendo a autoridade.
 Grid/números usam batch, e os estados não dependem de cores no modelo de dados.
 Implementação técnica com limites configuráveis, sem máquinas ou logística.
+
+## Etapa 15 — Current e Target separados
+
+Correção explícita de mecânica solicitada pelo usuário: os números da grid passam
+a representar o nível do terreno final atualmente publicado. O nível planejado
+continua autoridade da ordem, exibido como Target no HUD e em contorno separado.
+Esta decisão substitui a apresentação descrita na Etapa 14, preservando seu
+registro histórico, o datum planetário e a interpolação contínua das rampas.
+
+F9 mantém recursos e muda visibilidade; ativar/desativar diagnóstico não controla
+atividade do terreno. Apply da interface enfileira preparação em worker e troca
+buffers por chunk em uma publicação coerente. Avaliações grandes usam snapshots
+da mesma superfície CPU publicada que render/colisão. Ver contrato e limitações
+em [Etapa 15](stages/15_ux_performance_designacao.md).

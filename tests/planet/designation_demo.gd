@@ -112,6 +112,10 @@ func _run() -> void:
 	up.pressed = false
 	up.position = motion.position
 	tool._unhandled_input(up)
+	# Stage 15 starts Target at picked Current; explicitly request Level 10.
+	tool.level = 10
+	tool.level_input.set_value_no_signal(10)
+	tool._update_levels()
 	await wait_preview()
 	expect(tool.preview != null and tool.preview.rect == Rect2i(-9, -2, 4, 4), "Mouse drag selects exact 2 m rectangle")
 	expect(zone.delta_bytes() == 0 and store.plans.is_empty(), "Mouse-up does not alter terrain or confirm")
@@ -148,9 +152,11 @@ func _run() -> void:
 	camera.h_offset = 8
 	camera.position = previous_position
 	camera.look_at(target, zone.up)
-	expect(tool.overlay.cells_drawn == 72 and tool.overlay.get_child_count() == 2, "72 cells use two batched rendering nodes")
+	expect(tool.overlay.cells_drawn == 72 and tool.overlay.get_child_count() == 3, "72 cells use tile container, number batch and target outline")
 	tool.dev_apply()
 	metrics.dev_apply_ms = tool.last_apply_ms
+	while not store.running.is_empty() or not store.queued.is_empty():
+		await frame()
 	await wait_preview()
 	await settle(zone)
 	await physics_frame
@@ -225,12 +231,13 @@ func _run() -> void:
 	metrics.evaluation_max_step_ms = 0.0
 	for job: Dictionary in tool.evaluations:
 		metrics.evaluation_max_step_ms = maxf(metrics.evaluation_max_step_ms, job.max_step_ms)
-	expect(tool.overlay.cells_drawn == 4168 and tool.overlay.get_child_count() == 2, "4096-cell preview has constant Node count")
+	expect(tool.overlay.cells_drawn == 4168 and tool.overlay.grid.get_child_count() < 48 and tool.overlay.label_count <= 128, "4096-cell preview has bounded tiles and nearby labels")
 	await capture("04_batched_4096_cells")
 	camera.position = dense_target + zone.up * 1000 + zone.tangent_y * 300
 	camera.look_at(dense_target, zone.up)
 	await process_frame
 	await process_frame
+	tool.overlay._update_numbers()
 	expect(not tool.overlay.numbers.visible, "Numbers hidden at distance")
 	await capture("05_distant_no_numbers")
 	tool.cancel_preview()

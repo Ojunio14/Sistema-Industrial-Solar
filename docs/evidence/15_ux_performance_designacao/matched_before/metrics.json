@@ -1,0 +1,33 @@
+{
+  "all_ready_ms": 3528.457,
+  "apply_handler_ms": 78.185,
+  "asynchronous": false,
+  "checks": 5405,
+  "failures": 0,
+  "fps_cap": 120,
+  "frame_max_ms": 8.403,
+  "frame_p95_ms": 8.35,
+  "level": -348,
+  "selections": {
+    "1024": {
+      "evaluation_ms": 248.168,
+      "event_to_ready_ms": 365.15,
+      "glyphs": 4096
+    },
+    "16": {
+      "evaluation_ms": 0.839,
+      "event_to_ready_ms": 25.461,
+      "glyphs": 64
+    },
+    "256": {
+      "evaluation_ms": 49.993,
+      "event_to_ready_ms": 76.353,
+      "glyphs": 1024
+    },
+    "4096": {
+      "evaluation_ms": 1058.116,
+      "event_to_ready_ms": 1466.79,
+      "glyphs": 16384
+    }
+  }
+}

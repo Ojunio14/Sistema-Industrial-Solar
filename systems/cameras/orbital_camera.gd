@@ -35,7 +35,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if not _controller_active:
+	if not _controller_active or CameraManager.designation_dragging:
 		return
 
 	if event is InputEventMouseMotion:
@@ -48,11 +48,11 @@ func _input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not _controller_active:
+	if not _controller_active or CameraManager.designation_dragging:
 		_mouse_motion = Vector2.ZERO
 		return
 
-	if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+	if Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT if get_tree().get_first_node_in_group("terrain_designation") else MOUSE_BUTTON_LEFT):
 		_yaw -= _mouse_motion.x * mouse_sensitivity
 		_pitch = clampf(
 			_pitch - _mouse_motion.y * mouse_sensitivity,

@@ -29,6 +29,11 @@ var _revision := -1
 var _pending := false
 var _message := "Arraste uma área; confirmar guarda o plano. DEV APPLY altera o terreno."
 var last_apply_ms := 0.0
+var _refresh_requested := false
+var _publication := -1
+var _last_screen := Vector2.INF
+var _last_local := Vector2.ZERO
+var panel: PanelContainer
 var canvas: CanvasLayer
 
 func configure(data: TerrainDesignationStore, manager: MiningSurfaceManager, selected: MiningZone) -> void:
@@ -39,6 +44,7 @@ func configure(data: TerrainDesignationStore, manager: MiningSurfaceManager, sel
 	end_level = level - 5
 	overlay = TerrainDesignationOverlay.new()
 	add_child(overlay)
+	overlay.store = store
 	overlay.configure(zone, store.datum.origin_height)
 	_build_hud()
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
@@ -47,13 +53,20 @@ func configure(data: TerrainDesignationStore, manager: MiningSurfaceManager, sel
 func _build_hud() -> void:
 	canvas = CanvasLayer.new()
 	add_child(canvas)
-	var panel := PanelContainer.new()
+	panel = PanelContainer.new()
 	panel.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	panel.offset_left = -335
+	panel.offset_left = -355
 	panel.offset_right = -12
 	panel.offset_top = 12
 	panel.anchor_bottom = 1.0
 	panel.offset_bottom = -12
+	var background := StyleBoxFlat.new()
+	background.bg_color = Color(0.055, 0.07, 0.085, 1)
+	background.content_margin_left = 10
+	background.content_margin_right = 10
+	background.content_margin_top = 8
+	background.content_margin_bottom = 8
+	panel.add_theme_stylebox_override("panel", background)
 	canvas.add_child(panel)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -62,7 +75,7 @@ func _build_hud() -> void:
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(box)
 	var title := Label.new()
-	title.text = "F10 · GRID + LEVELS · 2 × 2 m"
+	title.text = "F10 · GRID 3D · 2 × 2 m\nNúmeros: CURRENT LEVEL\nContorno amarelo: TARGET"
 	box.add_child(title)
 	var chooser := OptionButton.new()
 	mode_input = chooser
@@ -70,8 +83,8 @@ func _build_hud() -> void:
 	chooser.add_item("Rampa · conectar dois níveis")
 	chooser.item_selected.connect(func(value: int): mode = value; cancel_preview())
 	box.add_child(chooser)
-	level_input = _spin(box, "LEVEL / início", level, -1000000, 1000000)
-	end_input = _spin(box, "LEVEL final da rampa", end_level, -1000000, 1000000)
+	level_input = _spin(box, "TARGET LEVEL / início", level, -1000000, 1000000)
+	end_input = _spin(box, "TARGET LEVEL final da rampa", end_level, -1000000, 1000000)
 	width_input = _spin(box, "Largura da rampa (células de 2 m)", width_cells, 2, 6)
 	level_input.value_changed.connect(func(value: float): level = roundi(value); _update_levels())
 	end_input.value_changed.connect(func(value: float): end_level = roundi(value); _update_levels())
@@ -95,7 +108,7 @@ func _build_hud() -> void:
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	box.add_child(status)
 	var help := Label.new()
-	help.text = "Arrastar: selecionar · Clique: editar\nPgUp/PgDn: nível · Shift: nível final\nCorte: laranja · alvo: verde · aterro: azul\nTracejado: plano · claro: em execução\nCanto branco: COMPLETE · números: plano\nF10 fecha; planos e edições permanecem."
+	help.text = "Arrastar: selecionar · Clique: editar\nPgUp/PgDn: nível · Shift: nível final\nCorte: laranja · alvo: verde · aterro: azul\nAmarelo tracejado: contorno TARGET\nNúmeros: CURRENT LEVEL arredondado\nBotão direito: navegar · arraste: câmera fixa\nF10 fecha; planos e edições permanecem."
 	box.add_child(help)
 
 func _spin(box: VBoxContainer, text: String, value: int, low: int, high: int) -> SpinBox:
@@ -126,14 +139,29 @@ func pick_cell(screen: Vector2) -> Variant:
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty():
 		return null
+	var collider: Object = hit.collider
+	if collider.get_meta("mining_zone", "") != zone.id:
+		_message = "Superfície local ainda sem colisão publicada"
+		return null
+	var chunk := zone.chunk_at(collider.get_meta("mining_chunk", Vector2i(999, 999)))
+	if chunk == null or chunk.mesh_revision != chunk.collision_revision or chunk.collision_revision != chunk.revision:
+		_message = "Superfície pendente: mantenha a seleção até publicar"
+		return null
 	var planet_position: Vector3 = surface.get_parent().to_local(hit.position)
 	var local := zone.planet_to_local(planet_position)
+	_last_local = local
+	if dragging and Rect2(Vector2(last_cell) * 2 - Vector2(0.15, 0.15), Vector2(2.3, 2.3)).has_point(local):
+		return last_cell
 	return zone.cell_at(local) if zone.contains_local(local) else null
 
 func _input(event: InputEvent) -> void:
-	# Finish an existing drag even when release occurs above the HUD.
-	if dragging and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
+	# Input ownership precedes camera controllers and survives release over HUD.
+	if dragging and (event is InputEventMouseMotion or event is InputEventMouseButton):
 		_unhandled_input(event)
+		get_viewport().set_input_as_handled()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if not panel.get_global_rect().has_point(event.position):
+			_unhandled_input(event)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -143,12 +171,18 @@ func _unhandled_input(event: InputEvent) -> void:
 				first_cell = picked
 				last_cell = picked
 				dragging = true
+				get_node("/root/CameraManager").designation_dragging = true
+				var right := store.current_node(zone, picked + Vector2i.RIGHT)
+				var down := store.current_node(zone, picked + Vector2i.DOWN)
+				level = store.datum.nearest_level((right.current + down.current) * 0.5)
+				level_input.set_value_no_signal(level)
 				preview = null
 				_drag_to(picked)
 			else:
 				_message = "Aponte para a zona com colisão publicada; aproxime a câmera."
 		elif dragging:
 			dragging = false
+			get_node("/root/CameraManager").designation_dragging = false
 			var existing := store.plan_at(zone.id, first_cell)
 			if last_cell == first_cell and existing:
 				preview = existing.duplicate_plan()
@@ -166,6 +200,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				refresh()
 		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseMotion and dragging:
+		if event.position.distance_to(_last_screen) < 1.5:
+			return
+		_last_screen = event.position
 		var picked: Variant = pick_cell(event.position)
 		if picked != null and picked != last_cell:
 			_drag_to(picked)
@@ -232,6 +269,7 @@ func _change_width(value: float) -> void:
 
 func cancel_preview() -> void:
 	dragging = false
+	get_node("/root/CameraManager").designation_dragging = false
 	preview = null
 	refresh()
 
@@ -245,10 +283,18 @@ func confirm_preview() -> void:
 	else:
 		_message = store.validate(preview)
 
+func _exit_tree() -> void:
+	get_node("/root/CameraManager").designation_dragging = false
+
 func refresh() -> void:
+	_refresh_requested = true
+	_pending = true
+
+func _start_refresh() -> void:
 	if store == null:
 		return
-	evaluations.clear()
+	_refresh_requested = false
+	evaluations = []
 	for plan in store.plans:
 		if plan.zone_id == zone.id and (preview == null or plan.id != preview.id):
 			evaluations.append(store.begin_evaluation(plan))
@@ -257,7 +303,10 @@ func refresh() -> void:
 	_job_cursor = 0
 	_clock = zone._clock
 	_revision = store.revision
+	_publication = surface.publication_serial
 	_pending = true
+	# Geometry uses already-published CPU samples; volume evaluation can follow.
+	overlay.begin_build(evaluations)
 
 func dev_apply() -> void:
 	if _pending or preview != null or evaluations.is_empty():
@@ -267,10 +316,9 @@ func dev_apply() -> void:
 		_message = "Aguarde a publicação da mesh e colisão atuais."
 		return
 	var start := Time.get_ticks_usec()
-	var result := store.apply_evaluations(evaluations)
+	var result := store.queue_apply(evaluations)
 	last_apply_ms = (Time.get_ticks_usec() - start) / 1000.0
-	_message = "DEV aplicado; aguardando mesh/colisão. Targets preservados." if result.ok else result.error
-	refresh()
+	_message = "Dados pendentes · preparando deltas em worker" if result.ok else result.error
 
 func _surface_ready() -> bool:
 	var entry: Dictionary = surface.zones.get(zone.id, {})
@@ -284,16 +332,18 @@ func _surface_ready() -> bool:
 func _process(_delta: float) -> void:
 	if store == null:
 		return
-	if _clock != zone._clock or _revision != store.revision:
+	if _clock != zone._clock or _revision != store.revision or _publication != surface.publication_serial:
 		refresh()
+	if _refresh_requested:
+		_start_refresh()
 	if _pending:
 		if _job_cursor < evaluations.size():
 			if store.advance_evaluation(evaluations[_job_cursor]):
 				_job_cursor += 1
 		else:
-			overlay.begin_build(evaluations)
 			_pending = false
-	elif overlay.building:
+			overlay._update_numbers()
+	if overlay.building:
 		overlay.advance_build()
 	_update_hud()
 
@@ -304,7 +354,11 @@ func _update_hud() -> void:
 	var progress := 0
 	var cells := 0
 	var error := ""
+	var current_min := INF
+	var current_max := -INF
 	for job: Dictionary in evaluations:
+		current_min = minf(current_min, job.current_min)
+		current_max = maxf(current_max, job.current_max)
 		cut += job.cut_m3
 		fill += job.fill_m3
 		if not job.error.is_empty():
@@ -312,16 +366,23 @@ func _update_hud() -> void:
 		cells += job.cells.size()
 		complete += job.complete
 		progress += job.in_progress
-	var selection := "LEVEL: %d\nTARGET HEIGHT: %.2f m" % [level, store.datum.height(level)]
-	if preview and preview.kind == TerrainDesignation.Kind.RAMP:
-		selection = "LEVEL: %d → %d\nTARGET HEIGHT: %.2f → %.2f m\nΔ %.2f m · extensão %.0f m · grade %.1f%%" % [preview.start_level, preview.end_level,
-			store.datum.height(preview.start_level), store.datum.height(preview.end_level),
-			(preview.end_level - preview.start_level) * store.datum.level_step,
-			preview.rect.size[preview.axis] * 2, preview.grade_percent(store.datum)]
-	if _surface_ready() and _message.begins_with("DEV aplicado"):
-		_message = "DEV aplicado. Mesh e colisão publicadas; targets preservados."
+	var selection := "TARGET LEVEL: %d\nTARGET HEIGHT: %.2f m" % [level, store.datum.height(level)]
+	var focus: TerrainDesignation = preview
+	if focus == null and evaluations.size() == 1:
+		focus = evaluations[0].plan
+	if focus:
+		selection = "TARGET LEVEL: %d\nTARGET HEIGHT: %.2f m" % [focus.start_level, store.datum.height(focus.start_level)]
+		if focus.kind == TerrainDesignation.Kind.RAMP:
+			selection = "TARGET LEVEL: %d → %d\nTARGET HEIGHT: %.2f → %.2f m\nExtensão %.0f m · grade %.1f%%" % [focus.start_level, focus.end_level,
+				store.datum.height(focus.start_level), store.datum.height(focus.end_level), focus.rect.size[focus.axis] * 2, focus.grade_percent(store.datum)]
+	if is_finite(current_min):
+		selection = "CURRENT LEVEL: %.2f … %.2f\n" % [current_min, current_max] + selection
+	if not store.transaction_status.is_empty():
+		_message = store.transaction_status
+		if _surface_ready() and store.running.is_empty() and store.queued.is_empty() and _message.begins_with("Dados aplicados"):
+			_message = "Mesh e colisão publicadas · targets preservados"
 	status.text = "%s\nCUT: %.2f m³ · FILL: %.2f m³\nPLANNED %d · IN_PROGRESS %d\nCOMPLETE %d · %s\n%s\n%s" % [selection, cut, fill, cells - progress - complete, progress, complete,
 		"mesh/colisão atuais" if _surface_ready() else "mesh/colisão pendentes", "Calculando preview…" if _pending or overlay.building else _message, error]
 	status.modulate = Color(1, 0.4, 0.35) if not error.is_empty() else Color.WHITE
 	confirm_button.disabled = preview == null or dragging or _pending or not error.is_empty()
-	apply_button.disabled = preview != null or _pending or evaluations.is_empty() or not error.is_empty() or not _surface_ready()
+	apply_button.disabled = preview != null or _pending or evaluations.is_empty() or not error.is_empty() or not _surface_ready() or not store.running.is_empty() or not store.queued.is_empty()

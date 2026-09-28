@@ -1,0 +1,50 @@
+{
+  "all_ready_ms": 3532.264,
+  "apply_handler_ms": 0.101,
+  "apply_phases": {
+    "array_swap_ms": 0.023,
+    "buffer_prepare_ms": 11.774,
+    "calculate_deltas_ms": 12.124,
+    "chunks": 4,
+    "data_ready_ms": 32.415,
+    "data_ready_usec": 17235725,
+    "dirty_chunks": 4,
+    "dirty_mark_ms": 4.418,
+    "error": "",
+    "nodes": 4225,
+    "ok": true,
+    "prepare_arrays_and_dirty_ms": 16.192,
+    "revision_publish_ms": 0.017,
+    "transaction": 1,
+    "worker_total_ms": 28.323
+  },
+  "asynchronous": true,
+  "checks": 5345,
+  "failures": 0,
+  "fps_cap": 120,
+  "frame_max_ms": 9.214,
+  "frame_p95_ms": 8.355,
+  "level": -348,
+  "selections": {
+    "1024": {
+      "evaluation_ms": 45.702,
+      "event_to_ready_ms": 83.194,
+      "glyphs": 100
+    },
+    "16": {
+      "evaluation_ms": 1.182,
+      "event_to_ready_ms": 25.527,
+      "glyphs": 4
+    },
+    "256": {
+      "evaluation_ms": 18.028,
+      "event_to_ready_ms": 39.014,
+      "glyphs": 64
+    },
+    "4096": {
+      "evaluation_ms": 187.82,
+      "event_to_ready_ms": 318.811,
+      "glyphs": 100
+    }
+  }
+}

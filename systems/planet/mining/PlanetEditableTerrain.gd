@@ -9,6 +9,48 @@ var max_cut_m := 100.0
 var max_fill_m := 100.0
 var _zones: Dictionary = {}
 var _epoch := 0
+## Immutable CPU samples of the SAME revision as displayed mesh and collision.
+## Publication is owned by MiningSurfaceManager; no GPU readback / natural resample.
+var published_chunks: Dictionary = {}
+var transaction_serial := 0
+
+func published_node(key: String, node: Vector2i) -> Dictionary:
+	var zone := zone_by_id(key)
+	if zone == null or not published_chunks.has(key):
+		return {}
+	var coord := MiningZone.owner_of(node).clamp(zone.chunk_bounds.position, zone.chunk_bounds.end - Vector2i.ONE)
+	var data: Dictionary = published_chunks[key].get(coord, {})
+	if data.is_empty():
+		return {}
+	var local := node - coord * 128
+	if local.x < 0 or local.y < 0 or local.x > 128 or local.y > 128:
+		return {}
+	var i := local.y * 129 + local.x
+	return {"natural": data.natural[i], "current": data.heights[i], "position": data.vertices[i], "published_revision": data.revision}
+
+func commit_delta_buffers(key: String, buffers: Dictionary, expected_clock: int, dirty: Dictionary) -> Dictionary:
+	var zone := zone_by_id(key)
+	if zone == null or not zone.active or zone._clock != expected_clock:
+		return {"ok": false, "error": "Transação obsoleta"}
+	var start := Time.get_ticks_usec()
+	for coord: Vector2i in buffers:
+		var chunk := zone.ensure_chunk(coord)
+		chunk._deltas = buffers[coord].values
+		chunk._nonzero = buffers[coord].nonzero
+	var write_end := Time.get_ticks_usec()
+	# One coherent publication, one revision per affected chunk including normal halo.
+	if not dirty.is_empty():
+		for coord: Vector2i in dirty:
+			zone.ensure_chunk(coord)
+		zone._clock += 1
+		for coord: Vector2i in dirty:
+			var chunk := zone.ensure_chunk(coord)
+			if chunk:
+				chunk.revision = zone._clock
+	transaction_serial += 1
+	return {"ok": true, "error": "", "transaction": transaction_serial,
+		"array_swap_ms": (write_end - start) / 1000.0, "revision_publish_ms": (Time.get_ticks_usec() - write_end) / 1000.0,
+		"chunks": buffers.size(), "dirty_chunks": dirty.size()}
 
 func _init(natural: PlanetShape, weather: PlanetClimate = null, habitats: PlanetBiomes = null) -> void:
 	shape = natural

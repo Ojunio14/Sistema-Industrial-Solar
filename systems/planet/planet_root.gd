@@ -60,26 +60,23 @@ func toggle_designation() -> void:
 func sample_final_height(direction: Vector3) -> float:
 	return editable_terrain.sample_final_height(direction)
 
+func _process(_delta: float) -> void:
+	if designations:
+		designations.advance_transactions()
+
+func _exit_tree() -> void:
+	if designations:
+		designations.finish_workers()
+
 func toggle_mining_debug() -> void:
-	if is_instance_valid(mining_debug):
-		if not is_instance_valid(designation_tool) or designation_tool.zone != mining_debug.zone:
-			mining_surface.deactivate(mining_debug.zone.id)
-		mining_debug.queue_free()
-		mining_debug = null
-		return
-	var zone := editable_terrain.zone_by_id("lab-inspection")
-	if zone == null:
-		var camera := get_viewport().get_camera_3d()
-		var direction := to_local(camera.global_position).normalized() if camera else Vector3.FORWARD
-		zone = editable_terrain.create_zone("lab-inspection", direction)
-	if zone == null:
-		return
-	if not mining_surface.activate(zone):
-		push_warning(mining_surface.last_activation_error)
-		return
-	mining_debug = MiningDebugView.new()
-	add_child(mining_debug)
-	mining_debug.configure(mining_surface, zone)
+	var start := Time.get_ticks_usec()
+	if not is_instance_valid(mining_debug):
+		mining_debug = MiningDebugView.new()
+		add_child(mining_debug)
+		mining_debug.configure(mining_surface, null)
+	else:
+		mining_debug.set_enabled(not mining_debug.visible)
+	mining_debug.last_toggle_ms = (Time.get_ticks_usec() - start) / 1000.0
 
 func get_base_radius_units() -> float:
 	return definition.radius_m
@@ -138,7 +135,7 @@ func debug_text() -> String:
 					biome.dominant_weight,
 					PlanetBiomes.NAMES[biome.secondary] if biome.secondary >= 0 else "—",
 					biome.secondary_weight]
-	context += "\nF9 Mining Zone: superfície integrada / limites e filas · F10 Designation: grid + levels"
+	context += "\nF9 Diagnóstico: visibilidade / limites e filas · F10 Designation: grid + levels"
 	return "Planeta | seed %d | raio %.0f m | F4 LOD | F5 geologia: %s | F6 clima: %s | F7 biomas: %s | 1 materiais: %s\nChunks %d / residentes %d | LOD %d | triângulos %d\nFila %d | workers %d | cache %d | revisão %d\nGeração %.2f ms | uploads %.2f ms%s" % [
 		definition.seed, definition.radius_m, mode_names[renderer.geology_debug_mode], climate_modes[renderer.climate_debug_mode], biome_modes[renderer.biome_debug_mode], material_modes[renderer.material_debug_mode], s.visible, s.resident, s.depth, s.triangles,
 		s.queued, s.jobs, s.cached, s.revision, s.build_ms, s.upload_ms, context]
